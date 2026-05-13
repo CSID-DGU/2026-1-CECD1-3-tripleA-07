@@ -19,15 +19,15 @@ public class ProductCreateRequestDto {
     @Length(max = 255)
     private String name;
 
+    @Size(max = 500, message = "상품 설명은 500자 이하")
     private String description;
 
     @NotNull(message = "정가 입력 필수")
     @Min(value = 0, message = "정가는 0 이상")
     private Integer listPrice;
 
-    @DecimalMin(value = "0.0", message = "할인율은 0 이상")
-    @DecimalMax(value = "1.0", message = "할인율은 1 이하")
-    private Double discountRate = 0.0;  // 기본값 0 (할인 없는 상태)
+    @Min(value = 0, message = "판매가는 0 이상")
+    private Integer price;
 
     @NotNull(message = "수량 입력 필수")
     @Min(value = 0, message = "수량은 0 이상")

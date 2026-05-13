@@ -21,10 +21,8 @@ public class ProductService {
     // ADM_PRD_001: 상품 등록
     @Transactional
     public ProductResponseDto createProduct(ProductCreateRequestDto dto) {
-//        Product result = productRepository.save(productMapper.toEntity(dto));
-//        return productMapper.toDto(result);
         Product product = productMapper.toEntity(dto);
         Product saved =  productRepository.save(product);
-        return new ProductResponseDto(saved);
+        return productMapper.toDto(saved);
     }
 }
