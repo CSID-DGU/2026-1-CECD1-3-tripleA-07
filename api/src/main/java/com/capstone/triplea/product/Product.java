@@ -7,18 +7,21 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PRODUCT")
-/*@SequenceGenerator(
+@SequenceGenerator(
         name = "PRODUCT_SEQ_GENERATOR",
         sequenceName = "PRODUCT_SEQ",
-        initialValue = 1, allocationSize = 1)*/
+        initialValue = 1, allocationSize = 1)
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor //(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto Increment
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "PRODUCT_SEQ_GENERATOR"
+    )
     @Column(name="id")
     private Long id;              // 고유 id
 
