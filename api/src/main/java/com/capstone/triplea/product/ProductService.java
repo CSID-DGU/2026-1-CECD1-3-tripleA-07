@@ -31,7 +31,12 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
-    // AME_PRD_002-2: 상품 삭제
+    // ADM_PRD_002-2: 상품 삭제
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = findProductThrow(id);
+        productRepository.delete(product);
+    }
 
     // AME_PRD_003: 상품 조회
 

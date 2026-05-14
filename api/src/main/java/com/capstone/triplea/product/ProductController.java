@@ -36,4 +36,15 @@ public class ProductController {
             @Valid @RequestBody ProductUpdateRequestDto dto) {
         return ResponseEntity.ok(productService.updateProduct(id, dto));
     }
+
+    // AME_PRD_002-2: DELETE api/products/{id} - 상품 삭제
+    @DeleteMapping("/{id}")
+    @Operation(summary = "상품 삭제 API", description = "상품 ID로 상품 삭제를 수행하는 API")
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    // AME_PRD_003: GET api/products/{id} - 상품 전체 조회
 }
