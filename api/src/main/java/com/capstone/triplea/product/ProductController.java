@@ -49,17 +49,18 @@ public class ProductController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    // AME_PRD_003-0: GET api/products - 상품 전체 목록 조회
+    // AME_PRD_003-0: GET api/products - 상품 조회 (정렬 + 검색 + 페이지네이션)
     @GetMapping
     @Operation(
             summary = "상품 목록 조회",
-            description = "정렬 종류: createdAtDesc(기본) | priceAsc | priceDesc | nameAsc | quantityDesc"
+            description = "keyword: 상품명 검색 | sort (정렬 종류): createdAtDesc(기본) | priceAsc | priceDesc | nameAsc | quantityDesc"
     )
     public ResponseEntity<Page<ProductResponseDto>> getProducts(
-            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String keyword, // 검색어 없으면 -> 전체
+            @RequestParam(required = false) String sort, // 정렬 기준 없으면 -> 최신순
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return ResponseEntity.ok(productService.getProducts(sort, page, size));
+        return ResponseEntity.ok(productService.getProducts(keyword, sort, page, size));
     }
 }

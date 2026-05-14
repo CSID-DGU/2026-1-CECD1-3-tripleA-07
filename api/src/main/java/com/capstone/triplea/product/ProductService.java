@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -43,17 +42,23 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    // AME_PRD_003-1: 상품 전체 목록 조회 + (기본) 최신순 정렬
+    // AME_PRD_003: 상품 전체 목록 조회 + (기본) 최신순 정렬 + 검색
     /*
      * Pageable pageable -> 페이지네이션+정렬
      * String name -> 검색 조건 (Specification 또는 QueryDSL)
      */
     @Transactional(readOnly = true)
-    public Page<ProductResponseDto> getProducts(String sort, int page, int size) {
+    public Page<ProductResponseDto> getProducts(
+            String keyword, String sort, int page, int size) {
         Sort sorting = resolveSort(sort);
         Pageable pageable = PageRequest.of(page, size, sorting);
-        return productRepository.findAll(pageable)
-                .map(productMapper::toDto);
+
+        // keyword 유무에 따라 분기
+        Page<Product> result = (keyword != null && !keyword.isBlank())
+                ? productRepository.findByNameContainingIgnoreCase(keyword, pageable)
+                : productRepository.findAll(pageable);
+
+        return result.map(productMapper::toDto);
     }
 
     /*
@@ -74,10 +79,6 @@ public class ProductService {
             default -> Sort.by("createdAt").descending();
         };
     }
-
-    // AME_PRD_003-2: 상품명 검색
-
-    // AME_PRD_003-3: 페이지네이션
 
     // 공통: 없으면 404
     private Product findProductThrow(Long id) {
