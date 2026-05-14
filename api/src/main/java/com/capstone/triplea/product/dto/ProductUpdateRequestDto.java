@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 /*
 수정 요청 DTO: 모든 필드 선택적 (PATCH 방식)
@@ -30,6 +31,10 @@ public class ProductUpdateRequestDto {
     @Min(value = 0, message = "수량은 0 이상")
     private Integer quantity;
 
+    @URL(message = "URL 형식 필수")
+    @Size(max = 255, message = "이미지 URL은 255자 이하")
     private String imageUrl;
+
+    @Size(max = 255, message = "카테고리는 255자 이하")
     private String category;
 }
