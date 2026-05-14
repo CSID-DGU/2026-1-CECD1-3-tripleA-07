@@ -4,8 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-
-import java.math.BigDecimal;
+import org.hibernate.validator.constraints.URL;
 
 /*
 등록 요청 시 클라이언트가 보내는 데이터
@@ -33,7 +32,10 @@ public class ProductCreateRequestDto {
     @Min(value = 0, message = "수량은 0 이상")
     private Integer quantity;
 
+    @URL(message = "URL 형식 필수")
+    @Size(max = 255, message = "이미지 URL은 255자 이하")
     private String imageUrl;
 
+    @Size(max = 255, message = "카테고리는 255자 이하")
     private String category;
 }

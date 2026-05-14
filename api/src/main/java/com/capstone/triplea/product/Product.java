@@ -52,13 +52,13 @@ public class Product {
     @Column(name="category")
     private String category;    // 카테고리 (생략 가능)
 
-    // UUID 자동 생성 + 등록 시각 자동 세팅
+    // 등록 시각 저장
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // 수정 시각 자동 세팅 -> 수정 시각 저장할거면 사용
+    // 수정 시각 저장
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
