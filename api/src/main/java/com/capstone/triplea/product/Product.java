@@ -1,9 +1,9 @@
 package com.capstone.triplea.product;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -14,9 +14,53 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue(generator = "PRODUCT_SEQ_GENERATOR")
-    private Long id;
-    private String name;
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "PRODUCT_SEQ_GENERATOR"
+    )
+    @Column(name="id")
+    private Long id;              // 고유 id
+
+    @Column(name="name", nullable = false)
+    private String name;          // 상품명
+
+    @Column(name="description")
+    private String description;   // 상품 설명
+
+    @Column(name="list_price", nullable = false)
+    private int listPrice;       // 정가
+
+    @Column(name="price", nullable = false)
+    private int price; // 판매가 = list_price*(1-discount)
+
+    @Column(name="quantity", nullable = false)
+    private int quantity;       // 수량
+
+    @Column(name="created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name="image_url")
+    private String imageUrl;    // 이미지 URL
+
+    @Column(name="category")
+    private String category;    // 카테고리 (생략 가능)
+
+    // 등록 시각 저장
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // 수정 시각 저장
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
