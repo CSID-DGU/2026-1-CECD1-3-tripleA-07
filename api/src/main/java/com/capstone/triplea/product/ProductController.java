@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class ProductController {
 
     // AME_PRD_002-2: DELETE api/products/{id} - 상품 삭제
     @DeleteMapping("/{id}")
-    @Operation(summary = "상품 삭제 API", description = "상품 ID로 상품 삭제를 수행하는 API")
+    @Operation(summary = "상품 삭제", description = "상품 ID로 상품 삭제를 수행하는 API")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable Long id) {
         productService.deleteProduct(id);
@@ -50,8 +51,15 @@ public class ProductController {
 
     // AME_PRD_003-0: GET api/products - 상품 전체 목록 조회
     @GetMapping
-    @Operation(summary = "상품 전체 목록 조회", description = "등록된 상품 전체 목록을 반환하는 API")
-    public ResponseEntity<List<ProductResponseDto>> getProducts() {
-        return ResponseEntity.ok(productService.getProducts());
+    @Operation(
+            summary = "상품 목록 조회",
+            description = "정렬 종류: createdAtDesc(기본) | priceAsc | priceDesc | nameAsc | quantityDesc"
+    )
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(productService.getProducts(sort, page, size));
     }
 }

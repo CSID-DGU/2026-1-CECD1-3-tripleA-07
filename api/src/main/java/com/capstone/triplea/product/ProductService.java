@@ -4,6 +4,10 @@ import com.capstone.triplea.product.dto.ProductCreateRequestDto;
 import com.capstone.triplea.product.dto.ProductResponseDto;
 import com.capstone.triplea.product.dto.ProductUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,20 +48,32 @@ public class ProductService {
      * Pageable pageable -> 페이지네이션+정렬
      * String name -> 검색 조건 (Specification 또는 QueryDSL)
      */
-    @Transactional
-    public List<ProductResponseDto> getProducts() {
-        return productRepository.findAll()
-                .stream()
-                .map(productMapper::toDto)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> getProducts(String sort, int page, int size) {
+        Sort sorting = resolveSort(sort);
+        Pageable pageable = PageRequest.of(page, size, sorting);
+        return productRepository.findAll(pageable)
+                .map(productMapper::toDto);
     }
-    // [TODO] 정렬 방법 선택 가능하게 구현
+
     /*
      * 1. priceAsc: 가격 낮은순
      * 2. priceDesc: 가격 높은순
-     * 3. (nameAsc: 상품명 가나다순) 필요한가,,?
+     * 3. (nameAsc: 상품명 가나다순) 필요없으면 삭제
      * 4. QuantityDesc: 재고 많은순
      */
+    private Sort resolveSort(String sort) {
+        if (sort == null || sort.isEmpty()) {
+            return Sort.by("createdAt").descending(); // 기본: 최신순
+        }
+        return switch (sort){
+            case "priceAsc" -> Sort.by("price").ascending();
+            case "priceDesc" -> Sort.by("price").descending();
+            case "nameAsc" -> Sort.by("name").ascending();
+            case "quantityDesc" -> Sort.by("quantity").descending();
+            default -> Sort.by("createdAt").descending();
+        };
+    }
 
     // AME_PRD_003-2: 상품명 검색
 
