@@ -1,9 +1,9 @@
-from enum import Enum
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
+from app.common.enum.event_type import EventType
 from app.service import (
     new_product_marketing,
     discount_product_marketing,
@@ -13,10 +13,6 @@ router = APIRouter(
     prefix="/api/v1",
     tags=["v1"],
 )
-
-class EventType(str, Enum):
-    NEW = "NEW"
-    DISCOUNT = "DISCOUNT"
 
 class AgentEventRequest(BaseModel):
     # 이벤트 유형
