@@ -12,11 +12,11 @@ import org.springframework.data.domain.Sort;
 @Getter
 @RequiredArgsConstructor
 public enum ProductSortType {
-    CREATED_AT_DESC ("createdAt", Sort.Direction.DESC),
-    PRICE_ASC ("price", Sort.Direction.ASC),
-    PRICE_DESC ("price", Sort.Direction.DESC),
-    NAME_ASC ("name", Sort.Direction.ASC),
-    QUANTITY_DESC ("quantity", Sort.Direction.DESC);
+    CREATED_AT_DESC ("createdAt", Sort.Direction.DESC), // 최신 등록순 (기본)
+    PRICE_ASC ("price", Sort.Direction.ASC),    // 가격 낮은순
+    PRICE_DESC ("price", Sort.Direction.DESC),  // 가격 높은순
+    NAME_ASC ("name", Sort.Direction.ASC),      // 상품명 가나다순
+    QUANTITY_DESC ("quantity", Sort.Direction.DESC);    // 재고 많은순
 
     private final String field;
     private final Sort.Direction direction;
