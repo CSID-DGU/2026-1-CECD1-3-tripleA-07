@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/products")
 @Tag(name = "Product", description = "상품 API")
@@ -49,7 +47,7 @@ public class ProductController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    // ADM_PRD_003-0: GET api/v1/products - 상품 조회 (정렬 + 검색 + 페이지네이션)
+    // ADM_PRD_003: GET api/v1/products - 상품 조회 (정렬 + 검색 + 페이지네이션)
     @GetMapping
     @Operation(
             summary = "상품 목록 조회",

@@ -8,11 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,6 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductResponseDto> getProducts(
             String keyword, ProductSortType sortType, int page, int size) {
-        // Sort sorting = resolveSort(sort);
         Pageable pageable = PageRequest.of(page, size, sortType.toSort());
 
         // keyword 유무에 따라 분기

@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
-/*
-* 나중에 다른 */
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
