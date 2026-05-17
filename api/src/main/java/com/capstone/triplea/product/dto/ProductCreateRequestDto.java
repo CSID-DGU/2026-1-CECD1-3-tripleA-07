@@ -25,6 +25,7 @@ public class ProductCreateRequestDto {
     @Min(value = 0, message = "정가는 0 이상")
     private Integer listPrice;
 
+    @NotNull(message = "판매가 입력 필수")
     @Min(value = 0, message = "판매가는 0 이상")
     private Integer price;
 
