@@ -46,7 +46,7 @@ public class ProductController {
 
     // ADM_PRD_002-1: PUT api/v1/products/{id} - 상품 수정
     @PutMapping("/{id}")
-    @Operation(summary = "상품 수정", description = "상품 ID로 상품 수정을 수행하는 API (null 필드 무시)")
+    @Operation(summary = "상품 수정", description = "모든 필드값을 전송해야 하며 선택값(description, imageUrl, category)을 전송하지 않으면 null로 저장")
     @ApiResponse(responseCode = "200", description = "상품 수정 성공")
     @ApiResponse(responseCode = "400", description = "입력값 유효성 검증 실패")
     @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
