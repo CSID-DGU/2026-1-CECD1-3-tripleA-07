@@ -57,7 +57,7 @@ public class ProductController {
     )
     public ResponseEntity<Page<ProductResponseDto>> getProducts(
             @RequestParam(required = false) String keyword, // 검색어 없으면 -> 전체
-            @RequestParam(required = false) String sort, // 정렬 기준 없으면 -> 최신순
+            @RequestParam(defaultValue = "CREATED_AT_DESC") ProductSortType sort, // 정렬 기준 없으면 -> 최신순
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {

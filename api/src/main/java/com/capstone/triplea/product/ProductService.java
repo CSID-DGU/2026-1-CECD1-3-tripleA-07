@@ -42,16 +42,16 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    // AME_PRD_003: 상품 전체 목록 조회 + (기본) 최신순 정렬 + 검색
+    // ADM_PRD_003: 상품 전체 목록 조회 + (기본) 최신순 정렬 + 검색
     /*
      * Pageable pageable -> 페이지네이션+정렬
      * String name -> 검색 조건 (Specification 또는 QueryDSL)
      */
     @Transactional(readOnly = true)
     public Page<ProductResponseDto> getProducts(
-            String keyword, String sort, int page, int size) {
-        Sort sorting = resolveSort(sort);
-        Pageable pageable = PageRequest.of(page, size, sorting);
+            String keyword, ProductSortType sortType, int page, int size) {
+        // Sort sorting = resolveSort(sort);
+        Pageable pageable = PageRequest.of(page, size, sortType.toSort());
 
         // keyword 유무에 따라 분기
         Page<Product> result = (keyword != null && !keyword.isBlank())
@@ -59,25 +59,6 @@ public class ProductService {
                 : productRepository.findAll(pageable);
 
         return result.map(productMapper::toDto);
-    }
-
-    /*
-     * 1. priceAsc: 가격 낮은순
-     * 2. priceDesc: 가격 높은순
-     * 3. (nameAsc: 상품명 가나다순) 필요없으면 삭제
-     * 4. quantityDesc: 재고 많은순
-     */
-    private Sort resolveSort(String sort) {
-        if (sort == null || sort.isEmpty()) {
-            return Sort.by("createdAt").descending(); // 기본: 최신순
-        }
-        return switch (sort){
-            case "priceAsc" -> Sort.by("price").ascending();
-            case "priceDesc" -> Sort.by("price").descending();
-            case "nameAsc" -> Sort.by("name").ascending();
-            case "quantityDesc" -> Sort.by("quantity").descending();
-            default -> Sort.by("createdAt").descending();
-        };
     }
 
     // 공통: 없으면 404
