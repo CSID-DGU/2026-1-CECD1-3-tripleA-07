@@ -28,7 +28,7 @@ class AgentEventRequest(BaseModel):
 async def start_agent_flow(body: AgentEventRequest):
     # 신제품 이벤트
     if body.event_type == EventType.NEW:
-        ai_response: str = await new_product_marketing()
+        ai_response: str = await new_product_marketing(body.product_id, body.event_type)
         # 임시 return 값
         return {
             "event_type": body.event_type,
@@ -37,7 +37,7 @@ async def start_agent_flow(body: AgentEventRequest):
         }
     # 할인 이벤트
     elif body.event_type == EventType.DISCOUNT:
-        ai_response: str = await discount_product_marketing()
+        ai_response: str = await discount_product_marketing(body.product_id, body.event_type)
         # 임시 return 값
         return {
             "event_type": body.event_type,
