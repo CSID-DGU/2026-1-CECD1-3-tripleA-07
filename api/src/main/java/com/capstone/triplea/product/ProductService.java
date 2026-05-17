@@ -3,6 +3,7 @@ package com.capstone.triplea.product;
 import com.capstone.triplea.product.dto.ProductCreateRequestDto;
 import com.capstone.triplea.product.dto.ProductResponseDto;
 import com.capstone.triplea.product.dto.ProductUpdateRequestDto;
+import com.capstone.triplea.product.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,8 +65,6 @@ public class ProductService {
     // 공통: 없으면 404
     private Product findProductThrow(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "상품을 찾을 수 없음 (id = " + id + ")"
-                ));
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 }
