@@ -65,7 +65,7 @@ public class ProductService {
      * 1. priceAsc: 가격 낮은순
      * 2. priceDesc: 가격 높은순
      * 3. (nameAsc: 상품명 가나다순) 필요없으면 삭제
-     * 4. QuantityDesc: 재고 많은순
+     * 4. quantityDesc: 재고 많은순
      */
     private Sort resolveSort(String sort) {
         if (sort == null || sort.isEmpty()) {

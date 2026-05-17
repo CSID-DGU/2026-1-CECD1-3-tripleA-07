@@ -22,7 +22,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // AME_PRD_001: Post api/products
+    // ADM_PRD_001: POST api/v1/products
     @PostMapping
     @Operation(summary = "상품 등록", description = "상품 등록을 수행하는 API")
     public ResponseEntity<ProductResponseDto> createProduct(
@@ -31,7 +31,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // AME_PRD_002-1: PATCH api/products/{id} - 상품 수정
+    // ADM_PRD_002-1: PATCH api/v1/products/{id} - 상품 수정
     @PatchMapping("/{id}")
     @Operation(summary = "상품 수정", description = "상품 ID로 상품 수정을 수행하는 API (null 필드 무시)")
     public ResponseEntity<ProductResponseDto> updateProduct(
@@ -40,7 +40,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(id, dto));
     }
 
-    // AME_PRD_002-2: DELETE api/products/{id} - 상품 삭제
+    // ADM_PRD_002-2: DELETE api/v1/products/{id} - 상품 삭제
     @DeleteMapping("/{id}")
     @Operation(summary = "상품 삭제", description = "상품 ID로 상품 삭제를 수행하는 API")
     public ResponseEntity<Void> deleteProduct(
@@ -49,7 +49,7 @@ public class ProductController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    // AME_PRD_003-0: GET api/products - 상품 조회 (정렬 + 검색 + 페이지네이션)
+    // ADM_PRD_003-0: GET api/v1/products - 상품 조회 (정렬 + 검색 + 페이지네이션)
     @GetMapping
     @Operation(
             summary = "상품 목록 조회",
