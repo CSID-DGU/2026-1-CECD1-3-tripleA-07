@@ -9,7 +9,9 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
 /*
-수정 요청 DTO: 모든 필드 선택적 (PATCH 방식)
+* 수정 요청 DTO: 모든 필드 선택적 (PUT 방식)
+* - 필수값: @NotNull로 강제
+* - 선택값: null 허용 (내보내지 않으면 null로 저장)
 */
 
 @Getter

@@ -29,8 +29,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // ADM_PRD_002-1: PATCH api/v1/products/{id} - 상품 수정
-    @PatchMapping("/{id}")
+    // ADM_PRD_002-1: PUT api/v1/products/{id} - 상품 수정
+    @PutMapping("/{id}")
     @Operation(summary = "상품 수정", description = "상품 ID로 상품 수정을 수행하는 API (null 필드 무시)")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long id,
