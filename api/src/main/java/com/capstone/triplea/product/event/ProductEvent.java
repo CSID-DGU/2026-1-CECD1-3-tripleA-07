@@ -23,7 +23,6 @@ public class ProductEvent {
     private final String category;
     private final String imageUrl;
     private final EventType eventType;
-    private final LocalDateTime triggeredAt;
 
     // AI Agent에 전달할 JSON 구조
     public Map<String, Object> toMarketingContext() {
@@ -36,7 +35,6 @@ public class ProductEvent {
         context.put("category", category);
         context.put("imageUrl", imageUrl);
         context.put("eventType", eventType.name());
-        context.put("triggeredAt", triggeredAt.toString());
 
         return context;
     }

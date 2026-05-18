@@ -37,7 +37,6 @@ public class ProductService {
                         .category(saved.getCategory())
                         .price(saved.getPrice())
                         .eventType(ProductEvent.EventType.NEW_PRODUCT)
-                        .triggeredAt(LocalDateTime.now())
                         .build()
         );
 
@@ -48,13 +47,13 @@ public class ProductService {
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto dto) {
         Product product = findProductThrow(id);
-        int oldPrice = dto.getPrice();  // 수정 전 가격 저장
+        int oldPrice = product.getPrice();  // 수정 전 가격 저장
 
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
 
         // TRG_PRD_002: 상품 수정
-        // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행
-        if (oldPrice != product.getPrice()) {
+        // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행 (가격 감소 시에만)
+        if (oldPrice > product.getPrice()) { // oldPrice != product.getPrice() <- 변경이 감지될때만
             applicationEventPublisher.publishEvent(
                     ProductEvent.builder()
                         .id(product.getId())
@@ -64,7 +63,6 @@ public class ProductService {
                         .category(product.getCategory())
                         .imageUrl(product.getImageUrl())
                         .eventType(ProductEvent.EventType.DISCOUNT_PRODUCT)
-                        .triggeredAt(LocalDateTime.now())
                         .build()
             );
         }

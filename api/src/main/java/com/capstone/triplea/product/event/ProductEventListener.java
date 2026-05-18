@@ -10,15 +10,19 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class ProductEventListner {
+public class ProductEventListener {
 
     // 동작 규칙 3: 비동기 처리 - 상품 등록/수정 응답에 영향을 주지 않음
     @Async
     // DB 커밋 완료 후에만 실행
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleProductEvent(ProductEvent event) {
-        log.info("[트리거 발동] eventType={}, productId={}",
-                event.getEventType(), event.getId());
+        log.info("=== [트리거 발동] ===");
+        log.info("eventType   : {}", event.getEventType());
+        log.info("productId   : {}", event.getId());
+        log.info("name        : {}", event.getName());
+        log.info("price       : {}", event.getPrice());
+        log.info("====================");
 
         // AI Agent에게 전달할 JSON 컨텍스트
         Map<String, Object> context = event.toMarketingContext();
