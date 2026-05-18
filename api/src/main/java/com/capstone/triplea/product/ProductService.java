@@ -3,25 +3,44 @@ package com.capstone.triplea.product;
 import com.capstone.triplea.product.dto.ProductCreateRequestDto;
 import com.capstone.triplea.product.dto.ProductResponseDto;
 import com.capstone.triplea.product.dto.ProductUpdateRequestDto;
+import com.capstone.triplea.product.event.ProductEvent;
 import com.capstone.triplea.product.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // ADM_PRD_001: 상품 등록
     @Transactional
     public ProductResponseDto createProduct(ProductCreateRequestDto dto) {
         Product product = productMapper.toEntity(dto);
         Product saved =  productRepository.save(product);
+
+        // TRG_PRD_001: 상품 등록
+        // 동작 규칙 1: 등록 성공 시에만 발행
+        applicationEventPublisher.publishEvent(
+                ProductEvent.builder()
+                        .id(saved.getId())
+                        .name(saved.getName())
+                        .category(saved.getCategory())
+                        .price(saved.getPrice())
+                        .eventType(ProductEvent.EventType.NEW_PRODUCT)
+                        .triggeredAt(LocalDateTime.now())
+                        .build()
+        );
+
         return productMapper.toDto(saved);
     }
 
@@ -29,7 +48,27 @@ public class ProductService {
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto dto) {
         Product product = findProductThrow(id);
+        int oldPrice = dto.getPrice();  // 수정 전 가격 저장
+
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
+
+        // TRG_PRD_002: 상품 수정
+        // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행
+        if (oldPrice != product.getPrice()) {
+            applicationEventPublisher.publishEvent(
+                    ProductEvent.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .listPrice(product.getListPrice())
+                        .price(product.getPrice())
+                        .category(product.getCategory())
+                        .imageUrl(product.getImageUrl())
+                        .eventType(ProductEvent.EventType.DISCOUNT_PRODUCT)
+                        .triggeredAt(LocalDateTime.now())
+                        .build()
+            );
+        }
+
         return productMapper.toDto(product);
     }
 
