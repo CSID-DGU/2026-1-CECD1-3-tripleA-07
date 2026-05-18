@@ -3,7 +3,6 @@ package com.capstone.triplea.product.event;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
