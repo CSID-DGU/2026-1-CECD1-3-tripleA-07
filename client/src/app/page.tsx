@@ -1,65 +1,95 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import ProductTable, { Product } from "@/components/products/ProductTable";
+import ProductEditor from "@/components/products/ProductEditor";
+
+const MOCK_DATA: Product[] = [
+  {
+    id: "12aE9",
+    name: "코튼 가디건",
+    price: "32,900",
+    category: "상의",
+    quantity: "10,000",
+    description: "편안한 착용감의 데일리 코튼 가디건입니다.",
+  },
+  {
+    id: "1908B",
+    name: "크롭 청자켓",
+    price: "75,900",
+    category: "상의, 외투",
+    quantity: "9,000",
+    description: "트렌디한 실루엣의 크롭 데님 자켓입니다.",
+  },
+  {
+    id: "23F21",
+    name: "와이드 슬랙스",
+    price: "45,000",
+    category: "하의",
+    quantity: "5,500",
+    description: "체형을 보정해주는 세미 와이드 핏 슬랙스입니다.",
+  },
+];
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>(MOCK_DATA);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+
+  const selectedProduct =
+    products.find((p) => p.id === selectedProductId) || null;
+
+  const handleSelectProduct = (id: string) => {
+    setSelectedProductId(id);
+  };
+
+  const handleAddNewProduct = () => {
+    const newId = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const newProduct: Product = {
+      id: newId,
+      name: "새 상품",
+      price: "0",
+      category: "카테고리",
+      quantity: "0",
+      description: "상품 설명을 입력해주세요.",
+    };
+    setProducts([newProduct, ...products]);
+    setSelectedProductId(newId);
+  };
+
+  const handleSaveProduct = (updatedProduct: Product) => {
+    setProducts(
+      products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    alert("변경사항이 저장되었습니다.");
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    if (confirm("정말 이 상품을 삭제하시겠습니까?")) {
+      setProducts(products.filter((p) => p.id !== id));
+      setSelectedProductId(null);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="flex h-screen w-full bg-white overflow-hidden">
+      {/* 왼쪽: 상품 목록 (60%) */}
+      <div className="w-[60%] h-full">
+        <ProductTable
+          products={products}
+          selectedId={selectedProductId}
+          onSelect={handleSelectProduct}
+          onAddNew={handleAddNewProduct}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+
+      {/* 오른쪽: 상세 편집 (40%) */}
+      <div className="w-[40%] h-full">
+        <ProductEditor
+          product={selectedProduct}
+          onSave={handleSaveProduct}
+          onDelete={handleDeleteProduct}
+        />
+      </div>
+    </main>
   );
 }
