@@ -10,8 +10,8 @@ import java.util.Map;
 @Builder
 public class ProductEvent {
     public enum EventType {
-        NEW_PRODUCT,        // TRG_PRD_001: 신제품 홍보
-        DISCOUNT_PRODUCT    // TRG_PRD_002: 할인 홍보
+        NEW,        // TRG_PRD_001: 신제품 홍보
+        DISCOUNT    // TRG_PRD_002: 할인 홍보
     }
 
     private final Long id;
@@ -26,14 +26,20 @@ public class ProductEvent {
     // AI Agent에 전달할 JSON 구조
     public Map<String, Object> toMarketingContext() {
         Map<String, Object> context = new LinkedHashMap<>();
-        context.put("id", id);
-        context.put("name", name);
-        context.put("description", description);
-        context.put("listPrice", listPrice);
-        context.put("price", price);
-        context.put("category", category);
-        context.put("imageUrl", imageUrl);
-        context.put("eventType", eventType.name());
+        context.put("eventType", eventType.name()); // NEW or DISCOUNT
+        context.put("productId", id);
+
+        //  DISCOUNT일 때만 changed 필드 포함
+        if (eventType == EventType.DISCOUNT) {
+            Map<String, Object> changed = new LinkedHashMap<>();
+            context.put("name", name);
+            context.put("description", description);
+            context.put("listPrice", listPrice);
+            context.put("price", price);
+            context.put("category", category);
+            context.put("imageUrl", imageUrl);
+            context.put("changed", changed);
+        }
 
         return context;
     }

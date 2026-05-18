@@ -34,7 +34,7 @@ public class ProductService {
                         .name(saved.getName())
                         .category(saved.getCategory())
                         .price(saved.getPrice())
-                        .eventType(ProductEvent.EventType.NEW_PRODUCT)
+                        .eventType(ProductEvent.EventType.NEW)
                         .build()
         );
 
@@ -60,7 +60,7 @@ public class ProductService {
                         .price(product.getPrice())
                         .category(product.getCategory())
                         .imageUrl(product.getImageUrl())
-                        .eventType(ProductEvent.EventType.DISCOUNT_PRODUCT)
+                        .eventType(ProductEvent.EventType.DISCOUNT)
                         .build()
             );
         }
