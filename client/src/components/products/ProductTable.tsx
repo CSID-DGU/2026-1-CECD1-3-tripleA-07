@@ -13,6 +13,8 @@ interface ProductTableProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  searchTerm: string;
+  onSearch: (term: string) => void;
 }
 
 export default function ProductTable({
@@ -23,16 +25,9 @@ export default function ProductTable({
   currentPage,
   totalPages,
   onPageChange,
+  searchTerm,
+  onSearch,
 }: ProductTableProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredProducts = products.filter((p) =>
-    [p.id, p.name, p.category, p.description]
-      .join(" ")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-
   return (
     <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
       <div className="flex items-center justify-between">
@@ -50,7 +45,7 @@ export default function ProductTable({
           type="search"
           placeholder="검색어를 입력해주세요"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => onSearch(e.target.value)}
           className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
         />
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -94,7 +89,7 @@ export default function ProductTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <tr
                 key={product.id}
                 onClick={() => onSelect(product.id)}

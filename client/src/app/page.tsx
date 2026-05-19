@@ -12,19 +12,25 @@ export default function Home() {
   const [isAdding, setIsAdding] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchProducts(page);
-  }, [page]);
+    fetchProducts(page, searchTerm);
+  }, [page, searchTerm]);
 
-  const fetchProducts = async (pageIndex: number) => {
+  const fetchProducts = async (pageIndex: number, keyword: string) => {
     try {
-      const response = await productService.getProducts(undefined, pageIndex);
+      const response = await productService.getProducts(keyword || undefined, pageIndex);
       setProducts(response.data.content);
       setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Failed to fetch products:", error);
     }
+  };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    setPage(0); // 검색 시 첫 페이지로 초기화
   };
 
   const selectedProduct = isAdding
@@ -56,7 +62,7 @@ export default function Home() {
         await productService.updateProduct(updatedProduct.id, dataToUpdate);
         alert("변경사항이 저장되었습니다.");
       }
-      fetchProducts(page);
+      fetchProducts(page, searchTerm);
     } catch (error) {
       console.error("Failed to save product:", error);
       alert("저장에 실패했습니다.");
@@ -67,7 +73,7 @@ export default function Home() {
     if (confirm("정말 이 상품을 삭제하시겠습니까?")) {
       try {
         await productService.deleteProduct(id);
-        fetchProducts(page);
+        fetchProducts(page, searchTerm);
         setSelectedProductId(null);
       } catch (error) {
         console.error("Failed to delete product:", error);
@@ -87,6 +93,8 @@ export default function Home() {
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}
+          searchTerm={searchTerm}
+          onSearch={handleSearch}
         />
       </div>
 
