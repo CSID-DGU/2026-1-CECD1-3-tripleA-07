@@ -25,8 +25,11 @@ public class ProductEventListener {
         log.info("=== [트리거 발동] ===");
         log.info("eventType   : {}", event.getEventType());
         log.info("productId   : {}", event.getId());
-        log.info("name        : {}", event.getName());
-        log.info("price       : {}", event.getPrice());
+        log.info("name        : {}", event.getProductNew().getName());
+        log.info("new price       : {}", event.getProductNew().getPrice());
+        if (event.getProductOld() != null) {
+            log.info("old price    : {}", event.getProductOld().getPrice());
+        }
         log.info("====================");
 
         // AI Agent에게 전달할 JSON 컨텍스트

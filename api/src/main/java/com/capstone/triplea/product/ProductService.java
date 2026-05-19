@@ -29,15 +29,17 @@ public class ProductService {
         // TRG_PRD_001: 상품 등록
         // 동작 규칙 1: 등록 성공 시에만 발행
         applicationEventPublisher.publishEvent(
-                ProductEvent.builder()
-                        .id(saved.getId())
-                        .name(saved.getName())
+        ProductEvent.builder()
+                .id(saved.getId())
+                .eventType(ProductEvent.EventType.NEW)
+                .productNew(ProductEvent.ProductSnapshot.builder().name(saved.getName())
                         .description(saved.getDescription())
-                        .category(saved.getCategory())
+                        .listPrice(saved.getListPrice())
                         .price(saved.getPrice())
+                        .category(saved.getCategory())
                         .imageUrl(saved.getImageUrl())
-                        .eventType(ProductEvent.EventType.NEW)
-                        .build()
+                        .build())
+                .build()
         );
 
         return productMapper.toDto(saved);
@@ -57,27 +59,31 @@ public class ProductService {
         String oldCategory = product.getCategory();
 
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
+        Product saved =  productRepository.save(product);
 
         // TRG_PRD_002: 상품 수정
         // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행 (가격 감소 시에만)
-        if (oldPrice > product.getPrice()) { // oldPrice != product.getPrice() <- 변경이 감지될때만
+        if (oldPrice > product.getPrice()) {    // oldPrice != product.getPrice() <- 변경이 감지될때
             applicationEventPublisher.publishEvent(
-                    ProductEvent.builder()
-                        .id(product.getId())
-                        .name(product.getName())
-                        .description(product.getDescription())
-                        .listPrice(product.getListPrice())
-                        .price(product.getPrice())
-                        .oldName(oldName)
-                        .oldDescription(oldDescription)
-                        .oldListPrice(oldListPrice)
-                        .oldPrice(oldPrice)
-                        .oldCategory(oldCategory)
-                        .oldImageUrl(oldImageUrl)
-                        .category(product.getCategory())
-                        .imageUrl(product.getImageUrl())
-                        .eventType(ProductEvent.EventType.DISCOUNT)
-                        .build()
+            ProductEvent.builder()
+                    .id(product.getId())
+                    .eventType(ProductEvent.EventType.DISCOUNT)
+                    .productNew(ProductEvent.ProductSnapshot.builder().name(product.getName())
+                            .description(saved.getDescription())
+                            .listPrice(saved.getListPrice())
+                            .price(saved.getPrice())
+                            .category(saved.getCategory())
+                            .imageUrl(saved.getImageUrl())
+                            .build())
+                    .productOld(ProductEvent.ProductSnapshot.builder()
+                            .name(oldName)
+                            .description(oldDescription)
+                            .listPrice(oldListPrice)
+                            .price(oldPrice)
+                            .category(oldCategory)
+                            .imageUrl(oldImageUrl)
+                            .build())
+                    .build()
             );
         }
 
