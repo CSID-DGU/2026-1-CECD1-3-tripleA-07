@@ -3,8 +3,10 @@ package com.capstone.triplea.product;
 import com.capstone.triplea.product.dto.ProductCreateRequestDto;
 import com.capstone.triplea.product.dto.ProductResponseDto;
 import com.capstone.triplea.product.dto.ProductUpdateRequestDto;
+import com.capstone.triplea.product.event.ProductEvent;
 import com.capstone.triplea.product.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,12 +18,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // ADM_PRD_001: 상품 등록
     @Transactional
     public ProductResponseDto createProduct(ProductCreateRequestDto dto) {
         Product product = productMapper.toEntity(dto);
         Product saved =  productRepository.save(product);
+
+        // TRG_PRD_001: 상품 등록
+        // 동작 규칙 1: 등록 성공 시에만 발행
+        applicationEventPublisher.publishEvent(
+        ProductEvent.builder()
+                .id(saved.getId())
+                .eventType(ProductEvent.EventType.NEW)
+                .productNew(ProductEvent.ProductSnapshot.from(saved))
+                .build()
+        );
+
         return productMapper.toDto(saved);
     }
 
@@ -29,7 +43,23 @@ public class ProductService {
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto dto) {
         Product product = findProductThrow(id);
+
+        ProductEvent.ProductSnapshot oldSnapshot = ProductEvent.ProductSnapshot.from(product);
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
+
+        // TRG_PRD_002: 상품 수정
+        // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행 (가격 감소 시에만)
+        if (oldSnapshot.getPrice() > product.getPrice()) {    // oldPrice != product.getPrice() <- 변경이 감지될때
+            applicationEventPublisher.publishEvent(
+            ProductEvent.builder()
+                    .id(product.getId())
+                    .eventType(ProductEvent.EventType.DISCOUNT)
+                    .productNew(ProductEvent.ProductSnapshot.from(product))
+                    .productOld(oldSnapshot)
+                    .build()
+            );
+        }
+
         return productMapper.toDto(product);
     }
 
