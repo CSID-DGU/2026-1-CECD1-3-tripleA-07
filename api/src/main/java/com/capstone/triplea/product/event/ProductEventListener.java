@@ -8,8 +8,6 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor

@@ -6,9 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null인 필드 JSON에서 제외
