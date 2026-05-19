@@ -4,10 +4,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.common.enum.event_type import EventType
-from app.service import (
-    new_product_marketing,
-    discount_product_marketing,
-)
+from app.service import product_marketing
 
 router = APIRouter(
     prefix="/api/v1",
@@ -39,27 +36,12 @@ class AgentEventRequest(BaseModel):
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
-    # 신제품 이벤트
-    if body.event_type == EventType.NEW:
-        ai_response: str = await new_product_marketing(body.product_id, body.event_type)
-        # 임시 return 값
-        return {
-            "event_type": body.event_type,
-            "product_id": body.product_id,
-            "product_new": body.product_new,
-            "product_old": body.product_old,
-            "ai_response": ai_response
-        }
-    # 할인 이벤트
-    elif body.event_type == EventType.DISCOUNT:
-        ai_response: str = await discount_product_marketing(body.product_id, body.event_type)
-        # 임시 return 값
-        return {
-            "event_type": body.event_type,
-            "product_id": body.product_id,
-            "product_new": body.product_new,
-            "product_old": body.product_old,
-            "ai_response": ai_response
-        }
-    else:
-        return {"message": "unknown event"}
+    ai_response: str = await product_marketing(body.event_type)
+    # 임시 return 값
+    return {
+        "event_type": body.event_type,
+        "product_id": body.product_id,
+        "product_new": body.product_new,
+        "product_old": body.product_old,
+        "ai_response": ai_response
+    }
