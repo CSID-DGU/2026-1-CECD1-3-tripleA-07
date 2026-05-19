@@ -47,7 +47,14 @@ public class ProductService {
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto dto) {
         Product product = findProductThrow(id);
-        int oldPrice = product.getPrice();  // 수정 전 가격 저장
+
+        // 수정 전 값 저장
+        int oldPrice = product.getPrice();
+        String oldName = product.getName();
+        String oldDescription = product.getDescription();
+        int oldListPrice = product.getListPrice();
+        String oldImageUrl = product.getImageUrl();
+        String oldCategory = product.getCategory();
 
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
 
@@ -61,7 +68,12 @@ public class ProductService {
                         .description(product.getDescription())
                         .listPrice(product.getListPrice())
                         .price(product.getPrice())
+                        .oldName(oldName)
+                        .oldDescription(oldDescription)
+                        .oldListPrice(oldListPrice)
                         .oldPrice(oldPrice)
+                        .oldCategory(oldCategory)
+                        .oldImageUrl(oldImageUrl)
                         .category(product.getCategory())
                         .imageUrl(product.getImageUrl())
                         .eventType(ProductEvent.EventType.DISCOUNT)

@@ -19,10 +19,16 @@ public class ProductEvent {
     private final String description;
     private final int listPrice;
     private final int price;
-    private final int oldPrice;
     private final String category;
     private final String imageUrl;
     private final EventType eventType;
+    // 필드 추가
+    private final String oldName;
+    private final String oldDescription;
+    private final int oldListPrice;
+    private final int oldPrice;
+    private final String oldCategory;
+    private final String oldImageUrl;
 
     // AI Agent에 전달할 JSON 구조
     public Map<String, Object> toMarketingContext() {
@@ -43,12 +49,12 @@ public class ProductEvent {
         //  DISCOUNT일 때만 product_old 전송
         if (eventType == EventType.DISCOUNT) {
             Map<String, Object> productOld = new LinkedHashMap<>();
-            productOld.put("name", name);
-            productOld.put("description", description);
-            productOld.put("listPrice", listPrice);
+            productOld.put("name", oldName);
+            productOld.put("description", oldDescription);
+            productOld.put("listPrice", oldListPrice);
             productOld.put("price", oldPrice);
-            productOld.put("category", category);
-            productOld.put("imageUrl", imageUrl);
+            productOld.put("category", oldCategory);
+            productOld.put("imageUrl", oldImageUrl);
             context.put("product_old", productOld);
         }
 
