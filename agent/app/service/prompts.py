@@ -1,6 +1,5 @@
-import json
-
 from app.common.enum.event_type import EventType
+from app.common.dto.product import Product
 
 # -------------------------
 # SYSTEM PROMPT (고정 규칙)
@@ -21,7 +20,7 @@ Follow these rules strictly:
 # -------------------------
 # USER PROMPT TEMPLATE
 # -------------------------
-def build_user_prompt(product: dict, event_type: EventType):
+def build_user_prompt(event_type: EventType, product: Product):
     if event_type == EventType.NEW:
         instruction = """
 Create an SNS post for a NEW product.
@@ -54,7 +53,7 @@ Rules:
 {instruction}
 
 Product Data (JSON):
-{json.dumps(product, ensure_ascii=False)}
+{product.model_dump_json()}
 
 Output format (STRICT):
 Title: ...

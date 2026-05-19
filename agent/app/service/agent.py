@@ -64,7 +64,7 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
             },
             {
                 "role": "user",
-                "content": build_user_prompt(PRODUCT_SAMPLES[sample_num], event_type)
+                "content": build_user_prompt(event_type, PRODUCT_SAMPLES[sample_num])
             }
         ]
     response = await client.chat.completions.create(
