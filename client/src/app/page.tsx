@@ -9,25 +9,25 @@ const MOCK_DATA: Product[] = [
   {
     id: "12aE9",
     name: "코튼 가디건",
-    price: "32,900",
+    price: 32900,
     category: "상의",
-    quantity: "10,000",
+    quantity: 10000,
     description: "편안한 착용감의 데일리 코튼 가디건입니다.",
   },
   {
     id: "1908B",
     name: "크롭 청자켓",
-    price: "75,900",
-    category: "상의, 외투",
-    quantity: "9,000",
+    price: 75900,
+    category: "외투",
+    quantity: 9000,
     description: "트렌디한 실루엣의 크롭 데님 자켓입니다.",
   },
   {
     id: "23F21",
     name: "와이드 슬랙스",
-    price: "45,000",
+    price: 45000,
     category: "하의",
-    quantity: "5,500",
+    quantity: 5500,
     description: "체형을 보정해주는 세미 와이드 핏 슬랙스입니다.",
   },
 ];
@@ -48,9 +48,9 @@ export default function Home() {
     const newProduct: Product = {
       id: newId,
       name: "새 상품",
-      price: "0",
+      price: 0,
       category: "카테고리",
-      quantity: "0",
+      quantity: 0,
       description: "상품 설명을 입력해주세요.",
     };
     setProducts([newProduct, ...products]);

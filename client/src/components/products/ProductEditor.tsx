@@ -15,9 +15,13 @@ export default function ProductEditor({
   onDelete,
 }: ProductEditorProps) {
   const [formData, setFormData] = useState<Product | null>(null);
+  const [priceInput, setPriceInput] = useState<string>("");
+  const [quantityInput, setQuantityInput] = useState<string>("");
 
   useEffect(() => {
     setFormData(product);
+    setPriceInput(product ? product.price.toString() : "");
+    setQuantityInput(product ? product.quantity.toString() : "");
   }, [product]);
 
   if (!formData) {
@@ -47,7 +51,27 @@ export default function ProductEditor({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
+    if (name === "price") {
+      setPriceInput(value);
+    } else if (name === "quantity") {
+      setQuantityInput(value);
+    } else {
+      setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
+    }
+  };
+
+  const handleSave = () => {
+    if (!formData) return;
+    
+    const numericPrice = Number(priceInput);
+    const numericQuantity = Number(quantityInput);
+    
+    if (isNaN(numericPrice) || isNaN(numericQuantity)) {
+      alert("가격과 수량은 숫자만 입력 가능합니다.");
+      return;
+    }
+    
+    onSave({ ...formData, price: numericPrice, quantity: numericQuantity });
   };
 
   return (
@@ -94,7 +118,7 @@ export default function ProductEditor({
             <h3 className="text-sm font-bold text-gray-500 uppercase">상품 가격</h3>
             <input
               name="price"
-              value={formData.price}
+              value={priceInput}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />
@@ -103,7 +127,7 @@ export default function ProductEditor({
             <h3 className="text-sm font-bold text-gray-500 uppercase">수량</h3>
             <input
               name="quantity"
-              value={formData.quantity}
+              value={quantityInput}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />
@@ -114,17 +138,12 @@ export default function ProductEditor({
         <div className="space-y-3">
           <h3 className="text-sm font-bold text-gray-500 uppercase">카테고리</h3>
           <div className="flex gap-2">
-            {formData.category.split(",").map((cat, i) => (
-              <div
-                key={i}
-                className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-gray-900 font-medium"
-              >
-                {cat.trim()}
-              </div>
-            ))}
-            <button className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-gray-400 font-medium hover:bg-gray-200">
-              +
-            </button>
+            <input
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+            />
           </div>
         </div>
 
@@ -143,7 +162,7 @@ export default function ProductEditor({
         {/* 작업 버튼 */}
         <div className="flex gap-4 pt-4">
           <button
-            onClick={() => onSave(formData)}
+            onClick={handleSave}
             className="flex-1 h-14 bg-[#7e62ca] hover:bg-[#6b52b1] text-white rounded-xl font-bold transition-colors shadow-lg shadow-[#7e62ca]/20"
           >
             변경사항 저장하기
