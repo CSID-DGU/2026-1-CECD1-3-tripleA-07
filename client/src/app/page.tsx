@@ -9,6 +9,7 @@ import { productService } from "@/services/productService";
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -26,39 +27,38 @@ export default function Home() {
     }
   };
 
-  const selectedProduct =
-    products.find((p) => p.id === selectedProductId) || null;
+  const selectedProduct = isAdding
+    ? { id: 0, name: "", listPrice: 0, price: 0, category: "", quantity: 0, description: "", imageUrl: "" }
+    : products.find((p) => p.id === selectedProductId) || null;
 
   const handleSelectProduct = (id: number) => {
+    setIsAdding(false);
     setSelectedProductId(id);
   };
 
-  const handleAddNewProduct = async () => {
-    const newProduct = {
-      name: "새 상품",
-      listPrice: 0,
-      price: 0,
-      category: "카테고리",
-      quantity: 0,
-      description: "상품 설명을 입력해주세요.",
-      imageUrl: "https://placekitten.com/203/203",
-    };
-    try {
-      await productService.createProduct(newProduct);
-      fetchProducts(page);
-    } catch (error) {
-      console.error("Failed to create product:", error);
-    }
+  const handleAddNewProduct = () => {
+    setIsAdding(true);
+    setSelectedProductId(null);
+  };
+
+  const handleCancelAdd = () => {
+    setIsAdding(false);
   };
 
   const handleSaveProduct = async (updatedProduct: Product) => {
     try {
-      const { imageUrl, ...dataToUpdate } = updatedProduct;
-      await productService.updateProduct(updatedProduct.id, dataToUpdate);
-      alert("변경사항이 저장되었습니다.");
+      if (isAdding) {
+        await productService.createProduct(updatedProduct);
+        alert("상품이 등록되었습니다.");
+        setIsAdding(false);
+      } else {
+        const { imageUrl, ...dataToUpdate } = updatedProduct;
+        await productService.updateProduct(updatedProduct.id, dataToUpdate);
+        alert("변경사항이 저장되었습니다.");
+      }
       fetchProducts(page);
     } catch (error) {
-      console.error("Failed to update product:", error);
+      console.error("Failed to save product:", error);
       alert("저장에 실패했습니다.");
     }
   };
@@ -96,6 +96,8 @@ export default function Home() {
           product={selectedProduct}
           onSave={handleSaveProduct}
           onDelete={handleDeleteProduct}
+          onCancel={handleCancelAdd}
+          isNew={isAdding}
         />
       </div>
     </main>
