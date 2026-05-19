@@ -56,7 +56,8 @@ async def run_with_tools(response: ChatCompletion, messages: list):
     return response
 
 async def product_marketing(event_type: EventType, is_sample: bool, product_new: Product, product_old: Product | None):
-    sample_num = 0 if event_type == EventType.NEW else 1
+    new = PRODUCT_SAMPLES[0] if event_type == EventType.NEW else PRODUCT_SAMPLES[1]
+    old = None if event_type == EventType.NEW else PRODUCT_SAMPLES[2]
     messages = [
             {
                 "role": "system",
@@ -64,7 +65,7 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
             },
             {
                 "role": "user",
-                "content": build_user_prompt(event_type, PRODUCT_SAMPLES[sample_num])
+                "content": build_user_prompt(event_type, new, old)
             }
         ]
     response = await client.chat.completions.create(

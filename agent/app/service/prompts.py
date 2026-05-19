@@ -20,7 +20,7 @@ Follow these rules strictly:
 # -------------------------
 # USER PROMPT TEMPLATE
 # -------------------------
-def build_user_prompt(event_type: EventType, product: Product):
+def build_user_prompt(event_type: EventType, product_new: Product, product_old: Product):
     if event_type == EventType.NEW:
         instruction = """
 Create an SNS post for a NEW product.
@@ -49,11 +49,20 @@ Rules:
     else:
         raise ValueError("type error")
 
-    return f"""
+    instruction = f"""
 {instruction}
 
 Product Data (JSON):
-{product.model_dump_json()}
+{product_new.model_dump_json()}
+"""
+    if product_old:
+        instruction = f"""
+{instruction}
+Previous Product Data (JSON):
+{product_old.model_dump_json()}
+"""
+    instruction = f"""
+{instruction}
 
 Output format (STRICT):
 Title: ...
@@ -61,3 +70,4 @@ Body: ...
 CTA: ...
 Hashtags: ...
 """
+    return instruction
