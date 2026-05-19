@@ -75,7 +75,7 @@ export default function ProductTable({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200">
             <tr>
-              {["상품 ID", "상품 명", "가격", "카테고리", "수량", "상품 설명"].map(
+              {["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"].map(
                 (header) => (
                   <th
                     key={header}
@@ -101,6 +101,9 @@ export default function ProductTable({
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
                   {product.name}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
+                  {product.listPrice.toLocaleString()}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
                   {product.price.toLocaleString()}

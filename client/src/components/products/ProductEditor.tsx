@@ -16,11 +16,13 @@ export default function ProductEditor({
 }: ProductEditorProps) {
   const [formData, setFormData] = useState<Product | null>(null);
   const [priceInput, setPriceInput] = useState<string>("");
+  const [listPriceInput, setListPriceInput] = useState<string>("");
   const [quantityInput, setQuantityInput] = useState<string>("");
 
   useEffect(() => {
     setFormData(product);
     setPriceInput(product ? product.price.toString() : "");
+    setListPriceInput(product ? product.listPrice.toString() : "");
     setQuantityInput(product ? product.quantity.toString() : "");
   }, [product]);
 
@@ -53,6 +55,8 @@ export default function ProductEditor({
     const { name, value } = e.target;
     if (name === "price") {
       setPriceInput(value);
+    } else if (name === "listPrice") {
+      setListPriceInput(value);
     } else if (name === "quantity") {
       setQuantityInput(value);
     } else {
@@ -64,14 +68,15 @@ export default function ProductEditor({
     if (!formData) return;
     
     const numericPrice = Number(priceInput);
+    const numericListPrice = Number(listPriceInput);
     const numericQuantity = Number(quantityInput);
     
-    if (isNaN(numericPrice) || isNaN(numericQuantity)) {
-      alert("가격과 수량은 숫자만 입력 가능합니다.");
+    if (isNaN(numericPrice) || isNaN(numericListPrice) || isNaN(numericQuantity)) {
+      alert("가격, 정가, 수량은 숫자만 입력 가능합니다.");
       return;
     }
     
-    onSave({ ...formData, price: numericPrice, quantity: numericQuantity });
+    onSave({ ...formData, price: numericPrice, listPrice: numericListPrice, quantity: numericQuantity });
   };
 
   return (
@@ -101,46 +106,55 @@ export default function ProductEditor({
           </div>
         </div>
 
-        {/* 상품명 */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-gray-500 uppercase">상품명</h3>
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-          />
-        </div>
-
-        {/* 가격 및 수량 */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* 상품명 및 카테고리 */}
+        <div className="space-y-6">
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-gray-500 uppercase">상품 가격</h3>
+            <h3 className="text-sm font-bold text-gray-500 uppercase">상품명</h3>
             <input
-              name="price"
-              value={priceInput}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-gray-500 uppercase">카테고리</h3>
+            <input
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        {/* 가격 및 수량 */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold text-gray-500 uppercase">정가</h3>
+              <input
+                name="listPrice"
+                value={listPriceInput}
+                onChange={handleChange}
+                className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+              />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-sm font-bold text-gray-500 uppercase">판매가</h3>
+              <input
+                name="price"
+                value={priceInput}
+                onChange={handleChange}
+                className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+              />
+            </div>
           </div>
           <div className="space-y-3">
             <h3 className="text-sm font-bold text-gray-500 uppercase">수량</h3>
             <input
               name="quantity"
               value={quantityInput}
-              onChange={handleChange}
-              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-            />
-          </div>
-        </div>
-
-        {/* 카테고리 */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-gray-500 uppercase">카테고리</h3>
-          <div className="flex gap-2">
-            <input
-              name="category"
-              value={formData.category}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />

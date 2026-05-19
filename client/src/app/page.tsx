@@ -9,6 +9,7 @@ const MOCK_DATA: Product[] = [
   {
     id: "12aE9",
     name: "코튼 가디건",
+    listPrice: 39900,
     price: 32900,
     category: "상의",
     quantity: 10000,
@@ -17,6 +18,7 @@ const MOCK_DATA: Product[] = [
   {
     id: "1908B",
     name: "크롭 청자켓",
+    listPrice: 89000,
     price: 75900,
     category: "외투",
     quantity: 9000,
@@ -25,6 +27,7 @@ const MOCK_DATA: Product[] = [
   {
     id: "23F21",
     name: "와이드 슬랙스",
+    listPrice: 49000,
     price: 45000,
     category: "하의",
     quantity: 5500,
@@ -48,6 +51,7 @@ export default function Home() {
     const newProduct: Product = {
       id: newId,
       name: "새 상품",
+      listPrice: 0,
       price: 0,
       category: "카테고리",
       quantity: 0,
