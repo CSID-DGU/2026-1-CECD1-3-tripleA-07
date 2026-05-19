@@ -13,7 +13,7 @@ public class WebClientConfig {
     private String agentBaseUrl;
 
     @Bean
-    public WebClient webClient() {
+    public WebClient agentWebClient() {
         return WebClient.builder()
                 .baseUrl(agentBaseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

@@ -15,7 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductEventListener {
 
-    private final WebClient webClient;
+    private final WebClient agentWebClient;
 
     // 동작 규칙 3: 비동기 처리 - 상품 등록/수정 응답에 영향을 주지 않음
     @Async
@@ -33,7 +33,7 @@ public class ProductEventListener {
         Map<String, Object> context = event.toMarketingContext();
 
         // Python FastAPI로 HTTP POST를 보냄
-        webClient.post()
+        agentWebClient.post()
                 .uri("")
                 .bodyValue(context)
                 .retrieve()
