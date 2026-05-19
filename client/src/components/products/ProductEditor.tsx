@@ -7,12 +7,16 @@ interface ProductEditorProps {
   product: Product | null;
   onSave: (product: Product) => void;
   onDelete: (id: number) => void;
+  onCancel?: () => void;
+  isNew?: boolean;
 }
 
 export default function ProductEditor({
   product,
   onSave,
   onDelete,
+  onCancel,
+  isNew = false,
 }: ProductEditorProps) {
   const [formData, setFormData] = useState<Product | null>(null);
   const [priceInput, setPriceInput] = useState<string>("");
@@ -67,12 +71,24 @@ export default function ProductEditor({
   const handleSave = () => {
     if (!formData) return;
     
+    // 필수 필드 검사
+    if (!formData.name.trim()) {
+      alert("상품명을 입력해주세요.");
+      return;
+    }
+    
     const numericPrice = Number(priceInput);
     const numericListPrice = Number(listPriceInput);
     const numericQuantity = Number(quantityInput);
     
     if (isNaN(numericPrice) || isNaN(numericListPrice) || isNaN(numericQuantity)) {
       alert("가격, 정가, 수량은 숫자만 입력 가능합니다.");
+      return;
+    }
+    
+    // 0 미만 값 검사
+    if (numericPrice < 0 || numericListPrice < 0 || numericQuantity < 0) {
+      alert("가격, 정가, 수량은 0 이상이어야 합니다.");
       return;
     }
     
@@ -103,7 +119,7 @@ export default function ProductEditor({
           </div>
           <input
             name="imageUrl"
-            value={formData.imageUrl}
+            value={formData.imageUrl || ""}
             onChange={handleChange}
             placeholder="이미지 URL을 입력하세요"
             className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
@@ -116,7 +132,7 @@ export default function ProductEditor({
             <h3 className="text-sm font-bold text-gray-500 uppercase">상품명</h3>
             <input
               name="name"
-              value={formData.name}
+              value={formData.name || ""}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />
@@ -125,7 +141,7 @@ export default function ProductEditor({
             <h3 className="text-sm font-bold text-gray-500 uppercase">카테고리</h3>
             <input
               name="category"
-              value={formData.category}
+              value={formData.category || ""}
               onChange={handleChange}
               className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
             />
@@ -171,7 +187,7 @@ export default function ProductEditor({
           <textarea
             name="description"
             rows={4}
-            value={formData.description}
+            value={formData.description || ""}
             onChange={handleChange}
             className="w-full p-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all resize-none"
           />
@@ -183,22 +199,24 @@ export default function ProductEditor({
             onClick={handleSave}
             className="flex-1 h-14 bg-[#7e62ca] hover:bg-[#6b52b1] text-white rounded-xl font-bold transition-colors shadow-lg shadow-[#7e62ca]/20"
           >
-            변경사항 저장하기
+            {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
           </button>
-          <button
-            onClick={() => setFormData(product)}
-            className="px-6 h-14 text-[#7e62ca] font-bold hover:bg-gray-200/50 rounded-xl transition-colors"
-          >
-            변경사항 되돌리기
-          </button>
+          {!isNew && (
+            <button
+              onClick={() => setFormData(product)}
+              className="px-6 h-14 text-[#7e62ca] font-bold hover:bg-gray-200/50 rounded-xl transition-colors"
+            >
+              변경사항 되돌리기
+            </button>
+          )}
         </div>
 
         <div className="pt-12">
           <button
-            onClick={() => onDelete(formData.id)}
+            onClick={() => isNew ? onCancel?.() : onDelete(formData.id)}
             className="w-full h-14 text-[#ca6262] font-bold hover:bg-red-50 rounded-xl transition-colors"
           >
-            상품 삭제하기
+            {isNew ? "상품 등록 취소하기" : "상품 삭제하기"}
           </button>
         </div>
       </div>
