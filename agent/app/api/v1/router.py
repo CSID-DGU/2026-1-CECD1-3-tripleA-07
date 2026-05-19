@@ -27,7 +27,7 @@ class AgentEventRequest(BaseModel):
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
-    ai_response: str = await product_marketing(body.event_type)
+    ai_response: str = await product_marketing(body.event_type, True, body.product_new, body.product_old)
     # 임시 return 값
     return {
         "event_type": body.event_type,
