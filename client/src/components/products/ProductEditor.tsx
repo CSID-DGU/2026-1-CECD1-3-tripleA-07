@@ -6,7 +6,7 @@ import { Product } from "@/types/product";
 interface ProductEditorProps {
   product: Product | null;
   onSave: (product: Product) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function ProductEditor({
@@ -90,20 +90,24 @@ export default function ProductEditor({
         {/* 상품 이미지 */}
         <div className="space-y-3">
           <h3 className="text-sm font-bold text-gray-500 uppercase">상품 이미지</h3>
-          <div className="flex gap-3">
-            {[1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-28 h-28 bg-gray-200 border border-gray-300 rounded-xl"
+          <div className="w-48 h-48 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
+            {formData.imageUrl ? (
+              <img
+                src={formData.imageUrl}
+                alt={formData.name}
+                className="w-full h-full object-cover"
               />
-            ))}
-            <button className="w-28 h-28 flex flex-col items-center justify-center bg-gray-200 border border-dashed border-gray-400 rounded-xl text-gray-500 hover:bg-gray-300 transition-colors">
-              <span className="text-xs text-center font-medium">
-                이미지 추가
-                <br />+
-              </span>
-            </button>
+            ) : (
+              <span className="text-gray-400 font-medium">이미지 없음</span>
+            )}
           </div>
+          <input
+            name="imageUrl"
+            value={formData.imageUrl}
+            onChange={handleChange}
+            placeholder="이미지 URL을 입력하세요"
+            className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+          />
         </div>
 
         {/* 상품명 및 카테고리 */}

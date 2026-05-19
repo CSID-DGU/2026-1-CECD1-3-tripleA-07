@@ -1,77 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductTable from "@/components/products/ProductTable";
 import { Product } from "@/types/product";
 import ProductEditor from "@/components/products/ProductEditor";
-
-const MOCK_DATA: Product[] = [
-  {
-    id: "12aE9",
-    name: "코튼 가디건",
-    listPrice: 39900,
-    price: 32900,
-    category: "상의",
-    quantity: 10000,
-    description: "편안한 착용감의 데일리 코튼 가디건입니다.",
-  },
-  {
-    id: "1908B",
-    name: "크롭 청자켓",
-    listPrice: 89000,
-    price: 75900,
-    category: "외투",
-    quantity: 9000,
-    description: "트렌디한 실루엣의 크롭 데님 자켓입니다.",
-  },
-  {
-    id: "23F21",
-    name: "와이드 슬랙스",
-    listPrice: 49000,
-    price: 45000,
-    category: "하의",
-    quantity: 5500,
-    description: "체형을 보정해주는 세미 와이드 핏 슬랙스입니다.",
-  },
-];
+import { productService } from "@/services/productService";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>(MOCK_DATA);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    fetchProducts(page);
+  }, [page]);
+
+  const fetchProducts = async (pageIndex: number) => {
+    try {
+      const response = await productService.getProducts(undefined, pageIndex);
+      setProducts(response.data.content);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
+  };
 
   const selectedProduct =
     products.find((p) => p.id === selectedProductId) || null;
 
-  const handleSelectProduct = (id: string) => {
+  const handleSelectProduct = (id: number) => {
     setSelectedProductId(id);
   };
 
-  const handleAddNewProduct = () => {
-    const newId = Math.random().toString(36).substring(2, 7).toUpperCase();
-    const newProduct: Product = {
-      id: newId,
+  const handleAddNewProduct = async () => {
+    const newProduct = {
       name: "새 상품",
       listPrice: 0,
       price: 0,
       category: "카테고리",
       quantity: 0,
       description: "상품 설명을 입력해주세요.",
+      imageUrl: "https://placekitten.com/203/203",
     };
-    setProducts([newProduct, ...products]);
-    setSelectedProductId(newId);
+    try {
+      await productService.createProduct(newProduct);
+      fetchProducts(page);
+    } catch (error) {
+      console.error("Failed to create product:", error);
+    }
   };
 
-  const handleSaveProduct = (updatedProduct: Product) => {
-    setProducts(
-      products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-    alert("변경사항이 저장되었습니다.");
+  const handleSaveProduct = async (updatedProduct: Product) => {
+    try {
+      const { imageUrl, ...dataToUpdate } = updatedProduct;
+      await productService.updateProduct(updatedProduct.id, dataToUpdate);
+      alert("변경사항이 저장되었습니다.");
+      fetchProducts(page);
+    } catch (error) {
+      console.error("Failed to update product:", error);
+      alert("저장에 실패했습니다.");
+    }
   };
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: number) => {
     if (confirm("정말 이 상품을 삭제하시겠습니까?")) {
-      setProducts(products.filter((p) => p.id !== id));
-      setSelectedProductId(null);
+      try {
+        await productService.deleteProduct(id);
+        fetchProducts(page);
+        setSelectedProductId(null);
+      } catch (error) {
+        console.error("Failed to delete product:", error);
+      }
     }
   };
 
@@ -84,6 +84,9 @@ export default function Home() {
           selectedId={selectedProductId}
           onSelect={handleSelectProduct}
           onAddNew={handleAddNewProduct}
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
         />
       </div>
 
