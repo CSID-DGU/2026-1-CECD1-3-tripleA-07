@@ -28,20 +28,10 @@ public class ProductEvent {
 
     private final Long id;
     private final EventType eventType;
+
+    @JsonProperty("product_new")
     private final ProductSnapshot productNew;
+
+    @JsonProperty("product_old")
     private final ProductSnapshot productOld;
-
-    // AI Agent에 전달할 JSON 구조
-    public Map<String, Object> toMarketingContext() {
-        Map<String, Object> context = new LinkedHashMap<>();
-        context.put("eventType", eventType.name()); // NEW or DISCOUNT
-        context.put("productId", id);
-        context.put("product_new", productNew);
-
-        if (eventType == EventType.DISCOUNT) {
-            context.put("product_old", productOld);
-        }
-
-        return context;
-    }
 }

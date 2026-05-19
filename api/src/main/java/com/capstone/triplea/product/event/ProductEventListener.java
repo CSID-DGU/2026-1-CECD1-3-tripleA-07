@@ -32,13 +32,11 @@ public class ProductEventListener {
         }
         log.info("====================");
 
-        // AI Agent에게 전달할 JSON 컨텍스트
-        Map<String, Object> context = event.toMarketingContext();
 
         // Python FastAPI로 HTTP POST를 보냄
         agentWebClient.post()
                 .uri("")
-                .bodyValue(context)
+                .bodyValue(event)
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnSuccess(res -> log.info("[Agent 응답] {}", res))
