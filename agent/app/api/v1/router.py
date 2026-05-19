@@ -1,23 +1,14 @@
-from typing import Any, Dict, Optional
-
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.common.enum.event_type import EventType
+from app.common.dto.product import Product
 from app.service import product_marketing
 
 router = APIRouter(
     prefix="/api/v1",
     tags=["v1"],
 )
-
-class Product(BaseModel):
-    name: str
-    description: str
-    list_price: int = Field(alias="listPrice")
-    price: int
-    category: str
-    image_url: str = Field(alias="imageUrl")
 
 class AgentEventRequest(BaseModel):
     # 이벤트 유형
