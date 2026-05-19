@@ -14,6 +14,14 @@ router = APIRouter(
     tags=["v1"],
 )
 
+class Product(BaseModel):
+    name: str
+    description: str
+    list_price: int = Field(alias="listPrice")
+    price: int
+    category: str
+    image_url: str = Field(alias="imageUrl")
+
 class AgentEventRequest(BaseModel):
     # 이벤트 유형
     event_type: EventType = Field(alias="eventType")
@@ -21,8 +29,13 @@ class AgentEventRequest(BaseModel):
     # 상품 ID
     product_id: int = Field(alias="productId")
 
-    # 할인 이벤트 시 변경된 이전 값들
-    changed: Optional[Dict[str, Any]] = None
+    # 신규 상품 정보
+    product_new: Product
+    # 기존 상품 정보 (DISCOUNT의 경우)
+    product_old: Product | None = None
+
+    # 샘플 적용 여부
+    is_sample: bool = Field(alias="Is_sample", default=True)
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
@@ -33,6 +46,8 @@ async def start_agent_flow(body: AgentEventRequest):
         return {
             "event_type": body.event_type,
             "product_id": body.product_id,
+            "product_new": body.product_new,
+            "product_old": body.product_old,
             "ai_response": ai_response
         }
     # 할인 이벤트
@@ -42,7 +57,8 @@ async def start_agent_flow(body: AgentEventRequest):
         return {
             "event_type": body.event_type,
             "product_id": body.product_id,
-            "changed": body.changed,
+            "product_new": body.product_new,
+            "product_old": body.product_old,
             "ai_response": ai_response
         }
     else:
