@@ -34,7 +34,7 @@ public class ProductEventListener {
 
         // Python FastAPI로 HTTP POST를 보냄
         webClient.post()
-                .uri("/api/v1/agent")
+                .uri("")
                 .bodyValue(context)
                 .retrieve()
                 .bodyToMono(String.class)
