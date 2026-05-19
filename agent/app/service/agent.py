@@ -294,9 +294,7 @@ async def new_product_marketing(product_id: int, event_type: EventType):
 
 
 async def discount_product_marketing(product_id: int, event_type: EventType):
-    response = await client.chat.completions.create(
-        model=AI_MODEL,
-        messages=[
+    messages = [
             {
                 "role": "system",
                 "content": SYSTEM_PROMPT
@@ -306,6 +304,12 @@ async def discount_product_marketing(product_id: int, event_type: EventType):
                 "content": build_user_prompt(product_samples[1], event_type)
             }
         ]
+    response = await client.chat.completions.create(
+        model=AI_MODEL,
+        messages=messages,
+        tools=TOOLS
     )
+
+    response = await run_with_tools(response, messages)
 
     return response.choices[0].message.content
