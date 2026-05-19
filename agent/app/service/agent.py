@@ -1,8 +1,10 @@
 import os
 import json
+from datetime import datetime
 from textwrap import dedent
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
+from openai.types.chat import ChatCompletion
 
 from app.common.enum.event_type import EventType
 
@@ -31,6 +33,7 @@ Follow these rules strictly:
 - Always adapt tone based on product type (new vs discount)
 - Do NOT include irrelevant information
 - Follow output format exactly
+- Use available tools only when they are necessary or helpful for generating better marketing content
 """
 
 # -------------------------
@@ -74,6 +77,43 @@ Hashtags: ...
 """
 
 # -------------------------
+# TOOL FUNCTION
+# -------------------------
+def get_today_date():
+    now = datetime.now()
+
+    return {
+        "date": now.strftime("%Y-%m-%d"),
+        "day": now.strftime("%A"),
+        "timestamp": now.isoformat()
+    }
+
+# -------------------------
+# TOOL SCHEMA
+# -------------------------
+TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_today_date",
+            "description": (
+                "Returns current date information. "
+                "Use this when writing time-sensitive marketing content, urgency-based posts, "
+                "or when today’s date or weekday is needed in the response."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    }
+]
+
+TOOL_MAP = {
+    "get_today_date": get_today_date
+}
+
+# -------------------------
 # SAMPLE PRODUCT INFO
 # -------------------------
 product_samples = [
@@ -111,10 +151,38 @@ product_samples = [
     }
 ]
 
-async def new_product_marketing(product_id: int, event_type: EventType):
+async def run_with_tools(response: ChatCompletion, messages: list):
+    message = response.choices[0].message
+
+    # tool call 없으면 종료
+    if not message.tool_calls:
+        return response
+
+    print(message.tool_calls)
+
+    for tool_call in message.tool_calls:
+        name = tool_call.function.name
+        args = json.loads(tool_call.function.arguments or "{}")
+
+        result = TOOL_MAP[name](**args)
+
+        messages.append({
+            "role": "tool",
+            "tool_call_id": tool_call.id,
+            "content": json.dumps(result, ensure_ascii=False)
+        })
+
+    # 2차 호출
     response = await client.chat.completions.create(
         model=AI_MODEL,
-        messages=[
+        messages=messages,
+        tools=TOOLS
+    )
+
+    return response
+
+async def new_product_marketing(product_id: int, event_type: EventType):
+    messages = [
             {
                 "role": "system",
                 "content": SYSTEM_PROMPT
@@ -124,7 +192,13 @@ async def new_product_marketing(product_id: int, event_type: EventType):
                 "content": build_user_prompt(product_samples[0], event_type)
             }
         ]
+    response = await client.chat.completions.create(
+        model=AI_MODEL,
+        messages=messages,
+        tools=TOOLS
     )
+
+    response = await run_with_tools(response, messages)
 
     return response.choices[0].message.content
 
