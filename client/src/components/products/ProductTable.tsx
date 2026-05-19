@@ -103,13 +103,13 @@ export default function ProductTable({
                   {product.name}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.price}
+                  {product.price.toLocaleString()}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
                   {product.category}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.quantity}
+                  {product.quantity.toLocaleString()}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-xs">
                   {product.description}
