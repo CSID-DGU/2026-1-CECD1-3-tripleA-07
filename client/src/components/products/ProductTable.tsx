@@ -2,14 +2,8 @@
 
 import React, { useState } from "react";
 
-export interface Product {
-  id: string;
-  name: string;
-  price: string;
-  category: string;
-  quantity: string;
-  description: string;
-}
+import { Product } from "@/types/product";
+export { type Product };
 
 interface ProductTableProps {
   products: Product[];
