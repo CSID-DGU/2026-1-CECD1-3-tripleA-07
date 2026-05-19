@@ -56,8 +56,14 @@ async def run_with_tools(response: ChatCompletion, messages: list):
     return response
 
 async def product_marketing(event_type: EventType, is_sample: bool, product_new: Product, product_old: Product | None):
-    new = PRODUCT_SAMPLES[0] if event_type == EventType.NEW else PRODUCT_SAMPLES[1]
-    old = None if event_type == EventType.NEW else PRODUCT_SAMPLES[2]
+    # 파라미터에 따라 샘플 데이터로 테스트 가능
+    if is_sample:
+        new = PRODUCT_SAMPLES[0] if event_type == EventType.NEW else PRODUCT_SAMPLES[1]
+        old = None if event_type == EventType.NEW else PRODUCT_SAMPLES[2]
+    else:
+        new = product_new
+        old = product_old
+
     messages = [
             {
                 "role": "system",

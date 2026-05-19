@@ -23,11 +23,11 @@ class AgentEventRequest(BaseModel):
     product_old: Product | None = None
 
     # 샘플 적용 여부
-    is_sample: bool = Field(alias="Is_sample", default=True)
+    is_sample: bool = Field(alias="isSample", default=True)
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
-    ai_response: str = await product_marketing(body.event_type, True, body.product_new, body.product_old)
+    ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
     # 임시 return 값
     return {
         "event_type": body.event_type,
