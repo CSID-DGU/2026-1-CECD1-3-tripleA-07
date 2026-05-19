@@ -154,11 +154,12 @@ product_samples = [
 async def run_with_tools(response: ChatCompletion, messages: list):
     message = response.choices[0].message
 
+    # assistant 메시지를 저장
+    messages.append(message.model_dump())
+
     # tool call 없으면 종료
     if not message.tool_calls:
         return response
-
-    print(message.tool_calls)
 
     for tool_call in message.tool_calls:
         name = tool_call.function.name
