@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Product } from "./ProductTable";
+import { Product } from "@/types/product";
 
 interface ProductEditorProps {
   product: Product | null;

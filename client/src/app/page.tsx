@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import ProductTable, { Product } from "@/components/products/ProductTable";
+import ProductTable from "@/components/products/ProductTable";
+import { Product } from "@/types/product";
 import ProductEditor from "@/components/products/ProductEditor";
 
 const MOCK_DATA: Product[] = [
