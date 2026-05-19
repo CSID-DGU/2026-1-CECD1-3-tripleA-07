@@ -32,13 +32,7 @@ public class ProductService {
         ProductEvent.builder()
                 .id(saved.getId())
                 .eventType(ProductEvent.EventType.NEW)
-                .productNew(ProductEvent.ProductSnapshot.builder().name(saved.getName())
-                        .description(saved.getDescription())
-                        .listPrice(saved.getListPrice())
-                        .price(saved.getPrice())
-                        .category(saved.getCategory())
-                        .imageUrl(saved.getImageUrl())
-                        .build())
+                .productNew(ProductEvent.ProductSnapshot.from(saved))
                 .build()
         );
 
@@ -50,39 +44,18 @@ public class ProductService {
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto dto) {
         Product product = findProductThrow(id);
 
-        // 수정 전 값 저장
-        int oldPrice = product.getPrice();
-        String oldName = product.getName();
-        String oldDescription = product.getDescription();
-        int oldListPrice = product.getListPrice();
-        String oldImageUrl = product.getImageUrl();
-        String oldCategory = product.getCategory();
-
+        ProductEvent.ProductSnapshot oldSnapshot = ProductEvent.ProductSnapshot.from(product);
         productMapper.updateEntity(dto, product); // null 필드는 자동으로 건너뜀
-        Product saved =  productRepository.save(product);
 
         // TRG_PRD_002: 상품 수정
         // 동작 규칙 1: 가격 변경이 감지될 경우에만 발행 (가격 감소 시에만)
-        if (oldPrice > product.getPrice()) {    // oldPrice != product.getPrice() <- 변경이 감지될때
+        if (oldSnapshot.getPrice() > product.getPrice()) {    // oldPrice != product.getPrice() <- 변경이 감지될때
             applicationEventPublisher.publishEvent(
             ProductEvent.builder()
                     .id(product.getId())
                     .eventType(ProductEvent.EventType.DISCOUNT)
-                    .productNew(ProductEvent.ProductSnapshot.builder().name(product.getName())
-                            .description(saved.getDescription())
-                            .listPrice(saved.getListPrice())
-                            .price(saved.getPrice())
-                            .category(saved.getCategory())
-                            .imageUrl(saved.getImageUrl())
-                            .build())
-                    .productOld(ProductEvent.ProductSnapshot.builder()
-                            .name(oldName)
-                            .description(oldDescription)
-                            .listPrice(oldListPrice)
-                            .price(oldPrice)
-                            .category(oldCategory)
-                            .imageUrl(oldImageUrl)
-                            .build())
+                    .productNew(ProductEvent.ProductSnapshot.from(product))
+                    .productOld(oldSnapshot)
                     .build()
             );
         }
