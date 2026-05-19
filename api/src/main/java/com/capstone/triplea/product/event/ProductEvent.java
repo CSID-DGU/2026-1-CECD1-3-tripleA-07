@@ -19,6 +19,7 @@ public class ProductEvent {
     private final String description;
     private final int listPrice;
     private final int price;
+    private final int oldPrice;
     private final String category;
     private final String imageUrl;
     private final EventType eventType;
@@ -29,16 +30,26 @@ public class ProductEvent {
         context.put("eventType", eventType.name()); // NEW or DISCOUNT
         context.put("productId", id);
 
-        //  DISCOUNT일 때만 changed 필드 포함
+        // product_new
+        Map<String, Object> productNew = new LinkedHashMap<>();
+        productNew.put("name", name);
+        productNew.put("description", description);
+        productNew.put("listPrice", listPrice);
+        productNew.put("price", price);
+        productNew.put("category", category);
+        productNew.put("imageUrl", imageUrl);
+        context.put("product_new", productNew);
+
+        //  DISCOUNT일 때만 product_old 전송
         if (eventType == EventType.DISCOUNT) {
-            Map<String, Object> changed = new LinkedHashMap<>();
-            context.put("name", name);
-            context.put("description", description);
-            context.put("listPrice", listPrice);
-            context.put("price", price);
-            context.put("category", category);
-            context.put("imageUrl", imageUrl);
-            context.put("changed", changed);
+            Map<String, Object> productOld = new LinkedHashMap<>();
+            productOld.put("name", name);
+            productOld.put("description", description);
+            productOld.put("listPrice", listPrice);
+            productOld.put("price", oldPrice);
+            productOld.put("category", category);
+            productOld.put("imageUrl", imageUrl);
+            context.put("product_old", productOld);
         }
 
         return context;
