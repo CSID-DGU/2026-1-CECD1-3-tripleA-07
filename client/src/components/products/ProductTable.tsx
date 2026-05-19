@@ -7,9 +7,12 @@ export { type Product };
 
 interface ProductTableProps {
   products: Product[];
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  selectedId: number | null;
+  onSelect: (id: number) => void;
   onAddNew: () => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export default function ProductTable({
@@ -17,6 +20,9 @@ export default function ProductTable({
   selectedId,
   onSelect,
   onAddNew,
+  currentPage,
+  totalPages,
+  onPageChange,
 }: ProductTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -124,16 +130,17 @@ export default function ProductTable({
       </div>
 
       <nav className="flex justify-center gap-2 pt-2">
-        {[1, 2, 3, 4, 5, 6].map((page) => (
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
-            key={page}
+            key={i}
+            onClick={() => onPageChange(i)}
             className={`w-8 h-8 flex items-center justify-center rounded-lg border text-sm transition-all ${
-              page === 1
+              i === currentPage
                 ? "bg-[#7e62ca] border-[#7e62ca] text-white shadow-sm"
                 : "bg-white border-gray-200 text-gray-600 hover:border-[#7e62ca]"
             }`}
           >
-            {page}
+            {i + 1}
           </button>
         ))}
       </nav>
