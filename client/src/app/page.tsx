@@ -18,8 +18,8 @@ async function ProductDataFetcher({
   search: string 
 }) {
   try {
-    const response = await productService.getProducts(search || undefined, page);
-    const { content, totalPages } = response.data;
+    const data = await productService.getProducts(search || undefined, page);
+    const { content, totalPages } = data;
 
     return (
       <ProductDashboardClient 
