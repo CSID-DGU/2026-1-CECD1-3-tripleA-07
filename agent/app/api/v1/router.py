@@ -1,13 +1,9 @@
-from typing import Any, Dict, Optional
-
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.common.enum.event_type import EventType
-from app.service import (
-    new_product_marketing,
-    discount_product_marketing,
-)
+from app.common.dto.product import Product
+from app.service import product_marketing
 
 router = APIRouter(
     prefix="/api/v1",
@@ -21,29 +17,22 @@ class AgentEventRequest(BaseModel):
     # 상품 ID
     product_id: int = Field(alias="productId")
 
-    # 할인 이벤트 시 변경된 이전 값들
-    changed: Optional[Dict[str, Any]] = None
+    # 신규 상품 정보
+    product_new: Product = Field(alias="productNew")
+    # 기존 상품 정보 (DISCOUNT의 경우)
+    product_old: Product | None = Field(alias="productOld", default=None)
+
+    # 샘플 적용 여부
+    is_sample: bool = Field(alias="isSample", default=True)
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
-    # 신제품 이벤트
-    if body.event_type == EventType.NEW:
-        ai_response: str = await new_product_marketing(body.product_id, body.event_type)
-        # 임시 return 값
-        return {
-            "event_type": body.event_type,
-            "product_id": body.product_id,
-            "ai_response": ai_response
-        }
-    # 할인 이벤트
-    elif body.event_type == EventType.DISCOUNT:
-        ai_response: str = await discount_product_marketing(body.product_id, body.event_type)
-        # 임시 return 값
-        return {
-            "event_type": body.event_type,
-            "product_id": body.product_id,
-            "changed": body.changed,
-            "ai_response": ai_response
-        }
-    else:
-        return {"message": "unknown event"}
+    ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
+    # 임시 return 값
+    return {
+        "eventType": body.event_type,
+        "productId": body.product_id,
+        "productNew": body.product_new,
+        "productOld": body.product_old,
+        "aiResponse": ai_response
+    }
