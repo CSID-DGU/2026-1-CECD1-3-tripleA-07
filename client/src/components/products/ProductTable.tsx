@@ -28,6 +28,14 @@ export default function ProductTable({
   searchTerm,
   onSearch,
 }: ProductTableProps) {
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      onSearch(localSearchTerm);
+    }
+  };
+
   return (
     <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
       <div className="flex items-center justify-between">
@@ -40,29 +48,38 @@ export default function ProductTable({
         </button>
       </div>
 
-      <div className="relative">
-        <input
-          type="search"
-          placeholder="검색어를 입력해주세요"
-          value={searchTerm}
-          onChange={(e) => onSearch(e.target.value)}
-          className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
-        />
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+      <div className="relative flex gap-2">
+        <div className="relative flex-1">
+          <input
+            type="search"
+            placeholder="검색어를 입력해주세요"
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
+            onKeyDown={handleKeyPress}
+            className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
+          />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
         </div>
+        <button
+          onClick={() => onSearch(localSearchTerm)}
+          className="h-12 px-6 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-colors"
+        >
+          검색
+        </button>
       </div>
 
       <div className="flex items-center gap-3">
