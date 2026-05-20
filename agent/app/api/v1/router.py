@@ -18,9 +18,9 @@ class AgentEventRequest(BaseModel):
     product_id: int = Field(alias="productId")
 
     # 신규 상품 정보
-    product_new: Product
+    product_new: Product = Field(alias="productNew")
     # 기존 상품 정보 (DISCOUNT의 경우)
-    product_old: Product | None = None
+    product_old: Product | None = Field(alias="productOld", default=None)
 
     # 샘플 적용 여부
     is_sample: bool = Field(alias="isSample", default=True)
@@ -30,9 +30,9 @@ async def start_agent_flow(body: AgentEventRequest):
     ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
     # 임시 return 값
     return {
-        "event_type": body.event_type,
-        "product_id": body.product_id,
-        "product_new": body.product_new,
-        "product_old": body.product_old,
-        "ai_response": ai_response
+        "eventType": body.event_type,
+        "productId": body.product_id,
+        "productNew": body.product_new,
+        "productOld": body.product_old,
+        "aiResponse": ai_response
     }
