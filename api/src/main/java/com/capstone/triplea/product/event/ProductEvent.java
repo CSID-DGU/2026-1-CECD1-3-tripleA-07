@@ -38,12 +38,12 @@ public class ProductEvent {
         }
     }
 
+    @JsonProperty("productId")
     private final Long id;
+
     private final EventType eventType;
 
-    @JsonProperty("product_new")
     private final ProductSnapshot productNew;
 
-    @JsonProperty("product_old")
     private final ProductSnapshot productOld;
 }
