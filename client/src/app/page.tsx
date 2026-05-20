@@ -23,6 +23,7 @@ async function ProductDataFetcher({
 
     return (
       <ProductDashboardClient 
+        key={`${search}-${page}`}
         initialProducts={content} 
         initialTotalPages={totalPages}
         currentPage={page}

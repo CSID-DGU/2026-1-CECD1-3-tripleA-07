@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductTable from "@/components/products/ProductTable";
 import ProductEditor from "@/components/products/ProductEditor";
@@ -22,19 +22,10 @@ export default function ProductDashboardClient({
 }: ProductDashboardClientProps) {
   const router = useRouter();
   
-  // 클라이언트 상태: 선택된 상품 및 추가 모드
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  // 상태 관리: 선택된 상품 및 추가 모드
+  // props인 initialProducts를 직접 사용하므로 별도 state 불필요
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [totalPages, setTotalPages] = useState(initialTotalPages);
-  const [error, setError] = useState<string | null>(null);
-
-  // 서버 데이터가 변경될 때 클라이언트 상태 동기화
-  useEffect(() => {
-    setProducts(initialProducts);
-    setTotalPages(initialTotalPages);
-    setError(null);
-  }, [initialProducts, initialTotalPages]);
 
   const handleSearch = (term: string) => {
     router.push(`/?search=${encodeURIComponent(term)}&page=0`);
@@ -46,7 +37,7 @@ export default function ProductDashboardClient({
 
   const selectedProduct = isAdding
     ? { id: 0, name: "", listPrice: 0, price: 0, category: "", quantity: 0, description: "", imageUrl: "" }
-    : products.find((p) => p.id === selectedProductId) || null;
+    : initialProducts.find((p) => p.id === selectedProductId) || null;
 
   const handleSelectProduct = (id: number) => {
     setIsAdding(false);
@@ -69,7 +60,6 @@ export default function ProductDashboardClient({
         await productService.updateProduct(updatedProduct.id, dataToUpdate);
         alert("변경사항이 저장되었습니다.");
       }
-      // 데이터 갱신을 위해 현재 페이지 새로고침
       router.refresh();
     } catch (error) {
       console.error("Failed to save product:", error);
@@ -85,6 +75,7 @@ export default function ProductDashboardClient({
         router.refresh();
       } catch (error) {
         console.error("Failed to delete product:", error);
+        alert("삭제에 실패했습니다.");
       }
     }
   };
@@ -93,23 +84,17 @@ export default function ProductDashboardClient({
     <>
       {/* 왼쪽: 상품 목록 (60%) */}
       <div className="w-[60%] h-full border-r">
-        {error ? (
-          <div className="flex h-full items-center justify-center text-red-600 p-8">
-            <p>상품 목록을 불러오는 중 오류가 발생했습니다.</p>
-          </div>
-        ) : (
-          <ProductTable
-            products={products}
-            selectedId={selectedProductId}
-            onSelect={handleSelectProduct}
-            onAddNew={handleAddNewProduct}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            searchTerm={searchTerm}
-            onSearch={handleSearch}
-          />
-        )}
+        <ProductTable
+          products={initialProducts}
+          selectedId={selectedProductId}
+          onSelect={handleSelectProduct}
+          onAddNew={handleAddNewProduct}
+          currentPage={currentPage}
+          totalPages={initialTotalPages}
+          onPageChange={handlePageChange}
+          searchTerm={searchTerm}
+          onSearch={handleSearch}
+        />
       </div>
 
       {/* 오른쪽: 상세 편집 (40%) */}
