@@ -20,10 +20,10 @@ export function ProductForm({ register, errors, description, onDescriptionChange
 
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <Input label="정가" register={register("listPrice")} error={errors.listPrice?.message} />
-          <Input label="판매가" register={register("price")} error={errors.price?.message} />
+          <Input label="정가" type="number" register={register("listPrice", { valueAsNumber: true })} error={errors.listPrice?.message} />
+          <Input label="판매가" type="number" register={register("price", { valueAsNumber: true })} error={errors.price?.message} />
         </div>
-        <Input label="수량" register={register("quantity")} error={errors.quantity?.message} />
+        <Input label="수량" type="number" register={register("quantity", { valueAsNumber: true })} error={errors.quantity?.message} />
       </div>
 
       <div className="space-y-3">

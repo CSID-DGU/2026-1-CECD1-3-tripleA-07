@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import ProductTable from "@/components/products/ProductTable";
 import ProductEditor from "@/components/products/ProductEditor";
 import { Product } from "@/types/product";
-import { productService } from "@/services/productService";
+import { productService, SortType } from "@/services/productService";
 
 interface ProductDashboardClientProps {
   initialProducts: Product[];
   initialTotalPages: number;
   currentPage: number;
   searchTerm: string;
+  sortType: SortType;
 }
 
 export default function ProductDashboardClient({
@@ -19,20 +20,24 @@ export default function ProductDashboardClient({
   initialTotalPages,
   currentPage,
   searchTerm,
+  sortType,
 }: ProductDashboardClientProps) {
   const router = useRouter();
   
   // 상태 관리: 선택된 상품 및 추가 모드
-  // props인 initialProducts를 직접 사용하므로 별도 state 불필요
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleSearch = (term: string) => {
-    router.push(`/?search=${encodeURIComponent(term)}&page=0`);
+    router.push(`/?search=${encodeURIComponent(term)}&page=0&sort=${sortType}`);
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/?search=${encodeURIComponent(searchTerm)}&page=${page}`);
+    router.push(`/?search=${encodeURIComponent(searchTerm)}&page=${page}&sort=${sortType}`);
+  };
+
+  const handleSortChange = (sort: SortType) => {
+    router.push(`/?search=${encodeURIComponent(searchTerm)}&page=0&sort=${sort}`);
   };
 
   const selectedProduct = isAdding
@@ -101,6 +106,8 @@ export default function ProductDashboardClient({
           onPageChange={handlePageChange}
           searchTerm={searchTerm}
           onSearch={handleSearch}
+          sortType={sortType}
+          onSortChange={handleSortChange}
         />
       </div>
 

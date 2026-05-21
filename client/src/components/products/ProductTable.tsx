@@ -2,9 +2,18 @@
 
 import React, { useState } from "react";
 import { Product } from "@/types/product";
+import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { ProductTableRow } from "./ProductTableRow";
 export { type Product };
+
+const SORT_OPTIONS: { value: SortType; label: string }[] = [
+  { value: "CREATED_AT_DESC", label: "최근 등록 순" },
+  { value: "PRICE_ASC",       label: "가격 낮은 순" },
+  { value: "PRICE_DESC",      label: "가격 높은 순" },
+  { value: "NAME_ASC",        label: "가나다 순" },
+  { value: "QUANTITY_DESC",   label: "수량 많은 순" },
+];
 
 interface ProductTableProps {
   products: Product[];
@@ -16,6 +25,8 @@ interface ProductTableProps {
   onPageChange: (page: number) => void;
   searchTerm: string;
   onSearch: (term: string) => void;
+  sortType: SortType;
+  onSortChange: (sort: SortType) => void;
 }
 
 export default function ProductTable({
@@ -28,6 +39,8 @@ export default function ProductTable({
   onPageChange,
   searchTerm,
   onSearch,
+  sortType,
+  onSortChange,
 }: ProductTableProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
@@ -100,8 +113,14 @@ export default function ProductTable({
 
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium text-gray-700">정렬 기준</label>
-        <select className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:20px_20px] bg-[right_0.5rem_center] bg-no-repeat">
-          <option>상품 등록 순</option>
+        <select
+          value={sortType}
+          onChange={(e) => onSortChange(e.target.value as SortType)}
+          className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%207L10%2012L15%207%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E')] bg-[length:20px_20px] bg-[right_0.5rem_center] bg-no-repeat"
+        >
+          {SORT_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
         </select>
       </div>
 
