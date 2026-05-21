@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Product } from "@/types/product";
+import { Input } from "../common/Input";
 
 interface ProductEditorProps {
   product: Product | null;
@@ -117,68 +118,52 @@ export default function ProductEditor({
               <span className="text-gray-400 font-medium">이미지 없음</span>
             )}
           </div>
-          <input
+          <Input
             name="imageUrl"
             value={formData.imageUrl || ""}
             onChange={handleChange}
             placeholder="이미지 URL을 입력하세요"
-            className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
           />
         </div>
 
         {/* 상품명 및 카테고리 */}
         <div className="space-y-6">
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold text-gray-500 uppercase">상품명</h3>
-            <input
-              name="name"
-              value={formData.name || ""}
-              onChange={handleChange}
-              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-            />
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold text-gray-500 uppercase">카테고리</h3>
-            <input
-              name="category"
-              value={formData.category || ""}
-              onChange={handleChange}
-              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-            />
-          </div>
+          <Input
+            label="상품명"
+            name="name"
+            value={formData.name || ""}
+            onChange={handleChange}
+          />
+          <Input
+            label="카테고리"
+            name="category"
+            value={formData.category || ""}
+            onChange={handleChange}
+          />
         </div>
 
         {/* 가격 및 수량 */}
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <h3 className="text-sm font-bold text-gray-500 uppercase">정가</h3>
-              <input
-                name="listPrice"
-                value={listPriceInput}
-                onChange={handleChange}
-                className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-              />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-sm font-bold text-gray-500 uppercase">판매가</h3>
-              <input
-                name="price"
-                value={priceInput}
-                onChange={handleChange}
-                className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
-              />
-            </div>
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-sm font-bold text-gray-500 uppercase">수량</h3>
-            <input
-              name="quantity"
-              value={quantityInput}
+            <Input
+              label="정가"
+              name="listPrice"
+              value={listPriceInput}
               onChange={handleChange}
-              className="w-full h-12 px-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all"
+            />
+            <Input
+              label="판매가"
+              name="price"
+              value={priceInput}
+              onChange={handleChange}
             />
           </div>
+          <Input
+            label="수량"
+            name="quantity"
+            value={quantityInput}
+            onChange={handleChange}
+          />
         </div>
 
         {/* 상품 설명 */}
