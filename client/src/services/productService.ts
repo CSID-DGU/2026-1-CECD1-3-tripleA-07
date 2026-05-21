@@ -11,7 +11,7 @@ export interface PageProductResponse {
 export const productService = {
   // 목록 조회 (페이징/검색 지원)
   getProducts: (keyword?: string, page: number = 0, size: number = 20) => 
-    request<PageProductResponse>(`/api/v1/products?keyword=${keyword || ''}&page=${page}&size=${size}`),
+    request<PageProductResponse>(`/api/v1/products?keyword=${keyword || ''}&sort=PRICE_ASC&page=${page}&size=${size}`),
   
   createProduct: (product: Omit<Product, 'id'>) => 
     request('/api/v1/products', { method: 'POST', body: JSON.stringify(product) }),

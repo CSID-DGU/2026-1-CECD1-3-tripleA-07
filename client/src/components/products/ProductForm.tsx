@@ -10,6 +10,7 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ register, errors, description, onDescriptionChange }: ProductFormProps) {
+  "use no memo";
   return (
     <>
       <div className="space-y-6">
