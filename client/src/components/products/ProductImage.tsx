@@ -1,12 +1,14 @@
+import { UseFormRegisterReturn } from "react-hook-form";
 import { Input } from "../common/Input";
 
 interface ProductImageProps {
   imageUrl: string | null;
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  register: UseFormRegisterReturn;
+  error?: string;
 }
 
-export function ProductImage({ imageUrl, name, onChange }: ProductImageProps) {
+export function ProductImage({ imageUrl, name, register, error }: ProductImageProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-bold text-gray-500 uppercase">상품 이미지</h3>
@@ -18,9 +20,8 @@ export function ProductImage({ imageUrl, name, onChange }: ProductImageProps) {
         )}
       </div>
       <Input
-        name="imageUrl"
-        value={imageUrl || ""}
-        onChange={onChange}
+        register={register}
+        error={error}
         placeholder="이미지 URL을 입력하세요"
       />
     </div>
