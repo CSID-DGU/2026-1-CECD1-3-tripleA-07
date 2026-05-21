@@ -56,7 +56,14 @@ export default function ProductDashboardClient({
         alert("상품이 등록되었습니다.");
         setIsAdding(false);
       } else {
-        const { imageUrl, ...dataToUpdate } = updatedProduct;
+        const dataToUpdate = {
+          name: updatedProduct.name,
+          listPrice: updatedProduct.listPrice,
+          price: updatedProduct.price,
+          category: updatedProduct.category,
+          quantity: updatedProduct.quantity,
+          description: updatedProduct.description,
+        };
         await productService.updateProduct(updatedProduct.id, dataToUpdate);
         alert("변경사항이 저장되었습니다.");
       }
@@ -100,6 +107,7 @@ export default function ProductDashboardClient({
       {/* 오른쪽: 상세 편집 (40%) */}
       <div className="w-[40%] h-full">
         <ProductEditor
+          key={isAdding ? "new" : (selectedProductId ?? "none")}
           product={selectedProduct}
           onSave={handleSaveProduct}
           onDelete={handleDeleteProduct}

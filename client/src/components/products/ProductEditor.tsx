@@ -24,6 +24,7 @@ export default function ProductEditor({
   onCancel,
   isNew = false,
 }: ProductEditorProps) {
+  "use no memo";
   const {
     register,
     handleSubmit,
