@@ -7,6 +7,7 @@ import { Product } from "@/types/product";
 import { productSchema, ProductFormValues } from "@/types/productSchema";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
+import { Button } from "../common/Button";
 
 interface ProductEditorProps {
   product: Product | null;
@@ -109,31 +110,30 @@ export default function ProductEditor({
 
         {/* 작업 버튼 */}
         <div className="flex gap-4 pt-4">
-          <button
-            type="submit"
-            className="flex-1 h-14 bg-[#7e62ca] hover:bg-[#6b52b1] text-white rounded-xl font-bold transition-colors shadow-lg shadow-[#7e62ca]/20"
-          >
+          <Button type="submit" className="flex-1 h-14">
             {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
-          </button>
+          </Button>
           {!isNew && (
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => reset()}
-              className="px-6 h-14 text-[#7e62ca] font-bold hover:bg-gray-200/50 rounded-xl transition-colors"
+              className="px-6 h-14"
             >
               변경사항 되돌리기
-            </button>
+            </Button>
           )}
         </div>
 
         <div className="pt-12">
-          <button
+          <Button
             type="button"
+            variant="danger"
             onClick={() => isNew ? onCancel?.() : onDelete(product!.id)}
-            className="w-full h-14 text-[#ca6262] font-bold hover:bg-red-50 rounded-xl transition-colors"
+            className="w-full h-14"
           >
             {isNew ? "상품 등록 취소하기" : "상품 삭제하기"}
-          </button>
+          </Button>
         </div>
       </form>
     </section>

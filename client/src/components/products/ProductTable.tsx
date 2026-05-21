@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-
 import { Product } from "@/types/product";
+import { Button } from "../common/Button";
 export { type Product };
 
 interface ProductTableProps {
@@ -40,12 +40,7 @@ export default function ProductTable({
     <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-gray-900">상품 목록</h2>
-        <button
-          onClick={onAddNew}
-          className="bg-[#7e62ca] hover:bg-[#6b52b1] text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
-        >
-          새 상품 추가 +
-        </button>
+        <Button onClick={onAddNew}>새 상품 추가 +</Button>
       </div>
 
       <div className="relative flex gap-2">
@@ -74,12 +69,9 @@ export default function ProductTable({
             </svg>
           </div>
         </div>
-        <button
-          onClick={() => onSearch(localSearchTerm)}
-          className="h-12 px-6 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-colors"
-        >
+        <Button onClick={() => onSearch(localSearchTerm)} className="h-12 px-6 bg-gray-900 hover:bg-gray-800">
           검색
-        </button>
+        </Button>
       </div>
 
       <div className="flex items-center gap-3">
