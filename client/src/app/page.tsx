@@ -22,23 +22,19 @@ async function ProductDataFetcher({
   search: string;
   sort: SortType;
 }) {
-  try {
-    const data = await productService.getProducts(search || undefined, page, 20, sort);
-    const { content, totalPages } = data;
+  const data = await productService.getProducts(search || undefined, page, 20, sort);
+  const { content, totalPages } = data;
 
-    return (
-      <ProductDashboardClient
-        key={`${search}-${page}-${sort}`}
-        initialProducts={content}
-        initialTotalPages={totalPages}
-        currentPage={page}
-        searchTerm={search}
-        sortType={sort}
-      />
-    );
-  } catch (error) {
-    throw error;
-  }
+  return (
+    <ProductDashboardClient
+      key={`${search}-${page}-${sort}`}
+      initialProducts={content}
+      initialTotalPages={totalPages}
+      currentPage={page}
+      searchTerm={search}
+      sortType={sort}
+    />
+  );
 }
 
 export default async function Home({ searchParams }: PageProps) {
