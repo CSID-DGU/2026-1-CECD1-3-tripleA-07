@@ -111,6 +111,7 @@ export default function ProductTable({
         </Button>
       </div>
 
+      {/* ... 정렬 방식 선택 드롭다운 메뉴 ... */}
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium text-gray-700">정렬 기준</label>
         <select
