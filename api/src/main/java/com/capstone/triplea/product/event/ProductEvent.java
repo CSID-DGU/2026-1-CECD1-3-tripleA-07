@@ -22,6 +22,7 @@ public class ProductEvent {
         private final String description;
         private final int listPrice;
         private final int price;
+        private final int quantity;
         private final String category;
         private final String imageUrl;
 
@@ -32,6 +33,7 @@ public class ProductEvent {
                     .description(product.getDescription())
                     .listPrice(product.getListPrice())
                     .price(product.getPrice())
+                    .quantity(product.getQuantity())
                     .category(product.getCategory())
                     .imageUrl(product.getImageUrl())
                     .build();
