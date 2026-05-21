@@ -182,7 +182,7 @@ export default function ProductTable({
 
         <button
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1}
+          disabled={currentPage === totalPages - 1 || totalPages === 0}
           className="h-8 px-3 rounded-lg bg-gray-200 text-gray-700 text-sm disabled:opacity-50 hover:bg-gray-300 transition-colors flex items-center justify-center"
         >
           다음

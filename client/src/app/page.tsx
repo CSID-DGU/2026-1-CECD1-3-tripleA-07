@@ -39,7 +39,7 @@ async function ProductDataFetcher({
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
-  const page = Number(params.page) || 0;
+  const page = Math.max(0, Math.floor(Number(params.page) || 0));
   const search = params.search || "";
   const sort: SortType = VALID_SORT_TYPES.includes(params.sort as SortType)
     ? (params.sort as SortType)
