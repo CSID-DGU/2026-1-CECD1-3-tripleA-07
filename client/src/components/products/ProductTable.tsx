@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Product } from "@/types/product";
 import { Button } from "../common/Button";
+import { ProductTableRow } from "./ProductTableRow";
 export { type Product };
 
 interface ProductTableProps {
@@ -36,6 +37,28 @@ export default function ProductTable({
     }
   };
 
+  /**
+   * 페이지네이션 가로폭 흔들림 방지(Layout Shift)를 위해 항상 7개의 요소 유지
+   */
+  const getPaginationItems = (current: number, total: number) => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i);
+    }
+
+    // 앞부분에 붙어있을 때: [0, 1, 2, 3, 4, ..., total-1]
+    if (current < 3) {
+      return [0, 1, 2, 3, 4, -1, total - 1];
+    }
+
+    // 뒷부분에 붙어있을 때: [0, ..., total-5, total-4, total-3, total-2, total-1]
+    if (current > total - 4) {
+      return [0, -1, total - 5, total - 4, total - 3, total - 2, total - 1];
+    }
+
+    // 중간 영역일 때: [0, ..., current-1, current, current+1, ..., total-1]
+    return [0, -1, current - 1, current, current + 1, -1, total - 1];
+  };
+
   return (
     <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
       <div className="flex items-center justify-between">
@@ -43,6 +66,7 @@ export default function ProductTable({
         <Button onClick={onAddNew}>새 상품 추가 +</Button>
       </div>
 
+      {/* ... search bar code ... */}
       <div className="relative flex gap-2">
         <div className="relative flex-1">
           <input
@@ -99,35 +123,12 @@ export default function ProductTable({
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {products.map((product) => (
-              <tr
+              <ProductTableRow
                 key={product.id}
-                onClick={() => onSelect(product.id)}
-                className={`cursor-pointer hover:bg-gray-50 transition-colors ${
-                  selectedId === product.id ? "bg-[#7e62ca]/10" : ""
-                }`}
-              >
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.id}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.name}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.listPrice.toLocaleString()}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.price.toLocaleString()}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.category}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
-                  {product.quantity.toLocaleString()}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-600 truncate max-w-xs">
-                  {product.description}
-                </td>
-              </tr>
+                product={product}
+                isSelected={selectedId === product.id}
+                onSelect={onSelect}
+              />
             ))}
           </tbody>
         </table>
@@ -142,40 +143,22 @@ export default function ProductTable({
           이전
         </button>
 
-        {(() => {
-          const pages = [];
-          const total = totalPages;
-          const current = currentPage;
-
-          if (total <= 7) {
-            for (let i = 0; i < total; i++) pages.push(i);
-          } else {
-            if (current < 3) {
-              pages.push(0, 1, 2, 3, 4, -1, total - 1);
-            } else if (current > total - 4) {
-              pages.push(0, -1, total - 5, total - 4, total - 3, total - 2, total - 1);
-            } else {
-              pages.push(0, -1, current - 1, current, current + 1, -1, total - 1);
-            }
-          }
-
-          return pages.map((p, i) => {
-            if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
-            return (
-              <button
-                key={p}
-                onClick={() => onPageChange(p)}
-                className={`w-8 h-8 flex items-center justify-center rounded-lg border text-sm transition-all ${
-                  p === currentPage
-                    ? "bg-[#7e62ca] border-[#7e62ca] text-white shadow-sm"
-                    : "bg-white border-gray-200 text-gray-600 hover:border-[#7e62ca]"
-                }`}
-              >
-                {p + 1}
-              </button>
-            );
-          });
-        })()}
+        {getPaginationItems(currentPage, totalPages).map((p, i) => {
+          if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
+          return (
+            <button
+              key={p}
+              onClick={() => onPageChange(p)}
+              className={`w-8 h-8 flex items-center justify-center rounded-lg border text-sm transition-all ${
+                p === currentPage
+                  ? "bg-[#7e62ca] border-[#7e62ca] text-white shadow-sm"
+                  : "bg-white border-gray-200 text-gray-600 hover:border-[#7e62ca]"
+              }`}
+            >
+              {p + 1}
+            </button>
+          );
+        })}
 
         <button
           onClick={() => onPageChange(currentPage + 1)}
