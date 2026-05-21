@@ -1,4 +1,4 @@
-export interface Product {
+export type Product = {
   id: number;
   name: string;
   imageUrl: string;
@@ -7,4 +7,4 @@ export interface Product {
   category: string;
   quantity: number;
   description: string;
-}
+};
