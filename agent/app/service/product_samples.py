@@ -20,6 +20,7 @@ PRODUCT_SAMPLES = [
         """),
         listPrice=12900,
         price=12900,
+        quantity=100,
         category="농산품",
         imageUrl="https://www.naver.com/"
     ),
@@ -37,6 +38,7 @@ PRODUCT_SAMPLES = [
         """),
         listPrice=33440,
         price=22120,
+        quantity=100,
         category="식품",
         imageUrl="https://chatgpt.com/"
     ),
@@ -54,6 +56,7 @@ PRODUCT_SAMPLES = [
         """),
         listPrice=33440,
         price=25560,
+        quantity=100,
         category="식품",
         imageUrl="https://chatgpt.com/"
     )
