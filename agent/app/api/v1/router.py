@@ -23,7 +23,7 @@ class AgentEventRequest(BaseModel):
     product_old: Product | None = Field(alias="productOld", default=None)
 
     # 샘플 적용 여부
-    is_sample: bool = Field(alias="isSample", default=True)
+    is_sample: bool = Field(alias="isSample", default=False)
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
