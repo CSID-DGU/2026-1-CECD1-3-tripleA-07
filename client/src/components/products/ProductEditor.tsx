@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Product } from "@/types/product";
-import { Input } from "../common/Input";
+import { ProductImage } from "./ProductImage";
+import { ProductForm } from "./ProductForm";
 
 interface ProductEditorProps {
   product: Product | null;
@@ -104,79 +105,14 @@ export default function ProductEditor({
           <p className="text-gray-500 font-medium">상품 ID: {formData.id}</p>
         </header>
 
-        {/* 상품 이미지 */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-gray-500 uppercase">상품 이미지</h3>
-          <div className="w-48 h-48 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
-            {formData.imageUrl ? (
-              <img
-                src={formData.imageUrl}
-                alt={formData.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-gray-400 font-medium">이미지 없음</span>
-            )}
-          </div>
-          <Input
-            name="imageUrl"
-            value={formData.imageUrl || ""}
-            onChange={handleChange}
-            placeholder="이미지 URL을 입력하세요"
-          />
-        </div>
-
-        {/* 상품명 및 카테고리 */}
-        <div className="space-y-6">
-          <Input
-            label="상품명"
-            name="name"
-            value={formData.name || ""}
-            onChange={handleChange}
-          />
-          <Input
-            label="카테고리"
-            name="category"
-            value={formData.category || ""}
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* 가격 및 수량 */}
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="정가"
-              name="listPrice"
-              value={listPriceInput}
-              onChange={handleChange}
-            />
-            <Input
-              label="판매가"
-              name="price"
-              value={priceInput}
-              onChange={handleChange}
-            />
-          </div>
-          <Input
-            label="수량"
-            name="quantity"
-            value={quantityInput}
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* 상품 설명 */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-bold text-gray-500 uppercase">상품 설명</h3>
-          <textarea
-            name="description"
-            rows={4}
-            value={formData.description || ""}
-            onChange={handleChange}
-            className="w-full p-4 text-gray-900 bg-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all resize-none"
-          />
-        </div>
+        <ProductImage imageUrl={formData.imageUrl} name={formData.name} onChange={handleChange} />
+        <ProductForm 
+          formData={formData} 
+          priceInput={priceInput} 
+          listPriceInput={listPriceInput} 
+          quantityInput={quantityInput} 
+          onChange={handleChange} 
+        />
 
         {/* 작업 버튼 */}
         <div className="flex gap-4 pt-4">
