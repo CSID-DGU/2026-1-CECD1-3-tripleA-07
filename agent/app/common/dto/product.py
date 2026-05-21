@@ -5,5 +5,6 @@ class Product(BaseModel):
     description: str
     list_price: int = Field(alias="listPrice")
     price: int
+    quantity: int
     category: str
     image_url: str = Field(alias="imageUrl")
