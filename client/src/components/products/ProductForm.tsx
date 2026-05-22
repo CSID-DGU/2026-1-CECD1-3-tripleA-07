@@ -27,8 +27,9 @@ export function ProductForm({ register, errors, description, onDescriptionChange
       </div>
 
       <div className="space-y-3">
-        <h3 className="text-sm font-bold text-gray-500 uppercase">상품 설명</h3>
+        <label htmlFor="description" className="block text-sm font-bold text-gray-500">상품 설명</label>
         <textarea
+          id="description"
           {...register("description")}
           rows={4}
           value={description}
