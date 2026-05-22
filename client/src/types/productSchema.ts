@@ -3,7 +3,7 @@ import { z } from "zod";
 export const productSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "상품명을 입력해주세요."),
-  imageUrl: z.string().or(z.literal("")),
+  imageUrl: z.string().url({message : "유효한 url을 입력해주세요"}).or(z.literal("")),
   listPrice: z.number({ 
     error: "숫자를 입력해 주세요."
   }).nonnegative("정가는 0 이상이어야 합니다."),
