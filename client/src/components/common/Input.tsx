@@ -8,10 +8,13 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Input({ label, register, error, ...props }: InputProps) {
+  const inputId = props.id ?? props.name ?? register?.name;
+
   return (
     <div className="space-y-3">
-      {label && <h3 className="text-sm font-bold text-gray-500 uppercase">{label}</h3>}
+      {label && <label htmlFor={inputId} className="block text-sm font-bold text-gray-500">{label}</label>}
       <input
+        id={inputId}
         {...register}
         {...props}
         className={`w-full h-12 px-4 text-gray-900 bg-gray-100 border rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all ${
