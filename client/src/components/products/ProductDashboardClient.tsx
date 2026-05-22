@@ -63,6 +63,7 @@ export default function ProductDashboardClient({
       } else {
         const dataToUpdate = {
           name: updatedProduct.name,
+          imageUrl: updatedProduct.imageUrl,
           listPrice: updatedProduct.listPrice,
           price: updatedProduct.price,
           category: updatedProduct.category,

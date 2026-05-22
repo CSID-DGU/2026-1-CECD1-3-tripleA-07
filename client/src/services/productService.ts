@@ -18,7 +18,7 @@ export const productService = {
   createProduct: (product: Omit<Product, 'id'>) => 
     request('/api/v1/products', { method: 'POST', body: JSON.stringify(product) }),
   
-  updateProduct: (id: number, product: Omit<Product, 'id' | 'imageUrl'>) => 
+  updateProduct: (id: number, product: Omit<Product, 'id'>) =>
     request(`/api/v1/products/${id}`, { method: 'PUT', body: JSON.stringify(product) }),
   
   deleteProduct: (id: number) => 
