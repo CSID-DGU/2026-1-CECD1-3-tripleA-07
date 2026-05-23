@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
 from app.service import product_marketing
+from app.util.discord_logger import discord_send_message
 
 router = APIRouter(
     prefix="/api/v1",
@@ -27,6 +28,7 @@ class AgentEventRequest(BaseModel):
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
+    discord_send_message("test")
     ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
     # 임시 return 값
     return {
