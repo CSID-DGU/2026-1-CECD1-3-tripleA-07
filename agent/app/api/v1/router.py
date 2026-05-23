@@ -28,7 +28,12 @@ class AgentEventRequest(BaseModel):
 
 @router.post("/agent")
 async def start_agent_flow(body: AgentEventRequest):
-    discord_send_message("test")
+    discord_send_message(
+        "🚀 Agent Automation Flow Started",
+        f"- {body.event_type} 유형 이벤트 수신\n- productId: {body.product_id}",
+        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        7855479
+    )
     ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
     # 임시 return 값
     return {
