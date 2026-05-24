@@ -24,36 +24,36 @@ client = AsyncOpenAI(
     base_url=AI_ENDPOINT
 )
 
-# async def run_with_tools(response: ChatCompletion, messages: list):
-#     message = response.choices[0].message
-#
-#     # assistant 메시지를 저장
-#     messages.append(message.model_dump())
-#
-#     # tool call 없으면 종료
-#     if not message.tool_calls:
-#         return response
-#
-#     for tool_call in message.tool_calls:
-#         name = tool_call.function.name
-#         args = json.loads(tool_call.function.arguments or "{}")
-#
-#         result = TOOL_MAP[name](**args)
-#
-#         messages.append({
-#             "role": "tool",
-#             "tool_call_id": tool_call.id,
-#             "content": json.dumps(result, ensure_ascii=False)
-#         })
-#
-#     # 2차 호출
-#     response = await client.chat.completions.create(
-#         model=AI_MODEL,
-#         messages=messages,
-#         tools=TOOLS
-#     )
-#
-#     return response
+async def run_with_tools(response: ChatCompletion, messages: list):
+    message = response.choices[0].message
+
+    # assistant 메시지를 저장
+    messages.append(message.model_dump())
+
+    # tool call 없으면 종료
+    if not message.tool_calls:
+        return response
+
+    for tool_call in message.tool_calls:
+        name = tool_call.function.name
+        args = json.loads(tool_call.function.arguments or "{}")
+
+        result = TOOL_MAP[name](**args)
+
+        messages.append({
+            "role": "tool",
+            "tool_call_id": tool_call.id,
+            "content": json.dumps(result, ensure_ascii=False)
+        })
+
+    # 2차 호출
+    response = await client.chat.completions.create(
+        model=AI_MODEL,
+        messages=messages,
+        tools=TOOLS
+    )
+
+    return response
 
 async def product_marketing(event_type: EventType, is_sample: bool, product_new: Product, product_old: Product | None):
     # 파라미터에 따라 샘플 데이터로 테스트 가능
@@ -77,20 +77,9 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        #tools=TOOLS
+        tools=TOOLS
     )
 
-    #response = await run_with_tools(response, messages)
+    response = await run_with_tools(response, messages)
 
-    #return response.choices[0].message.content
-    raw = response.choices[0].message.content
-
-    # 마크다운 코드블록 제거
-    raw = raw.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]  # ```json ... ``` 에서 중간만 추출
-        if raw.startswith("json"):
-            raw = raw[4:]          # "json\n" 제거
-        raw = raw.strip()
-
-    return json.loads(raw)
+    return response.choices[0].message.content
