@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
+import { PageHeader } from "../common/PageHeader";
 import { ProductTableRow } from "./ProductTableRow";
 export { type Product };
 
@@ -74,10 +75,10 @@ export default function ProductTable({
 
   return (
     <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-gray-900">상품 목록</h2>
-        <Button onClick={onAddNew}>새 상품 추가 +</Button>
-      </div>
+      <PageHeader
+        title="상품 목록"
+        actions={[<Button onClick={onAddNew}>새 상품 추가 +</Button>]}
+      />
 
       {/* ... search bar code ... */}
       <div className="relative flex gap-2">
