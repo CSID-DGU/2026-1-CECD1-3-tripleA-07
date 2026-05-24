@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/", label: "상품 관리" },
+  { href: "/products", label: "상품 관리" },
+  { href: "/history", label: "SNS 광고 발행 이력" },
 ];
 
 export default function Sidebar() {
