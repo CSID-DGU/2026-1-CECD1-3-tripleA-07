@@ -8,6 +8,7 @@ import { productSchema, ProductFormValues } from "@/types/productSchema";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
+import { PageHeader } from "../common/PageHeader";
 
 interface ProductEditorProps {
   product: Product | null;
@@ -91,10 +92,20 @@ export default function ProductEditor({
   return (
     <section className="flex flex-col h-full bg-gray-50/50 border-l border-gray-200 overflow-y-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
-        <header className="space-y-1">
-          <h2 className="text-3xl font-bold text-gray-900">상품 상세정보</h2>
-          <p className="text-gray-500 font-medium">상품 ID: {product?.id}</p>
-        </header>
+        <PageHeader
+          title="상품 상세정보"
+          subtitle={product ? `상품 ID: ${product.id}` : undefined}
+          actions={[
+            ...(!isNew ? [
+              <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-12 px-6">
+                변경사항 되돌리기
+              </Button>
+            ] : []),
+            <Button key="submit" type="submit" className="h-12 px-6">
+              {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
+            </Button>,
+          ]}
+        />
 
         <ProductImage 
             imageUrl={watch("imageUrl")} 
@@ -108,23 +119,6 @@ export default function ProductEditor({
             description={description} 
             onDescriptionChange={(e) => setValue("description", e.target.value)} 
         />
-
-        {/* 작업 버튼 */}
-        <div className="flex gap-4 pt-4">
-          <Button type="submit" className="flex-1 h-14">
-            {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
-          </Button>
-          {!isNew && (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => reset()}
-              className="px-6 h-14"
-            >
-              변경사항 되돌리기
-            </Button>
-          )}
-        </div>
 
         <div className="pt-12">
           <Button
