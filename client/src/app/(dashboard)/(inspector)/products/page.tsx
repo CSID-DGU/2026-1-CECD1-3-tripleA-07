@@ -45,10 +45,8 @@ export default async function ProductsPage({ searchParams }: PageProps) {
     : "CREATED_AT_DESC";
 
   return (
-    <div className="flex h-full">
-      <Suspense fallback={<div className="flex-1 flex items-center justify-center">상품 목록을 불러오는 중...</div>}>
-        <ProductDataFetcher page={page} search={search} sort={sort} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div className="flex-1 flex items-center justify-center">상품 목록을 불러오는 중...</div>}>
+      <ProductDataFetcher page={page} search={search} sort={sort} />
+    </Suspense>
   );
 }
