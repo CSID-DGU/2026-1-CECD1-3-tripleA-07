@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { productService, SortType } from "@/services/productService";
 import ProductDashboardClient from "@/components/products/ProductDashboardClient";
-import { Product } from "@/types/product";
 
-const VALID_SORT_TYPES: SortType[] = ['CREATED_AT_DESC', 'PRICE_ASC', 'PRICE_DESC', 'NAME_ASC', 'QUANTITY_DESC'];
+const VALID_SORT_TYPES: SortType[] = ["CREATED_AT_DESC", "PRICE_ASC", "PRICE_DESC", "NAME_ASC", "QUANTITY_DESC"];
 
 interface PageProps {
   searchParams: Promise<{
@@ -37,19 +36,19 @@ async function ProductDataFetcher({
   );
 }
 
-export default async function Home({ searchParams }: PageProps) {
+export default async function ProductsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Math.max(0, Math.floor(Number(params.page) || 0));
   const search = params.search || "";
   const sort: SortType = VALID_SORT_TYPES.includes(params.sort as SortType)
     ? (params.sort as SortType)
-    : 'CREATED_AT_DESC';
+    : "CREATED_AT_DESC";
 
   return (
-    <main className="flex h-screen w-full bg-white overflow-hidden">
+    <div className="flex h-full">
       <Suspense fallback={<div className="flex-1 flex items-center justify-center">상품 목록을 불러오는 중...</div>}>
         <ProductDataFetcher page={page} search={search} sort={sort} />
       </Suspense>
-    </main>
+    </div>
   );
 }
