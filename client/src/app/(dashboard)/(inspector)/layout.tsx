@@ -1,5 +1,5 @@
 ﻿import { InspectorProvider } from "@/contexts/InspectorContext";
-import InspectorPanel from "@/components/inspector/InspectorPanel";
+import InspectorPanel from "@/components/layout/InspectorPanel";
 
 export default function InspectorLayout({
   children,

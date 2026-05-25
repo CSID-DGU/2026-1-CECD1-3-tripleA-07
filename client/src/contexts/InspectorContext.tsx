@@ -2,10 +2,11 @@
 
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { Product } from "@/types/product";
+import { AdHistory } from "@/types/history";
 
 type InspectorState =
   | { type: "product"; product: Product | null }
-  | { type: "history"; id: number }
+  | { type: "history"; history: AdHistory }
   | null;
 
 interface InspectorContextType {
