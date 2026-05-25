@@ -77,7 +77,7 @@ export default function ProductEditor({
     <section className="flex flex-col h-full overflow-y-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
         <PageHeader
-          title="상품 상세정보"
+          title={isNew? "상품 추가하기" : "상품 상세정보"}
           actions={[
             ...(!isNew ? [
               <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-10 px-5">

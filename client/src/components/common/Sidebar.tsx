@@ -20,7 +20,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-70 h-full px-5 py-9 flex flex-col bg-canvas shrink-0 space-y-4">
+    <aside className="w-66 h-full px-5 py-9 flex flex-col bg-canvas shrink-0 space-y-4">
       <div className="">
         <h1 className="text-2xl font-bold text-primary">tripleA</h1>
         <p className="text-sm font-regular text-foreground">여행사</p>

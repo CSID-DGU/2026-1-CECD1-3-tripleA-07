@@ -153,21 +153,36 @@ export default function ProductTable({
         </div>
       </div>
 
-      <div className={`flex-1 overflow-auto border border-gray-200 rounded-xl transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
-        <table className="w-full text-left border-collapse">
-          <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200">
-            <tr>
-              {COLUMNS.map((header) => (
-                <th
-                  key={header}
-                  className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
-                >
-                  {header}
-                </th>
-              ))}
+      <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
+        <table className="w-full text-left table-fixed border-separate [border-spacing:0]">
+          <colgroup>
+            <col style={{ width: 80 }} />
+            <col />
+            <col style={{ width: 100 }} />
+            <col style={{ width: 100 }} />
+            <col style={{ width: 100 }} />
+            <col style={{ width: 100 }} />
+          </colgroup>
+          <thead className="sticky top-0 z-10">
+            <tr className="rounded-xl">
+              {([
+                { label: "상품 ID" },
+                { label: "상품 명" },
+                { label: "카테고리" },
+                { label: "정가",  right: true },
+                { label: "판매가", right: true },
+                { label: "수량",  right: true },
+              ] as { label: string; right?: boolean }[]).map(({ label, right }) => (
+                  <th
+                    key={label}
+                    className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${right ? "text-right" : ""}`}
+                  >
+                    {label}
+                  </th>
+                ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody>
             {products.map((product) => (
               <ProductTableRow
                 key={product.id}
