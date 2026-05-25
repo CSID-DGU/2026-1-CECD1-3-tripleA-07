@@ -90,8 +90,8 @@ export default function ProductEditor({
   // }
 
   return (
-    <section className="flex flex-col h-full overflow-y-auto">
-      <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+    <section className="flex flex-col h-full">
+      <div className="px-6 pt-6 pb-4 shrink-0">
         <PageHeader
           title={isNew? "상품 추가하기" : "상품 상세정보"}
           actions={[
@@ -110,7 +110,7 @@ export default function ProductEditor({
               </Button>
             ]),
             ,
-            <Button key="submit" type="submit" className="h-10 px-5">
+            <Button key="submit" type="submit" form="product-editor-form" className="h-10 px-5">
               {isNew ? "등록" : "저장"}
             </Button>,
           ]}
@@ -119,19 +119,21 @@ export default function ProductEditor({
         <p className="test-sm font-medium text-foreground/48">
           {product ? `상품 ID: ${product.id}` : undefined}
         </p>
-        
-        <ProductForm 
-            register={register} 
-            errors={errors} 
-            description={description} 
-            onDescriptionChange={(e) => setValue("description", e.target.value)} 
+      </div>
+
+      <form id="product-editor-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 pb-6 space-y-4">
+        <ProductForm
+            register={register}
+            errors={errors}
+            description={description}
+            onDescriptionChange={(e) => setValue("description", e.target.value)}
         />
 
-        <ProductImage 
-          imageUrl={watch("imageUrl")} 
-          name={watch("name")} 
-          register={register("imageUrl")} 
-          error={errors.imageUrl?.message} 
+        <ProductImage
+          imageUrl={watch("imageUrl")}
+          name={watch("name")}
+          register={register("imageUrl")}
+          error={errors.imageUrl?.message}
         />
 
         {!isNew && (
