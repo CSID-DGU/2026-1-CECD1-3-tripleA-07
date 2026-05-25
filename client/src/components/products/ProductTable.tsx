@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 import { ProductTableRow } from "./ProductTableRow";
-export { type Product };
-
+import { Search, X } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -28,6 +27,7 @@ interface ProductTableProps {
   onSearch: (term: string) => void;
   sortType: SortType;
   onSortChange: (sort: SortType) => void;
+  isLoading?: boolean;
 }
 
 export default function ProductTable({
@@ -42,10 +42,17 @@ export default function ProductTable({
   onSearch,
   sortType,
   onSortChange,
+  isLoading = false,
 }: ProductTableProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isComposing, setIsComposing] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const scheduleSearch = (value: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -95,56 +102,55 @@ export default function ProductTable({
   };
 
   return (
-    <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
+    <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader
         title="상품 목록"
-        actions={[<Button onClick={onAddNew}>새 상품 추가 +</Button>]}
+        actions={[<Button onClick={onAddNew} className="h-10">새 상품 추가 +</Button>]}
       />
 
-      {/* ... search bar code ... */}
-      <div className="relative">
-        <input
-          type="search"
-          placeholder="검색어를 입력해주세요"
-          value={localSearchTerm}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onCompositionStart={handleCompositionStart}
-          onCompositionEnd={handleCompositionEnd}
-          className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
-        />
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
-      </div>
+      
 
       {/* ... 정렬 방식 선택 드롭다운 메뉴 ... */}
       <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-gray-700">정렬 기준</label>
         <select
           value={sortType}
           onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 select-chevron"
+          className="h-10 px-4 pr-10 border border-border rounded-xl text-base font-regular text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 select-chevron"
         >
           {SORT_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>{label}</option>
           ))}
         </select>
+
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />
+            <input
+              type="search"
+              placeholder="검색어를 입력해주세요"
+              value={localSearchTerm}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
+              className="w-full h-10 pl-11 pr-9 border border-border rounded-xl outline-none focus:ring-2 focus:ring-primary/48 transition-all text-foreground placeholder:text-foreground/48 font-regular"
+            />
+            {localSearchTerm && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (debounceRef.current) clearTimeout(debounceRef.current);
+                  setLocalSearchTerm("");
+                  onSearch("");
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/48 hover:text-foreground transition-colors"
+              >
+                <X className="w-5 h-5 text-foreground/48" />
+              </button>
+            )}
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto border border-gray-200 rounded-xl">
+      <div className={`flex-1 overflow-auto border border-gray-200 rounded-xl transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200">
             <tr>
