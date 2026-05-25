@@ -196,9 +196,9 @@ export default function ProductTable({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0}
-          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
+          className="h-9 w-9 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={20} />
         </button>
 
         <div className="flex justify-center p-1 border border-border gap-1 rounded-lg">
@@ -208,7 +208,7 @@ export default function ProductTable({
               <button
                 key={p}
                 onClick={() => onPageChange(p)}
-                className={`w-6 h-6 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
+                className={`w-7 h-7 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
                   p === currentPage
                     ? "bg-primary text-surface"
                     : "text-foreground hover:bg-info"
@@ -224,9 +224,9 @@ export default function ProductTable({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1 || totalPages === 0}
-          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
+          className="h-9 w-9 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
         >
-          <ChevronRight size={18} />
+          <ChevronRight size={20} />
         </button>
       </nav>
     </section>

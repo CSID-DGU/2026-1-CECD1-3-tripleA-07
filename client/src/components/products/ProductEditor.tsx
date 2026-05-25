@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
+import { productService } from "@/services/productService";
+import { useInspector } from "@/contexts/InspectorContext";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
@@ -12,20 +14,17 @@ import { PageHeader } from "../common/PageHeader";
 
 interface ProductEditorProps {
   product: Product | null;
-  onSave: (product: Product) => void;
-  onDelete: (id: number) => void;
   onCancel?: () => void;
   isNew?: boolean;
 }
 
 export default function ProductEditor({
   product,
-  onSave,
-  onDelete,
   onCancel,
   isNew = false,
 }: ProductEditorProps) {
   "use no memo";
+  const { close, onSaved } = useInspector();
   const {
     register,
     handleSubmit,
@@ -56,12 +55,33 @@ export default function ProductEditor({
     }
   }, [product, reset]);
 
-  const onSubmit = (data: ProductFormValues) => {
-    const productData: Product = {
-      ...data,
-      id: product?.id ?? 0,
-    };
-    onSave(productData);
+  const onSubmit = async (data: ProductFormValues) => {
+    try {
+      if (isNew) {
+        await productService.createProduct(data as Product);
+        alert("상품이 등록되었습니다.");
+      } else {
+        await productService.updateProduct(product!.id, data as Product);
+        alert("변경사항이 저장되었습니다.");
+      }
+      onSaved();
+      close();
+    } catch (error) {
+      console.error("Failed to save product:", error);
+      alert("저장에 실패했습니다.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("정말 이 상품을 삭제하시겠습니까?")) return;
+    try {
+      await productService.deleteProduct(product!.id);
+      onSaved();
+      close();
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+      alert("삭제에 실패했습니다.");
+    }
   };
 
   // InspectorPanel이 product와 isNew 검증 로직을 담당하도록 변경되어 해당 코드는 현재 도달할 수 없는 코드라 주석처리함.
@@ -125,7 +145,7 @@ export default function ProductEditor({
             <Button
               type="button"
               variant="danger"
-              onClick={() => onDelete(product!.id)}
+              onClick={handleDelete}
               className="h-10"
             >
               상품 삭제하기
