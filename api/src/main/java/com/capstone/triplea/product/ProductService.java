@@ -1,5 +1,6 @@
 package com.capstone.triplea.product;
 
+import com.capstone.triplea.advertisement.AdEventType;
 import com.capstone.triplea.product.dto.ProductCreateRequestDto;
 import com.capstone.triplea.product.dto.ProductResponseDto;
 import com.capstone.triplea.product.dto.ProductUpdateRequestDto;
@@ -31,7 +32,7 @@ public class ProductService {
         applicationEventPublisher.publishEvent(
         ProductEvent.builder()
                 .id(saved.getId())
-                .eventType(ProductEvent.EventType.NEW)
+                .eventType(AdEventType.NEW)
                 .productNew(ProductEvent.ProductSnapshot.from(saved))
                 .build()
         );
@@ -53,7 +54,7 @@ public class ProductService {
             applicationEventPublisher.publishEvent(
             ProductEvent.builder()
                     .id(product.getId())
-                    .eventType(ProductEvent.EventType.DISCOUNT)
+                    .eventType(AdEventType.DISCOUNT)
                     .productNew(ProductEvent.ProductSnapshot.from(product))
                     .productOld(oldSnapshot)
                     .build()

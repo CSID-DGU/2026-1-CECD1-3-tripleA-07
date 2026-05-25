@@ -1,5 +1,6 @@
 package com.capstone.triplea.product.event;
 
+import com.capstone.triplea.advertisement.AdEventType;
 import com.capstone.triplea.product.Product;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,10 +11,6 @@ import lombok.Getter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null인 필드 JSON에서 제외
 public class ProductEvent {
-    public enum EventType {
-        NEW,        // TRG_PRD_001: 신제품 홍보
-        DISCOUNT    // TRG_PRD_002: 할인 홍보
-    }
 
     @Getter
     @Builder
@@ -43,7 +40,7 @@ public class ProductEvent {
     @JsonProperty("productId")
     private final Long id;
 
-    private final EventType eventType;
+    private final AdEventType eventType;
 
     private final ProductSnapshot productNew;
 

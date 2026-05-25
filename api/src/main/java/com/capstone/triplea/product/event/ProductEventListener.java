@@ -36,12 +36,6 @@ public class ProductEventListener {
         }
         log.info("====================");
 
-        // ProductEvent.EventType -> AdEventType 변환
-        AdEventType adEventType = switch (event.getEventType()) {
-            case NEW -> AdEventType.NEW;
-            case DISCOUNT ->  AdEventType.DISCOUNT;
-        };
-
         // Python FastAPI로 HTTP POST를 보냄 + 응답을 DB에 저장
         agentWebClient.post()
                 .uri("")
@@ -51,7 +45,7 @@ public class ProductEventListener {
                 .doOnSuccess(res -> {
                     log.info("[Agent 응답] : {}", res); // Agent가 생성한 광고글 DB에 저장
                     String aiResponse = extractAiResponse(res);
-                    advertisementService.save(event.getId(), adEventType, aiResponse);
+                    advertisementService.save(event.getId(), event.getEventType(), aiResponse);
                 })//res -> log.info("[Agent 응답] {}", res))
                 .doOnError(e -> log.error("[Agent 호출 실패] {}", e.getMessage()))
                 .subscribe();
