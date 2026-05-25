@@ -19,14 +19,8 @@ export function HistoryTableRow({ history, isSelected, onSelect }: HistoryTableR
   return (
     <tr
       onClick={() => onSelect(history.id)}
-      style={{
-        backgroundImage: isSelected ? "none" : "linear-gradient(to right, transparent 12px, var(--color-border) 12px, var(--color-border) calc(100% - 12px), transparent calc(100% - 12px))",
-        backgroundSize: "100% 1px",
-        backgroundPosition: "bottom",
-        backgroundRepeat: "no-repeat",
-      }}
       className={`cursor-pointer transition-all h-11 ${
-        isSelected ? "bg-primary/16" : "hover:bg-info"
+        isSelected ? "bg-primary/16" : "hover:bg-info row-divider"
       }`}
     >
       <TableCell>{history.id}</TableCell>

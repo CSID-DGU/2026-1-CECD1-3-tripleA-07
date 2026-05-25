@@ -24,16 +24,8 @@ export function ProductTableRow({ product, isSelected, onSelect }: ProductTableR
   return (
     <tr
       onClick={() => onSelect(product.id)}
-      style={{
-        backgroundImage: isSelected ? "none" : "linear-gradient(to right, transparent 12px, var(--color-border) 12px, var(--color-border) calc(100% - 12px), transparent calc(100% - 12px))",
-        backgroundSize: "100% 1px",
-        backgroundPosition: "bottom",
-        backgroundRepeat: "no-repeat",
-      }}
       className={`cursor-pointer transition-all h-11 ${
-        isSelected
-          ? "bg-primary/16"
-          : "hover:bg-info"
+        isSelected ? "bg-primary/16" : "hover:bg-info row-divider"
       }`}
     >
       <TableCell>{product.id}</TableCell>
