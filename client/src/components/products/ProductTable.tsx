@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
@@ -47,11 +47,54 @@ export default function ProductTable({
   onSortChange,
 }: ProductTableProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [isComposing, setIsComposing] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const scheduleSearch = (value: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => onSearch(value), 300);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchTerm(value);
+    if (!isComposing) scheduleSearch(value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       onSearch(localSearchTerm);
     }
+  };
+
+  const handleCompositionStart = () => setIsComposing(true);
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    setIsComposing(false);
+    scheduleSearch(e.currentTarget.value);
+  };
+
+  /**
+   * 페이지네이션 가로폭 흔들림 방지(Layout Shift)를 위해 항상 7개의 요소 유지
+   */
+  const getPaginationItems = (current: number, total: number) => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i);
+    }
+
+    // 앞부분에 붙어있을 때: [0, 1, 2, 3, 4, ..., total-1]
+    if (current < 3) {
+      return [0, 1, 2, 3, 4, -1, total - 1];
+    }
+
+    // 뒷부분에 붙어있을 때: [0, ..., total-5, total-4, total-3, total-2, total-1]
+    if (current > total - 4) {
+      return [0, -1, total - 5, total - 4, total - 3, total - 2, total - 1];
+    }
+
+    // 중간 영역일 때: [0, ..., current-1, current, current+1, ..., total-1]
+    return [0, -1, current - 1, current, current + 1, -1, total - 1];
   };
 
   return (
@@ -62,35 +105,32 @@ export default function ProductTable({
       />
 
       {/* ... search bar code ... */}
-      <div className="relative flex gap-2">
-        <div className="relative flex-1">
-          <input
-            type="search"
-            placeholder="검색어를 입력해주세요"
-            value={localSearchTerm}
-            onChange={(e) => setLocalSearchTerm(e.target.value)}
-            onKeyDown={handleKeyPress}
-            className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
+      <div className="relative">
+        <input
+          type="search"
+          placeholder="검색어를 입력해주세요"
+          value={localSearchTerm}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+          className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
+        />
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
         </div>
-        <Button onClick={() => onSearch(localSearchTerm)} className="h-12 px-6 bg-gray-900 hover:bg-gray-800">
-          검색
-        </Button>
       </div>
 
       {/* ... 정렬 방식 선택 드롭다운 메뉴 ... */}
