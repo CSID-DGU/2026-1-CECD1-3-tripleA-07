@@ -111,7 +111,7 @@ export default function ProductEditor({
 
   return (
     <section className="flex flex-col h-full">
-      <div className="px-6 pt-6 pb-4 shrink-0">
+      <div className="px-6 pt-6 pb-4 shrink-0 space-y-4">
         <PageHeader
           title={isNew? "상품 추가하기" : "상품 상세정보"}
           actions={[

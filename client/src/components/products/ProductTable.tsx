@@ -5,6 +5,7 @@ import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
+import { Select } from "../common/Select";
 import { ProductTableRow } from "./ProductTableRow";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
@@ -111,16 +112,12 @@ export default function ProductTable({
       
 
       {/* ... 정렬 방식 선택 드롭다운 메뉴 ... */}
-      <div className="flex items-center gap-3">
-        <select
+      <div className="flex items-center gap-2">
+        <Select
           value={sortType}
-          onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="h-10 px-4 pr-10 border border-border rounded-xl text-base font-regular text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 select-chevron"
-        >
-          {SORT_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value}>{label}</option>
-          ))}
-        </select>
+          options={SORT_OPTIONS}
+          onChange={onSortChange}
+        />
 
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />

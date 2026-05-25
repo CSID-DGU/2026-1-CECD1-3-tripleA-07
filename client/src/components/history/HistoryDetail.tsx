@@ -1,48 +1,73 @@
 ﻿import { AdHistory } from "@/types/history";
+import { ChevronRight } from "lucide-react";
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   NEW: "신규 출시",
   DISCOUNT: "할인",
 };
 import { PageHeader } from "@/components/common/PageHeader";
-import { Button } from "@/components/common/Button";
-import { useInspector } from "@/contexts/InspectorContext";
-
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs font-light text-foreground/48 uppercase tracking-wider">{label}</span>
-      <span className="text-sm font-regular text-foreground">{value}</span>
-    </div>
-  );
-}
 
 export default function HistoryDetail({ history }: { history: AdHistory }) {
   const date = history.createdAt.slice(0, 10);
 
   return (
     <section className="flex flex-col h-full">
-      <div className="px-6 pt-6 pb-4 shrink-0">
+      <div className="px-6 pt-6 pb-4 shrink-0 space-y-4">
         <PageHeader
           title="광고 상세 정보"
           actions={[]}
         />
-        <p className="text-sm font-medium text-foreground/48">광고 ID: {history.id}</p>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-foreground/48">광고 ID: {history.id}</p>
+          <p className="text-sm font-medium text-foreground/48">발행일: {history.createdAt}</p>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
-        <div className="rounded-xl bg-info p-4 space-y-4">
-          <DetailRow label="생성일" value={date} />
-          <DetailRow label="상품 ID" value={String(history.productId)} />
-          <DetailRow label="광고 유형" value={EVENT_TYPE_LABEL[history.eventType] ?? history.eventType} />
-          <DetailRow label="광고 URL" value={history.adUrl} />
+
+        <div className="p-4 rounded-xl space-y-5 border border-border">
+          <p className="text-xl font-medium text-foreground">
+            광고 유형: {EVENT_TYPE_LABEL[history.eventType] ?? history.eventType}
+          </p>
+        </div>
+        
+        <div className="p-4 rounded-xl space-y-5 border border-border">
+          <div className="space-y-2">
+            <p className="text-base font-regular text-foreground">
+              상품 ID
+            </p>
+            <p className="text-2xl font-medium text-foreground">
+              {String(history.productId)}
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-light text-foreground/48 uppercase tracking-wider">광고 내용</span>
-          <p className="text-sm font-regular text-foreground whitespace-pre-wrap leading-relaxed">
-            {history.adContent}
+        <div className="p-4 rounded-xl space-y-5 border border-border">
+          <p className="text-xl font-medium text-foreground">
+            게시물 링크
           </p>
+          <div className="space-y-2">
+            <p className="text-base font-regular text-foreground">
+              facebook
+            </p>
+            <button
+              className="px-3 w-full h-10 bg-primary/16 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
+            >
+              <p className="truncate min-w-0">
+                {history.adUrl}
+              </p>
+              <ChevronRight size={20} className="shrink-0" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl space-y-5 border border-border">
+          <p className="text-xl font-medium text-foreground">
+            게시물 미리보기
+          </p>
+          <div className="px-3 py-3 w-full rounded-xl bg-info text-base text-foreground font-regular">
+            {history.adContent}
+          </div>
         </div>
       </div>
     </section>
