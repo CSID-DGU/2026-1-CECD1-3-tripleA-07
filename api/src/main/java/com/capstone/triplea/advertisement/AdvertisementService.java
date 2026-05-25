@@ -45,7 +45,7 @@ public class AdvertisementService {
     public List<AdvertisementResponseDto> findAdvertisements(Long productId) {
         List<Advertisement> advertisements = (productId != null)
                 ? advertisementRepository.findByProductIdOrderByCreatedAtDesc(productId)
-                : advertisementRepository.findAllOrderByCreatedAtDesc();
+                : advertisementRepository.findAllByOrderByCreatedAtDesc();
 
         return advertisements.stream()
                 .map(AdvertisementResponseDto::from)

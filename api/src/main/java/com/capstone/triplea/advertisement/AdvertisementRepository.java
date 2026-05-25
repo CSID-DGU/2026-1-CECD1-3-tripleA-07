@@ -10,5 +10,5 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, In
     List<Advertisement> findByProductIdOrderByCreatedAtDesc(Long productId);
 
     // 전체 광고 이력 조회
-    List<Advertisement> findAllOrderByCreatedAtDesc();
+    List<Advertisement> findAllByOrderByCreatedAtDesc();
 }

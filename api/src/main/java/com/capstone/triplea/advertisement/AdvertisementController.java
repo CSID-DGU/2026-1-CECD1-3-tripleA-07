@@ -23,7 +23,7 @@ public class AdvertisementController {
     )
     @GetMapping
     public ResponseEntity<List<AdvertisementResponseDto>> getAdvertisements(
-            @Parameter(description = "상품 id (선택)", example = "1")
+            @Parameter(description = "상품 id (선택)")
             @RequestParam(required = false) Long productId) {
         return ResponseEntity.ok(advertisementService.findAdvertisements(productId));
     }
