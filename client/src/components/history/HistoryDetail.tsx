@@ -50,14 +50,17 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
             <p className="text-base font-regular text-foreground">
               facebook
             </p>
-            <button
+            <a
+              href={history.adUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-3 w-full h-10 bg-primary/16 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
             >
               <p className="truncate min-w-0">
                 {history.adUrl}
               </p>
               <ChevronRight size={20} className="shrink-0" />
-            </button>
+            </a>
           </div>
         </div>
 
