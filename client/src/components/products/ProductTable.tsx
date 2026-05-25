@@ -6,7 +6,7 @@ import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 import { ProductTableRow } from "./ProductTableRow";
-import { Search, X } from "lucide-react";
+import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -196,34 +196,37 @@ export default function ProductTable({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0}
-          className="h-8 px-3 rounded-lg bg-gray-200 text-gray-700 text-sm disabled:opacity-50 hover:bg-gray-300 transition-colors flex items-center justify-center"
+          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
         >
-          이전
+          <ChevronLeft size={18} />
         </button>
 
-        {getPaginationItems(currentPage, totalPages).map((p, i) => {
-          if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
-          return (
-            <button
-              key={p}
-              onClick={() => onPageChange(p)}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg border text-sm transition-all ${
-                p === currentPage
-                  ? "bg-[#7e62ca] border-[#7e62ca] text-white shadow-sm"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-[#7e62ca]"
-              }`}
-            >
-              {p + 1}
-            </button>
+        <div className="flex justify-center p-1 border border-border gap-1 rounded-lg">
+          {getPaginationItems(currentPage, totalPages).map((p, i) => {
+            if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
+            return (
+              <button
+                key={p}
+                onClick={() => onPageChange(p)}
+                className={`w-6 h-6 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
+                  p === currentPage
+                    ? "bg-primary text-surface"
+                    : "text-foreground hover:bg-info"
+                }`}
+              >
+                {p + 1}
+              </button>
           );
         })}
+        </div>
+        
 
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1 || totalPages === 0}
-          className="h-8 px-3 rounded-lg bg-gray-200 text-gray-700 text-sm disabled:opacity-50 hover:bg-gray-300 transition-colors flex items-center justify-center"
+          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
         >
-          다음
+          <ChevronRight size={18} />
         </button>
       </nav>
     </section>
