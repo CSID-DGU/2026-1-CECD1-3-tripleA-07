@@ -42,7 +42,7 @@ public class AdvertisementService {
     * productId 없으면 전체 광고 이력 반환
     */
     @Transactional(readOnly = true)
-    public List<AdvertisementResponseDto> findByProductId(Long productId) {
+    public List<AdvertisementResponseDto> findAdvertisements(Long productId) {
         List<Advertisement> advertisements = (productId != null)
                 ? advertisementRepository.findByProductIdOrderByCreatedAtDesc(productId)
                 : advertisementRepository.findAllOrderByCreatedAtDesc();
