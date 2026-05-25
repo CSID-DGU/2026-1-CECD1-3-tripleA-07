@@ -48,7 +48,7 @@ export default function InspectorPanel() {
   };
 
   return (
-    <div className="w-[50%] max-w-140 h-full shrink-0 rounded-xl bg-surface">
+    <div className="w-[50%] max-w-120 h-full shrink-0 rounded-xl bg-surface">
       {!state ? (
         <p className="text-sm text-center">
           항목을 선택하면
