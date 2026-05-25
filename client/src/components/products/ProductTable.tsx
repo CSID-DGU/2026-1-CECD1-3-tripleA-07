@@ -7,7 +7,7 @@ import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
 import { ProductTableRow } from "./ProductTableRow";
-import { Search, X } from "lucide-react";
+import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -195,11 +195,43 @@ export default function ProductTable({
         </table>
       </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={onPageChange}
-      />
+      <nav className="flex justify-center items-center gap-1 pt-2">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 0}
+          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
+        >
+          <ChevronLeft size={18} />
+        </button>
+
+        <div className="flex justify-center p-1 border border-border gap-1 rounded-lg">
+          {getPaginationItems(currentPage, totalPages).map((p, i) => {
+            if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
+            return (
+              <button
+                key={p}
+                onClick={() => onPageChange(p)}
+                className={`w-6 h-6 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
+                  p === currentPage
+                    ? "bg-primary text-surface"
+                    : "text-foreground hover:bg-info"
+                }`}
+              >
+                {p + 1}
+              </button>
+          );
+        })}
+        </div>
+        
+
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages - 1 || totalPages === 0}
+          className="h-8 w-8 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
+        >
+          <ChevronRight size={18} />
+        </button>
+      </nav>
     </section>
   );
 }
