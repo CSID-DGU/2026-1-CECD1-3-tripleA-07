@@ -23,7 +23,7 @@ export default function Sidebar() {
     <aside className="w-70 h-full px-5 py-9 flex flex-col bg-canvas shrink-0 space-y-4">
       <div className="">
         <h1 className="text-2xl font-bold text-primary">tripleA</h1>
-        <h1 className="text-sm font-bold text-foreground/48">여행사</h1>
+        <p className="text-sm font-regular text-foreground">여행사</p>
       </div>
 
       <nav className="flex-1 overflow-y-auto">
@@ -31,9 +31,9 @@ export default function Sidebar() {
           <div key={label} className="py-3 border-t border-border">
             {/*..그룹명..*/}
             <div className="h-11 flex items-center justify-start">
-              <p className="mb-1 text-base font-medium text-foreground/48 uppercase tracking-wider">
+              <h2 className="text-base font-medium text-foreground/48 uppercase tracking-wider">
                 {label}
-              </p>
+              </h2>
             </div>
             {/*..아이템..*/}
             {items.map(({ href, label: itemLabel, icon: Icon }) => {

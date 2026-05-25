@@ -8,8 +8,8 @@ export default function InspectorLayout({
 }) {
   return (
     <InspectorProvider>
-      <div className="flex h-full">
-        <div className="flex-1 min-w-0 h-full">{children}</div>
+      <div className="flex h-full space-x-1.5">
+        <div className="flex-1 min-w-0 h-full bg-surface rounded-xl">{children}</div>
         <InspectorPanel />
       </div>
     </InspectorProvider>

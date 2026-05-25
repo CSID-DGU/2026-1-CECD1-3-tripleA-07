@@ -5,6 +5,7 @@
   --surface: #ffffff;
   --foreground: #171717;
   --primary: #8765e5;
+  --warn: #CB6363;
 }
 
 @theme inline {
@@ -14,6 +15,7 @@
   --color-primary: var(--primary);
   --color-border: color-mix(in srgb, var(--foreground) 12%, transparent);
   --color-info: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --color-warn: var(--warn);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -23,6 +25,7 @@
     --canvas: #0a0a0a;
     --surface: #141414;
     --foreground: #ededed;
+    --warn: #CB6363;
   }
 }
 

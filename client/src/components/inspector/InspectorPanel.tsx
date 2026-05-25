@@ -49,36 +49,26 @@ export default function InspectorPanel() {
     }
   };
 
-  if (!state) {
-    return (
-      <div className="w-[50%] max-w-140 h-full shrink-0 flex items-center justify-center bg-gray-50/50 border-l border-gray-200 text-gray-400">
+  return (
+    <div className="w-[50%] max-w-140 h-full shrink-0 rounded-xl bg-surface">
+      {!state ? (
         <p className="text-sm text-center">
           항목을 선택하면
           <br />
           상세 정보가 표시됩니다.
         </p>
-      </div>
-    );
-  }
-
-  if (state.type === "history") {
-    return (
-      <div className="w-[50%] max-w-140 h-full shrink-0 border-l border-gray-200">
+      ) : state.type === "history" ? (
         <HistoryDetail id={state.id} />
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-[50%] max-w-140 h-full shrink-0">
-      <ProductEditor
-        key={state.product === null ? "new" : state.product.id}
-        product={state.product}
-        isNew={state.product === null}
-        onSave={handleSaveProduct}
-        onDelete={handleDeleteProduct}
-        onCancel={close}
-      />
+      ) : (
+        <ProductEditor
+          key={state.product === null ? "new" : state.product.id}
+          product={state.product}
+          isNew={state.product === null}
+          onSave={handleSaveProduct}
+          onDelete={handleDeleteProduct}
+          onCancel={close}
+        />
+      )}
     </div>
   );
 }
