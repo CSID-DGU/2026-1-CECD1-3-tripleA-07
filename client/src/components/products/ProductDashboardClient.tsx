@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState, useCallback } from "react";
 import ProductTable from "@/components/products/ProductTable";
 import { Product } from "@/types/product";
-import { SortType } from "@/services/productService";
+import { SortType, productService } from "@/services/productService";
 import { useInspector } from "@/contexts/InspectorContext";
 
 interface ProductDashboardClientProps {
@@ -17,30 +17,46 @@ interface ProductDashboardClientProps {
 export default function ProductDashboardClient({
   initialProducts,
   initialTotalPages,
-  currentPage,
-  searchTerm,
-  sortType,
+  currentPage: initialPage,
+  searchTerm: initialSearch,
+  sortType: initialSort,
 }: ProductDashboardClientProps) {
-  const router = useRouter();
   const { open, state } = useInspector();
+
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [sortType, setSortType] = useState<SortType>(initialSort);
 
   const selectedProductId =
     state?.type === "product" && state.product !== null ? state.product.id : null;
 
+  const fetchProducts = useCallback(async (search: string, page: number, sort: SortType) => {
+    const data = await productService.getProducts(search || undefined, page, 20, sort);
+    setProducts(data.content);
+    setTotalPages(data.totalPages);
+  }, []);
+
   const handleSearch = (term: string) => {
-    router.push(`/products?search=${encodeURIComponent(term)}&page=0&sort=${sortType}`);
+    setSearchTerm(term);
+    setCurrentPage(0);
+    fetchProducts(term, 0, sortType);
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/products?search=${encodeURIComponent(searchTerm)}&page=${page}&sort=${sortType}`);
+    setCurrentPage(page);
+    fetchProducts(searchTerm, page, sortType);
   };
 
   const handleSortChange = (sort: SortType) => {
-    router.push(`/products?search=${encodeURIComponent(searchTerm)}&page=0&sort=${sort}`);
+    setSortType(sort);
+    setCurrentPage(0);
+    fetchProducts(searchTerm, 0, sort);
   };
 
   const handleSelectProduct = (id: number) => {
-    const product = initialProducts.find((p) => p.id === id);
+    const product = products.find((p) => p.id === id);
     if (product) open({ type: "product", product });
   };
 
@@ -51,12 +67,12 @@ export default function ProductDashboardClient({
   return (
     <div className="h-full">
       <ProductTable
-        products={initialProducts}
+        products={products}
         selectedId={selectedProductId}
         onSelect={handleSelectProduct}
         onAddNew={handleAddNewProduct}
         currentPage={currentPage}
-        totalPages={initialTotalPages}
+        totalPages={totalPages}
         onPageChange={handlePageChange}
         searchTerm={searchTerm}
         onSearch={handleSearch}
