@@ -3,49 +3,9 @@
 import { useInspector } from "@/contexts/InspectorContext";
 import ProductEditor from "@/components/products/ProductEditor";
 import HistoryDetail from "@/components/inspector/HistoryDetail";
-import { productService } from "@/services/productService";
-import { Product } from "@/types/product";
 
 export default function InspectorPanel() {
-  const { state, close, onSaved } = useInspector();
-
-  const handleSaveProduct = async (updatedProduct: Product) => {
-    try {
-      if (state?.type === "product" && state.product === null) {
-        await productService.createProduct(updatedProduct);
-        alert("상품이 등록되었습니다.");
-        close();
-      } else {
-        await productService.updateProduct(updatedProduct.id, {
-          name: updatedProduct.name,
-          imageUrl: updatedProduct.imageUrl,
-          listPrice: updatedProduct.listPrice,
-          price: updatedProduct.price,
-          category: updatedProduct.category,
-          quantity: updatedProduct.quantity,
-          description: updatedProduct.description,
-        });
-        alert("변경사항이 저장되었습니다.");
-      }
-      onSaved();
-    } catch (error) {
-      console.error("Failed to save product:", error);
-      alert("저장에 실패했습니다.");
-    }
-  };
-
-  const handleDeleteProduct = async (id: number) => {
-    if (confirm("정말 이 상품을 삭제하시겠습니까?")) {
-      try {
-        await productService.deleteProduct(id);
-        close();
-        onSaved();
-      } catch (error) {
-        console.error("Failed to delete product:", error);
-        alert("삭제에 실패했습니다.");
-      }
-    }
-  };
+  const { state, close } = useInspector();
 
   return (
     <div className="w-[50%] max-w-120 h-full shrink-0 rounded-xl bg-surface">
@@ -62,8 +22,6 @@ export default function InspectorPanel() {
           key={state.product === null ? "new" : state.product.id}
           product={state.product}
           isNew={state.product === null}
-          onSave={handleSaveProduct}
-          onDelete={handleDeleteProduct}
           onCancel={close}
         />
       )}
