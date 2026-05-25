@@ -17,7 +17,7 @@ export function Input({ label, register, error, ...props }: InputProps) {
         id={inputId}
         {...register}
         {...props}
-        className={`w-full px-3 py-2.5 text-foreground border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
+        className={`w-full px-3 py-2 text-foreground font-regular border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
           error ? "border-warn/48" : "border-border"
         }`}
       />
