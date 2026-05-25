@@ -167,7 +167,7 @@ export default function ProductTable({
               <col key={label} style={width ? { width } : undefined} />
             ))}
           </colgroup>
-          <thead className="sticky top-0 z-10">
+          <thead className="sticky top-0 z-10 relative before:absolute before:inset-0 before:bg-surface before:-z-10 before:rounded-b-xl">
             <tr className="rounded-xl">
               {COLUMNS.map(({ label, right }) => (
                 <th
