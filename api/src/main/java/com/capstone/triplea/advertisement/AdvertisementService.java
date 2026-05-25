@@ -37,10 +37,17 @@ public class AdvertisementService {
     }
 
     // 특정 상품의 광고 이력 전체 조회
+    /*
+    * productId 있으면 해당 상품의 광고 이력만 반환
+    * productId 없으면 전체 광고 이력 반환
+    */
     @Transactional(readOnly = true)
     public List<AdvertisementResponseDto> findByProductId(Long productId) {
-        return advertisementRepository.findByProductIdOrderByCreatedAtDesc(productId)
-                .stream()
+        List<Advertisement> advertisements = (productId != null)
+                ? advertisementRepository.findByProductIdOrderByCreatedAtDesc(productId)
+                : advertisementRepository.findAllOrderByCreatedAtDesc();
+
+        return advertisements.stream()
                 .map(AdvertisementResponseDto::from)
                 .toList();
     }
