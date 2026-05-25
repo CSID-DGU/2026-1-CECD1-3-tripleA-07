@@ -1,6 +1,7 @@
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
-from app.util.db_pool import get_connection
+from app.util.db_pool import get_connection, search_vectordb
+from app.util.embedding_model import embed_document
 
 # -------------------------
 # CATEGORY TONE GUIDE
@@ -225,7 +226,9 @@ def build_user_prompt(
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM dual")
+
+        text, vec = embed_document(product_new)
+        search_vectordb(cursor, event_type, vec)
 
         print(cursor.fetchone())
     finally:

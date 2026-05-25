@@ -2,6 +2,8 @@ import os
 import oracledb
 from dotenv import load_dotenv
 
+from app.common.enum.event_type import EventType
+
 load_dotenv()
 
 DB_USER = os.getenv("DB_USER")
@@ -25,3 +27,7 @@ def get_connection():
 
 def close_pool():
     pool.close()
+
+def search_vectordb(cursor: oracledb.Cursor, event_type: EventType, input_vec):
+    cursor.setinputsizes(query_vector=oracledb.DB_TYPE_VECTOR)
+    cursor.execute("SELECT ID, CONTENT_JSON, VECTOR_DISTANCE(EMBEDDING, :query_vector, COSINE) AS score FROM MARKETING_EXAMPLE WHERE MARKETING_TYPE = :marketing_type ORDER BY score FETCH FIRST 5 ROWS ONLY;", query_vector=input_vec, marketing_type=event_type)
