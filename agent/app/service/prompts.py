@@ -1,5 +1,6 @@
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
+from app.util.db_pool import get_connection
 
 # -------------------------
 # CATEGORY TONE GUIDE
@@ -221,6 +222,14 @@ def build_user_prompt(
         product_new: Product,
         product_old: Product | None,
 ) -> str:
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1 FROM dual")
+
+        print(cursor.fetchone())
+    finally:
+        conn.close()
 
     # 1) 카테고리별 톤 가이드 주입
     tone = CATEGORY_TONE_GUIDE.get(product_new.category, DEFAULT_TONE)
