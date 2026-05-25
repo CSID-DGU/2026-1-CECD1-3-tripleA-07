@@ -6,12 +6,11 @@ interface PageHeaderProps {
   actions?: React.ReactNode[];
 }
 
-export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
+export function PageHeader({ title, actions }: PageHeaderProps) {
   return (
     <div className="flex items-start justify-between">
       <div className="space-y-1">
-        <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
-        {subtitle && <p className="text-gray-500 font-medium">{subtitle}</p>}
+        <h2 className="text-[28px] font-medium text-foreground">{title}</h2>
       </div>
       {actions && actions.length > 0 && (
         <div className="flex items-center gap-3">

@@ -11,17 +11,17 @@ export function Input({ label, register, error, ...props }: InputProps) {
   const inputId = props.id ?? props.name ?? register?.name;
 
   return (
-    <div className="space-y-3">
-      {label && <label htmlFor={inputId} className="block text-sm font-bold text-gray-500">{label}</label>}
+    <div className="space-y-2">
+      {label && <label htmlFor={inputId} className="block text-base font-regular text-foreground">{label}</label>}
       <input
         id={inputId}
         {...register}
         {...props}
-        className={`w-full h-12 px-4 text-gray-900 bg-gray-100 border rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all ${
-          error ? "border-red-500" : "border-gray-200"
+        className={`w-full px-3 py-2.5 text-foreground border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
+          error ? "border-warn/48" : "border-border"
         }`}
       />
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-warn">{error}</p>}
     </div>
   );
 }

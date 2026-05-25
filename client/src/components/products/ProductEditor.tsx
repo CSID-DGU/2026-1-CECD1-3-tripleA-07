@@ -80,39 +80,46 @@ export default function ProductEditor({
     onSave(productData);
   };
 
-  if (!product && !isNew) {
-    return (
-      <section className="flex flex-col items-center justify-center h-full p-8 bg-gray-50/50 border-l border-gray-200 text-gray-400">
-        {/* Placeholder content unchanged */}
-        <p className="text-lg font-medium text-center">상품을 선택하거나 <br /> 새 상품을 추가해주세요.</p>
-      </section>
-    );
-  }
+  // InspectorPanel이 product와 isNew 검증 로직을 담당하도록 변경되어 해당 코드는 현재 도달할 수 없는 코드라 주석처리함.
+  // if (!product && !isNew) {
+  //   return (
+  //     <section className="flex flex-col items-center justify-center h-full p-8 bg-gray-50/50 border-l border-gray-200 text-gray-400">
+  //       <p className="text-lg font-medium text-center">상품을 선택하거나 <br /> 새 상품을 추가해주세요.</p>
+  //     </section>
+  //   );
+  // }
 
   return (
-    <section className="flex flex-col h-full bg-gray-50/50 border-l border-gray-200 overflow-y-auto">
-      <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+    <section className="flex flex-col h-full overflow-y-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
         <PageHeader
           title="상품 상세정보"
-          subtitle={product ? `상품 ID: ${product.id}` : undefined}
           actions={[
             ...(!isNew ? [
-              <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-12 px-6">
-                변경사항 되돌리기
+              <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-10 px-5">
+                변경사항 취소
               </Button>
-            ] : []),
-            <Button key="submit" type="submit" className="h-12 px-6">
-              {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
+            ] : [
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => onCancel?.()}
+                className="h-10"
+              >
+                상품 등록 취소
+              </Button>
+            ]),
+            ,
+            <Button key="submit" type="submit" className="h-10 px-5">
+              {isNew ? "등록" : "저장"}
             </Button>,
           ]}
         />
 
-        <ProductImage 
-            imageUrl={watch("imageUrl")} 
-            name={watch("name")} 
-            register={register("imageUrl")} 
-            error={errors.imageUrl?.message} 
-        />
+        <p className="test-sm font-medium text-foreground/48">
+          {product ? `상품 ID: ${product.id}` : undefined}
+        </p>
+        
         <ProductForm 
             register={register} 
             errors={errors} 
@@ -120,16 +127,25 @@ export default function ProductEditor({
             onDescriptionChange={(e) => setValue("description", e.target.value)} 
         />
 
-        <div className="pt-12">
-          <Button
-            type="button"
-            variant="danger"
-            onClick={() => isNew ? onCancel?.() : onDelete(product!.id)}
-            className="w-full h-14"
-          >
-            {isNew ? "상품 등록 취소하기" : "상품 삭제하기"}
-          </Button>
-        </div>
+        <ProductImage 
+          imageUrl={watch("imageUrl")} 
+          name={watch("name")} 
+          register={register("imageUrl")} 
+          error={errors.imageUrl?.message} 
+        />
+
+        {!isNew && (
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              variant="danger"
+              onClick={() => onDelete(product!.id)}
+              className="h-10"
+            >
+              상품 삭제하기
+            </Button>
+          </div>
+        )}
       </form>
     </section>
   );
