@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import ProductTable from "@/components/products/ProductTable";
 import { Product } from "@/types/product";
 import { SortType, productService } from "@/services/productService";
@@ -21,7 +21,7 @@ export default function ProductDashboardClient({
   searchTerm: initialSearch,
   sortType: initialSort,
 }: ProductDashboardClientProps) {
-  const { open, state } = useInspector();
+  const { open, state, registerOnSaved } = useInspector();
 
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [totalPages, setTotalPages] = useState(initialTotalPages);
@@ -29,6 +29,10 @@ export default function ProductDashboardClient({
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [sortType, setSortType] = useState<SortType>(initialSort);
   const [isLoading, setIsLoading] = useState(false);
+
+  const searchTermRef = useRef(initialSearch);
+  const currentPageRef = useRef(initialPage);
+  const sortTypeRef = useRef(initialSort);
 
   const selectedProductId =
     state?.type === "product" && state.product !== null ? state.product.id : null;
@@ -46,20 +50,29 @@ export default function ProductDashboardClient({
     }
   }, []);
 
+  useEffect(() => {
+    registerOnSaved(() => fetchProducts(searchTermRef.current, currentPageRef.current, sortTypeRef.current));
+  }, [registerOnSaved, fetchProducts]);
+
   const handleSearch = useCallback((term: string) => {
+    searchTermRef.current = term;
     setSearchTerm(term);
     setCurrentPage(0);
+    currentPageRef.current = 0;
     fetchProducts(term, 0, sortType);
   }, [fetchProducts, sortType]);
 
   const handlePageChange = useCallback((page: number) => {
+    currentPageRef.current = page;
     setCurrentPage(page);
     fetchProducts(searchTerm, page, sortType);
   }, [fetchProducts, searchTerm, sortType]);
 
   const handleSortChange = useCallback((sort: SortType) => {
+    sortTypeRef.current = sort;
     setSortType(sort);
     setCurrentPage(0);
+    currentPageRef.current = 0;
     fetchProducts(searchTerm, 0, sort);
   }, [fetchProducts, searchTerm]);
 

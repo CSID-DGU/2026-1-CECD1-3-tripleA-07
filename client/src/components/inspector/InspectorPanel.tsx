@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import { useRouter } from "next/navigation";
 import { useInspector } from "@/contexts/InspectorContext";
 import ProductEditor from "@/components/products/ProductEditor";
 import HistoryDetail from "@/components/inspector/HistoryDetail";
@@ -8,8 +7,7 @@ import { productService } from "@/services/productService";
 import { Product } from "@/types/product";
 
 export default function InspectorPanel() {
-  const router = useRouter();
-  const { state, close } = useInspector();
+  const { state, close, onSaved } = useInspector();
 
   const handleSaveProduct = async (updatedProduct: Product) => {
     try {
@@ -29,7 +27,7 @@ export default function InspectorPanel() {
         });
         alert("변경사항이 저장되었습니다.");
       }
-      router.refresh();
+      onSaved();
     } catch (error) {
       console.error("Failed to save product:", error);
       alert("저장에 실패했습니다.");
@@ -41,7 +39,7 @@ export default function InspectorPanel() {
       try {
         await productService.deleteProduct(id);
         close();
-        router.refresh();
+        onSaved();
       } catch (error) {
         console.error("Failed to delete product:", error);
         alert("삭제에 실패했습니다.");
