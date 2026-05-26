@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api.v1.router import router as v1_router
+from app.util.db_pool import close_pool
 
 
 # =========================
@@ -30,6 +31,7 @@ async def lifespan(app: FastAPI):
     yield
 
     logger.info("Shutting down AI Agent Server...")
+    close_pool()
 
 
 # =========================

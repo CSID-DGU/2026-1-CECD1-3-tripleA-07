@@ -1,5 +1,9 @@
+import json
+
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
+from app.util.db_pool import get_connection, search_vectordb
+from app.util.embedding_model import embed_document
 
 # -------------------------
 # CATEGORY TONE GUIDE
@@ -80,91 +84,6 @@ DEFAULT_TONE = {
 }
 
 # -------------------------
-# FEW-SHOT EXAMPLES
-# -------------------------
-FEW_SHOT_NEW = """
-아래는 출력 예시입니다. 반드시 동일한 JSON 구조로 출력하세요.
-
-[예시 1 - 신규 상품 / 일본 나고야 / 좌석 여유]
-{
-  "location_tag": "일본 나고야",
-  "title": "일본 전문가가 추천하는 나고야! 🚌",
-  "body": "@@야야 여기 알아? 🫢 
-도쿄 오사카 말고 진짜 현지인들만 아는 나고야 소도시 🌿
-흰 벽 오래된 찻집에서 마시는 말차 한 잔, ☕
-기차 타고 30분이면 나오는 고즈넉한 골목들..
-복잡한 대도시 여행 질린 사람한테 딱인 곳이야. 🚌
-출시 특가 89만원, 지금 자리 잡아야 해!
-〰️
-@triplea 팔로우하고
-느좋 여행지 정보 얻기!",
-  "cta": "👉 프로필 링크 타고 나고야 투어 예약하기!",
-  "hashtags": ["#일본여행", "#나고야여행", "#일본소도시", "#직장인여행", "#여행스타그램", "#가성비여행", "#먹스타그램", "#일탈"]
-}
-
-[예시 2 - 신규 상품 / 아시아 몽골 / 마감 임박]
-{
-  "location_tag": "아시아 몽골",
-  "title": "젊을 때 무조건 가봐야할 여행지 몽골 📂🍀",
-  "body": "@@야야 같이 가자 ㅋㅋ
-언젠가 같이 떠날 친구에게 공유하세요
-입시, 취준, 회사생활 등등으로 지친 우리네 인생 ..🫩
-별이 쏟아지는 하늘 아래로 떠나자! 💫🚌
-비행기표 가격 보고 조용히 뒤로가기 눌렀던 사람들 주목 👀
-지갑 사정 봐주는 단독 특가, 단 10자리 남았어요
-〰️
-@triplea 팔로우하고
-느좋 여행지 정보 얻기!",
-  "cta": "📂 저장해두고 언젠가 꼭 가보기!!",
-  "hashtags": ["#몽골", "#몽골여행", "#청춘", "#청춘여행", "#우정여행", "#여행지추천"]
-}
-"""
-
-FEW_SHOT_DISCOUNT = """
-아래는 출력 예시입니다. 반드시 동일한 JSON 구조로 출력하세요.
-
-[예시 1 - 할인 상품 / 유럽 파리 / 좌석 여유]
-{
-  "location_tag": "유럽 파리",
-  "title": "파리 여행 할인떴다..🤍",
-  "body": "@@야야 이거 봐봐 진짜 ㄷㄷ
-같이 파리 가고싶은 친구 태그🍀
-원래도 50만원 할인된 370만원이었는데 339만원으로 또 내렸어!
-이런 기회 다신 없을걸...🥺
-31만원 아낀 걸로 센 강변 카페에서 크루아상이랑 커피 실컷 마실 수 있겠다 ☕
-꽃 도매시장 프라이빗 투어에 디저트 클래스까지 있어서
-흔한 파리 여행이랑 달라.
-진짜 얼마나 느좋일지 감도 안 옴 ..💦
-잔여 좌석 있을 때 빨리 잡아야 해!
-〰️
-@triplea 팔로우하고
-느좋 여행지 정보 얻기!
-",
-  "cta": "💌지금 바로 프로필 링크에서
-구경하고 예약하기!",
-  "hashtags": ["#파리", "#파리여행", "#프랑스여행", "#파리투어", "#유럽여행", "#에펠탑", "#신혼여행", "#버킷리스트"]
-}
-
-[예시 2 - 할인 상품 / 한국 제주도 / 마감 임박]
-{
-  "location_tag": "한국 제주도",
-  "title": "제주도 69만원으로 갈 수 있어?! 📂🫧",
-  "body": "@@야야 여기 지금 당장 가야해 ..
-같이 제주도 가고 싶은 친구 태그 🤍
-100만원짜리 제주도 여행이 69만원으로 내렸어, 31만원 아끼는 거야 👀
-한라산 공기 마시면서 흑돼지 구워먹기와
-성산일출봉 올라가서 보는 아침 바다
-진짜 잊을 수가 없다고
-근데 잔여 12석이라 오늘 안에 마감될 것 같아, 빨리 봐! ‧∘˳°∗˚ 🐄🍀
-〰️
-@triplea 팔로우하고
-느좋 여행지 정보 얻기!",
-  "cta": "👉 12석 마감 전에 지금 바로 예약하기!",
-  "hashtags": ["#제주도", "#제주", "#제주여행", "#제주가볼만한곳", "#제주핫플레이스","#효도여행", "#커플여행", "#가족여행"]
-}
-"""
-
-# -------------------------
 # SYSTEM PROMPT
 # -------------------------
 SYSTEM_PROMPT = """
@@ -202,7 +121,6 @@ SYSTEM_PROMPT = """
 }
 """
 
-
 # -------------------------
 # URGENCY SUFFIX BUILDER  ← 후처리로 body에 붙이는 방식
 # -------------------------
@@ -221,6 +139,21 @@ def build_user_prompt(
         product_new: Product,
         product_old: Product | None,
 ) -> str:
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        text, vec = embed_document(product_new)
+        # 벡터 검색을 통해 데이터 조회
+        search_vectordb(cursor, event_type, vec)
+
+        result_list = cursor.fetchall()
+        # few_shot 예시 정보를 가져와 생성
+        few_shot = ""
+        for elem in result_list:
+            few_shot += json.dumps(elem[1], ensure_ascii=False)
+    finally:
+        conn.close()
 
     # 1) 카테고리별 톤 가이드 주입
     tone = CATEGORY_TONE_GUIDE.get(product_new.category, DEFAULT_TONE)
@@ -248,7 +181,6 @@ def build_user_prompt(
 
     # 3) 이벤트별 핵심 지시 (urgency 지시 제거 — 후처리로 처리)
     if event_type == EventType.NEW:
-        few_shot   = FEW_SHOT_NEW
         event_rule = f"""
 ## 이번 요청: 신규 상품 출시 포스트
 - body는 반드시 "@@야야" 또는 "@@[친구 태그 유도]" 로 시작할 것
@@ -260,7 +192,6 @@ def build_user_prompt(
 - location_tag는 반드시 포함할 것: "{location_tag_hint}"
 """
     elif event_type == EventType.DISCOUNT:
-        few_shot   = FEW_SHOT_DISCOUNT
         event_rule = f"""
 ## 이번 요청: 가격 인하 할인 포스트
 - body는 반드시 "@@야야" 또는 "@@[친구 태그 유도]" 로 시작할 것
