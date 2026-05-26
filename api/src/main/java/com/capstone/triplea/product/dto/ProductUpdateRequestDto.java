@@ -36,7 +36,7 @@ public class ProductUpdateRequestDto {
     private Integer quantity;
 
     // 선택값: null 허용
-    @Size(max = 500, message = "상품 설명은 500자 이하")
+    @Size(max = 1500, message = "상품 설명은 1500자 이하")
     private String description;
 
     @URL(message = "URL 형식 필수")
