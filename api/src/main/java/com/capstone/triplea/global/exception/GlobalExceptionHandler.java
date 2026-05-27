@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@RestControllerAdvice
+@RestControllerAdvice   // 모든 컨트롤러의 예외를 한 곳에서 처리
 public class GlobalExceptionHandler {
 
     // 404: 존재하지 않는 상품
@@ -22,9 +23,20 @@ public class GlobalExceptionHandler {
     // 400: @Valid 유효성 검증 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldErrors().stream()
+        // 필드 에러 (@NotNull, @Min 등)
+        String fieldErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(","));
+
+        // 글로벌 에러 (@ValidPriceRange)
+        String globalErrors = e.getBindingResult().getGlobalErrors().stream()
+                .map(error -> error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
+
+        String message = Stream.of(fieldErrors, globalErrors)
+                .filter(s -> !s.isBlank())
+                .collect(Collectors.joining(", "));
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }
