@@ -12,11 +12,9 @@ import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 
-interface ProductEditorProps {
-  product: Product | null;
-  onCancel?: () => void;
-  isNew?: boolean;
-}
+type ProductEditorProps =
+  | { isNew: true; product?: never; onCancel?: () => void }
+  | { isNew?: false; product: Product; onCancel?: () => void };
 
 export default function ProductEditor({
   product,
@@ -77,7 +75,8 @@ export default function ProductEditor({
         await productService.createProduct(data as Product);
         alert("상품이 등록되었습니다.");
       } else {
-        await productService.updateProduct(product!.id, data as Product);
+        if (!product) return;
+        await productService.updateProduct(product.id, data as Product);
         alert("변경사항이 저장되었습니다.");
       }
       onSaved();
@@ -89,9 +88,9 @@ export default function ProductEditor({
   };
 
   const handleDelete = async () => {
-    if (!confirm("정말 이 상품을 삭제하시겠습니까?")) return;
+    if (!product || !confirm("정말 이 상품을 삭제하시겠습니까?")) return;
     try {
-      await productService.deleteProduct(product!.id);
+      await productService.deleteProduct(product.id);
       onSaved();
       close();
     } catch (error) {
@@ -129,7 +128,6 @@ export default function ProductEditor({
                 상품 등록 취소
               </Button>
             ]),
-            ,
             <Button key="submit" type="submit" form="product-editor-form" className="h-10 px-5">
               {isNew ? "등록" : "저장"}
             </Button>,
