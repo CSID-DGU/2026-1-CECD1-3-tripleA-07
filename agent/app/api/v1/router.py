@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
 from app.service.marketing import product_marketing
+from app.service.review import product_reviewing
 from app.util.discord_logger import discord_send_message
 
 router = APIRouter(
@@ -25,6 +26,10 @@ class AgentEventRequest(BaseModel):
 
     # 샘플 적용 여부
     is_sample: bool = Field(alias="isSample", default=False)
+
+class ReviewRequest(AgentEventRequest):
+    # 마케팅 json 데이터
+    marketing_json: str = Field(alias="marketingJson")
 
 # TODO: 백엔드 마이그레이션 이후 제거
 # 백엔드를 위해 기존 엔드포인트 유지함
@@ -71,6 +76,19 @@ async def start_agent_flow(body: AgentEventRequest):
         "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
         9109759
     )
+    # 임시 return 값
+    return {
+        "eventType": body.event_type,
+        "productId": body.product_id,
+        "productNew": body.product_new,
+        "productOld": body.product_old,
+        "aiResponse": ai_response
+    }
+
+# 테스트를 위한 엔드포인트
+@router.post("/review")
+async def start_review_flow(body: ReviewRequest):
+    ai_response: str = await product_reviewing(body.event_type, body.is_sample, body.product_new, body.product_old, body.marketing_json)
     # 임시 return 값
     return {
         "eventType": body.event_type,
