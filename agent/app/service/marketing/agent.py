@@ -6,9 +6,9 @@ from openai.types.chat import ChatCompletion
 
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
-from app.service.prompts import SYSTEM_PROMPT, build_user_prompt
-from app.service.tools import TOOLS, TOOL_MAP
-from app.service.product_samples import PRODUCT_SAMPLES
+from app.service.marketing.prompts import SYSTEM_PROMPT, build_user_prompt
+from app.service.marketing.tools import TOOLS, TOOL_MAP
+from app.service.marketing.product_samples import PRODUCT_SAMPLES
 
 load_dotenv()
 

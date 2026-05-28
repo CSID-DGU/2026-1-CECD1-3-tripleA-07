@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
-from app.service import product_marketing
+from app.service.marketing import product_marketing
 from app.util.discord_logger import discord_send_message
 
 router = APIRouter(
