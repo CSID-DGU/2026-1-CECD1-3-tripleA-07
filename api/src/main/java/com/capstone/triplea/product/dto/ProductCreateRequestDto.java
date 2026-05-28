@@ -1,5 +1,6 @@
 package com.capstone.triplea.product.dto;
 
+import com.capstone.triplea.common.validator.GreaterThan;
 import com.capstone.triplea.common.validator.PriceRangeValidatable;
 import com.capstone.triplea.common.validator.ValidPriceRange;
 import jakarta.validation.constraints.*;
@@ -15,8 +16,12 @@ price는 listPrice와 discountRate로 서버에서 계산하기 때문에 받지
 
 @Getter
 @Setter
-@ValidPriceRange
-public class ProductCreateRequestDto implements PriceRangeValidatable {
+@GreaterThan(
+        field = "listPrice",
+        comparedField = "price",
+        message = "판매가는 정가 이하여야 합니다"
+)
+public class ProductCreateRequestDto {
     @NotBlank(message = "상품명 입력 필수")
     @Length(max = 255)
     private String name;

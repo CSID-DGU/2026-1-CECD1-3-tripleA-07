@@ -1,5 +1,6 @@
 package com.capstone.triplea.product.dto;
 
+import com.capstone.triplea.common.validator.GreaterThan;
 import com.capstone.triplea.common.validator.PriceRangeValidatable;
 import com.capstone.triplea.common.validator.ValidPriceRange;
 import jakarta.validation.constraints.Min;
@@ -18,8 +19,12 @@ import org.hibernate.validator.constraints.URL;
 
 @Getter
 @Setter
-@ValidPriceRange
-public class ProductUpdateRequestDto implements PriceRangeValidatable {
+@GreaterThan(
+        field = "listPrice",
+        comparedField = "price",
+        message = "판매가는 정가 이하여야 합니다"
+)
+public class ProductUpdateRequestDto {
 
     // 필수값: null 비허용
     @NotNull(message = "상품명은 필수")

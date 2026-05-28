@@ -23,18 +23,9 @@ public class GlobalExceptionHandler {
     // 400: @Valid 유효성 검증 실패
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
-        // 필드 에러 (@NotNull, @Min 등)
-        String fieldErrors = e.getBindingResult().getFieldErrors().stream()
+        // 필드 에러
+        String message = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining(","));
-
-        // 글로벌 에러 (@ValidPriceRange)
-        String globalErrors = e.getBindingResult().getGlobalErrors().stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        String message = Stream.of(fieldErrors, globalErrors)
-                .filter(s -> !s.isBlank())
                 .collect(Collectors.joining(", "));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
