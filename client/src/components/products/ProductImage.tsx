@@ -28,7 +28,7 @@ export function ProductImage({ imageUrl, name, register, error }: ProductImagePr
       <Input
         register={register}
         error={error}
-        placeholder="이미지 URL을 입력하세요"
+        placeholder="이미지 URL을 입력해주세요."
       />
     </div>
   );

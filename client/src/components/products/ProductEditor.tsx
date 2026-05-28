@@ -44,6 +44,8 @@ export default function ProductEditor({
   });
 
   const description = watch("description");
+  const listPrice = watch("listPrice");
+  const price = watch("price");
 
   useEffect(() => {
     if (product) {
@@ -145,6 +147,9 @@ export default function ProductEditor({
             errors={errors}
             description={description}
             onDescriptionChange={(e) => setValue("description", e.target.value)}
+            listPrice={listPrice}
+            price={price}
+            onPriceChange={(newPrice) => setValue("price", newPrice)}
         />
 
         <ProductImage
