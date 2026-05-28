@@ -89,6 +89,13 @@ public class ProductService {
         return result.map(productMapper::toDto);
     }
 
+    // ADM_PRD: 상품 단건 조회
+    @Transactional(readOnly = true)
+    public ProductResponseDto getProductById(Long id) {
+        Product product = findProductThrow(id);
+        return productMapper.toDto(product);
+    }
+
     // 공통: 없으면 404
     private Product findProductThrow(Long id) {
         return productRepository.findById(id)

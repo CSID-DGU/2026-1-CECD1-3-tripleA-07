@@ -88,4 +88,17 @@ public class ProductController {
     ) {
         return ResponseEntity.ok(productService.getProducts(keyword, sort, page, size));
     }
+
+    // ADM_PRD: GET api/v1/products/{id} - 상품 단건 조회
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "상품 단건 조회",
+            description = "상품 ID로 특정 상품 조회를 수행하는 API"
+    )
+    @ApiResponse(responseCode = "200", description = "상품 조회 성공")
+    @ApiResponse(responseCode = "404", description = "상품 조회 실패")
+    public ResponseEntity<ProductResponseDto> getProductById(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }
