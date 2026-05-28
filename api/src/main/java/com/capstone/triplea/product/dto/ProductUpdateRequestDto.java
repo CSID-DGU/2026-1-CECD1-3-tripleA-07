@@ -1,5 +1,6 @@
 package com.capstone.triplea.product.dto;
 
+import com.capstone.triplea.common.validator.GreaterThan;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,11 @@ import org.hibernate.validator.constraints.URL;
 
 @Getter
 @Setter
+@GreaterThan(
+        field = "listPrice",
+        comparedField = "price",
+        message = "판매가는 정가 이하여야 합니다"
+)
 public class ProductUpdateRequestDto {
 
     // 필수값: null 비허용
@@ -24,7 +30,7 @@ public class ProductUpdateRequestDto {
     private String name;
 
     @NotNull(message = "정가는 필수")
-    @Min(value = 0, message = "정가는 0 이상")
+    @Min(value = 1, message = "정가는 1 이상")
     private Integer listPrice;
 
     @NotNull(message = "판매가는 필수")
@@ -36,7 +42,7 @@ public class ProductUpdateRequestDto {
     private Integer quantity;
 
     // 선택값: null 허용
-    @Size(max = 500, message = "상품 설명은 500자 이하")
+    @Size(max = 1500, message = "상품 설명은 1500자 이하")
     private String description;
 
     @URL(message = "URL 형식 필수")

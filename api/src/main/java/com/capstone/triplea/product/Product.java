@@ -28,7 +28,7 @@ public class Product {
     @Column(name="name", nullable = false)
     private String name;          // 상품명
 
-    @Column(name="description")
+    @Column(name="description", length = 1500)
     private String description;   // 상품 설명
 
     @Column(name="list_price", nullable = false)
