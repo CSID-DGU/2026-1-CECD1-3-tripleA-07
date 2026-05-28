@@ -69,6 +69,21 @@ async def start_agent_flow(body: AgentEventRequest):
         7855479
     )
     ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
+    # 생성 완료 메시지 출력
+    discord_send_message(
+        "✨ Marketing Content Generated",
+        ai_response,
+        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        9109759
+    )
+    ai_response = await product_reviewing(body.event_type, body.is_sample, body.product_new, body.product_old, ai_response)
+    # 검수 완료 메시지 출력
+    discord_send_message(
+        "🔍 Content reviewed and re-generated",
+        ai_response,
+        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        9109759
+    )
     # SNS 발행 메시지 출력
     discord_send_message(
         "📢 SNS Publishing Completed",
