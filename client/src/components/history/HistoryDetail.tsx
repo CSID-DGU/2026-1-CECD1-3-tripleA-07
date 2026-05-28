@@ -17,10 +17,10 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
           title="광고 상세 정보"
           actions={[]}
         />
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground/48">광고 ID: {history.id}</p>
-          <p className="text-sm font-medium text-foreground/48">발행일: {history.createdAt}</p>
-        </div>
+        <p className="text-sm font-medium text-foreground/48">
+          광고 ID: {history.id} <br/>
+          발행일: {history.createdAt}
+        </p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
