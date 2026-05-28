@@ -1,7 +1,6 @@
 import os
 import json
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletion
 
 from app.common.enum.event_type import EventType
@@ -9,20 +8,15 @@ from app.common.dto.product import Product
 from app.service.marketing.prompts import SYSTEM_PROMPT, build_user_prompt
 from app.service.marketing.tools import TOOLS, TOOL_MAP
 from app.service.marketing.product_samples import PRODUCT_SAMPLES
+from app.util.ai_client import get_ai_client
 
 load_dotenv()
 
-AI_ENDPOINT = os.getenv("AI_ENDPOINT")
-AI_API_KEY = os.getenv("AI_API_KEY")
 AI_MODEL = os.getenv("AI_MODEL")
 
 POKE_API_URL = os.getenv("POKE_API_URL")
 
-# OpenAI async client
-client = AsyncOpenAI(
-    api_key=AI_API_KEY,
-    base_url=AI_ENDPOINT
-)
+client = get_ai_client()
 
 async def run_with_tools(response: ChatCompletion, messages: list):
     message = response.choices[0].message
