@@ -33,7 +33,7 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
         
         <div className="p-4 rounded-xl space-y-5 border border-border">
           <div className="space-y-2">
-            <p className="text-base font-regular text-foreground">
+            <p className="text-base font-normal text-foreground">
               상품 ID
             </p>
             <p className="text-2xl font-medium text-foreground">
@@ -47,14 +47,14 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
             게시물 링크
           </p>
           <div className="space-y-2">
-            <p className="text-base font-regular text-foreground">
+            <p className="text-base font-normal text-foreground">
               facebook
             </p>
             <a
               href={history.adUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 w-full h-10 bg-primary/16 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
+              className="px-3 w-full h-10 bg-primary/12 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
             >
               <p className="truncate min-w-0">
                 {history.adUrl}
@@ -68,7 +68,7 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
           <p className="text-xl font-medium text-foreground">
             게시물 미리보기
           </p>
-          <div className="px-3 py-3 w-full rounded-xl bg-info text-base text-foreground font-regular">
+          <div className="px-3 py-3 w-full rounded-xl bg-info text-base text-foreground font-normal">
             {history.adContent}
           </div>
         </div>

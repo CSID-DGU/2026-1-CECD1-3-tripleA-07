@@ -4,38 +4,23 @@ import HistoryDashboardClient from "@/components/history/HistoryDashboardClient"
 import { AdHistory } from "@/types/history";
 import { MOCK_HISTORIES } from "@/mocks/historyMocks";
 
-interface PageProps {
-  searchParams: Promise<{ page?: string }>;
-}
-
-async function HistoryDataFetcher({ page }: { page: number }) {
+async function HistoryDataFetcher() {
   let content: AdHistory[] = MOCK_HISTORIES;
-  let totalPages = 1;
 
   try {
-    const data = await historyService.getHistories(page, 20);
+    const data = await historyService.getHistories(0, 100);
     content = data.content;
-    totalPages = data.totalPages;
   } catch {
     // 백엔드 미완성 시 목업 데이터로 fallback
   }
 
-  return (
-    <HistoryDashboardClient
-      initialHistories={content}
-      initialTotalPages={totalPages}
-      currentPage={page}
-    />
-  );
+  return <HistoryDashboardClient initialHistories={content} />;
 }
 
-export default async function HistoryPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const page = Math.max(0, Math.floor(Number(params.page) || 0));
-
+export default async function HistoryPage() {
   return (
     <Suspense fallback={<div className="flex-1 flex items-center justify-center">광고 발행 이력을 불러오는 중...</div>}>
-      <HistoryDataFetcher page={page} />
+      <HistoryDataFetcher />
     </Suspense>
   );
 }

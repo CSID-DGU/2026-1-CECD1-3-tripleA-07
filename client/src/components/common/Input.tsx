@@ -13,13 +13,13 @@ export function Input({ label, register, error, suffix, ...props }: InputProps) 
 
   return (
     <div className="space-y-2">
-      {label && <label htmlFor={inputId} className="block text-base font-regular text-foreground">{label}</label>}
+      {label && <label htmlFor={inputId} className="block text-base font-normal text-foreground">{label}</label>}
       <div className="relative">
         <input
           id={inputId}
           {...register}
           {...props}
-          className={`w-full px-3 py-2 text-foreground font-regular border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
+          className={`w-full px-3 py-2 text-foreground font-normal border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
             suffix ? "pr-8" : ""
           } ${error ? "border-warn/48" : "border-border"}`}
         />

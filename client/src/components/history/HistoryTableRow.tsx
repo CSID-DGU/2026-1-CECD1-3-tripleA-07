@@ -20,7 +20,7 @@ export function HistoryTableRow({ history, isSelected, onSelect }: HistoryTableR
     <tr
       onClick={() => onSelect(history.id)}
       className={`cursor-pointer transition-all h-11 ${
-        isSelected ? "bg-primary/16 [&_td]:text-primary" : "hover:bg-info row-divider"
+        isSelected ? "bg-primary/12 [&_td]:text-primary [&_td]:font-medium" : "hover:bg-info row-divider"
       }`}
     >
       <TableCell>{history.id}</TableCell>

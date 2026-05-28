@@ -129,7 +129,7 @@ export default function ProductTable({
               onKeyDown={handleKeyDown}
               onCompositionStart={handleCompositionStart}
               onCompositionEnd={handleCompositionEnd}
-              className="w-full h-10 pl-11 pr-9 border border-border rounded-xl outline-none focus:ring-2 focus:ring-primary/48 transition-all text-foreground placeholder:text-foreground/48 font-regular"
+              className="w-full h-10 pl-11 pr-9 border border-border rounded-xl outline-none focus:ring-2 focus:ring-primary/48 transition-all text-foreground placeholder:text-foreground/48 font-normal"
             />
             {localSearchTerm && (
               <button
@@ -205,9 +205,9 @@ export default function ProductTable({
               <button
                 key={p}
                 onClick={() => onPageChange(p)}
-                className={`w-7 h-7 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
+                className={`w-7 h-7 flex items-center justify-center rounded-md text-sm font-normal transition-all ${
                   p === currentPage
-                    ? "bg-primary text-surface"
+                    ? "bg-primary/12 text-primary"
                     : "text-foreground hover:bg-info"
                 }`}
               >

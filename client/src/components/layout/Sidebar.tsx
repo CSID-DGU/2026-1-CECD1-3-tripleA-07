@@ -23,7 +23,7 @@ export default function Sidebar() {
     <aside className="w-66 h-full px-4 py-9 flex flex-col bg-canvas shrink-0 space-y-4">
       <div className="">
         <h1 className="text-2xl font-bold text-primary">tripleA</h1>
-        <p className="text-sm font-regular text-foreground">여행사</p>
+        <p className="text-sm font-normal text-foreground">여행사</p>
       </div>
 
       <nav className="flex-1 overflow-y-auto">

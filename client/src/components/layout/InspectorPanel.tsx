@@ -17,13 +17,10 @@ export default function InspectorPanel() {
         </p>
       ) : state.type === "history" ? (
         <HistoryDetail key={state.history.id} history={state.history} />
+      ) : state.product === null ? (
+        <ProductEditor key="new" isNew onCancel={close} />
       ) : (
-        <ProductEditor
-          key={state.product === null ? "new" : state.product.id}
-          product={state.product}
-          isNew={state.product === null}
-          onCancel={close}
-        />
+        <ProductEditor key={state.product.id} product={state.product} onCancel={close} />
       )}
     </div>
   );
