@@ -1,18 +1,6 @@
 import React from "react";
 import { Product } from "@/types/product";
-
-interface TableCellProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export function TableCell({ children, className = "" }: TableCellProps) {
-  return (
-    <td className={`px-4 py-3 text-sm font-regular text-foreground truncate first:rounded-l-xl last:rounded-r-xl ${className}`}>
-      {children}
-    </td>
-  );
-}
+import { TableCell } from "@/components/common/TableCell";
 
 interface ProductTableRowProps {
   product: Product;
@@ -25,7 +13,7 @@ export function ProductTableRow({ product, isSelected, onSelect }: ProductTableR
     <tr
       onClick={() => onSelect(product.id)}
       className={`cursor-pointer transition-all h-11 ${
-        isSelected ? "bg-primary/16" : "hover:bg-info row-divider"
+        isSelected ? "bg-primary/16 [&_td]:text-primary" : "hover:bg-info row-divider"
       }`}
     >
       <TableCell>{product.id}</TableCell>

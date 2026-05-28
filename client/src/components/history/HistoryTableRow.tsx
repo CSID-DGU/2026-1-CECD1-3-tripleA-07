@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import { AdHistory } from "@/types/history";
-import { TableCell } from "@/components/products/ProductTableRow";
+import { TableCell } from "@/components/common/TableCell";
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   NEW: "신규 출시",
@@ -20,7 +20,7 @@ export function HistoryTableRow({ history, isSelected, onSelect }: HistoryTableR
     <tr
       onClick={() => onSelect(history.id)}
       className={`cursor-pointer transition-all h-11 ${
-        isSelected ? "bg-primary/16" : "hover:bg-info row-divider"
+        isSelected ? "bg-primary/16 [&_td]:text-primary" : "hover:bg-info row-divider"
       }`}
     >
       <TableCell>{history.id}</TableCell>
