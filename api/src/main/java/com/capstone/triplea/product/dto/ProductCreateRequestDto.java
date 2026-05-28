@@ -1,8 +1,6 @@
 package com.capstone.triplea.product.dto;
 
 import com.capstone.triplea.common.validator.GreaterThan;
-import com.capstone.triplea.common.validator.PriceRangeValidatable;
-import com.capstone.triplea.common.validator.ValidPriceRange;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
