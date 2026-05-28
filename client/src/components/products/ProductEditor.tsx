@@ -136,7 +136,7 @@ export default function ProductEditor({
           ]}
         />
 
-        <p className="test-sm font-medium text-foreground/48">
+        <p className="text-sm font-medium text-foreground/48">
           {product ? `상품 ID: ${product.id}` : undefined}
         </p>
       </div>
