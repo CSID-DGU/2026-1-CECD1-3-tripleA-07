@@ -17,6 +17,10 @@ from .ai_client import (
     close_ai_client
 )
 
+from .sns_adapter import (
+    get_facebook_feed_url
+)
+
 __all__ = [
     "discord_send_message",
     "get_connection",
@@ -24,5 +28,6 @@ __all__ = [
     "search_vectordb",
     "embed_document",
     "get_ai_client",
-    "close_ai_client"
+    "close_ai_client",
+    "get_facebook_feed_url"
 ]
