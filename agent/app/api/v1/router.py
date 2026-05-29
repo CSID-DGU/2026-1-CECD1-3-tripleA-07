@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
@@ -6,6 +8,7 @@ from app.common.dto.product import Product
 from app.service.marketing import product_marketing
 from app.service.review import product_reviewing
 from app.util.discord_logger import discord_send_message
+from app.util.sns_adapter import call_facebook_api
 
 router = APIRouter(
     prefix="/api/v1/agent",
@@ -56,11 +59,19 @@ async def start_agent_flow(body: AgentEventRequest):
         "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
         9109759
     )
+    ai_response_json = json.loads(ai_response)
+    content = "\n".join([
+            ai_response_json.get("title", ""),
+            ai_response_json.get("body", ""),
+            ai_response_json.get("cta", ""),
+            " ".join(ai_response_json.get("hashtags", []))
+        ])
+    post_url = call_facebook_api(content)
     # SNS 발행 메시지 출력
     discord_send_message(
         "📢 SNS Publishing Completed",
-        ai_response,
-        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        ai_response_json.get("title", ""),
+        post_url,
         9109759
     )
     # 임시 return 값
