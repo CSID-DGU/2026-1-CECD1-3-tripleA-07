@@ -3,11 +3,12 @@ from pydantic import BaseModel, Field
 
 from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
-from app.service import product_marketing
+from app.service.marketing import product_marketing
+from app.service.review import product_reviewing
 from app.util.discord_logger import discord_send_message
 
 router = APIRouter(
-    prefix="/api/v1",
+    prefix="/api/v1/agent",
     tags=["v1"],
 )
 
@@ -26,7 +27,11 @@ class AgentEventRequest(BaseModel):
     # 샘플 적용 여부
     is_sample: bool = Field(alias="isSample", default=False)
 
-@router.post("/agent")
+class ReviewRequest(AgentEventRequest):
+    # 마케팅 json 데이터
+    marketing_json: str = Field(alias="marketingJson")
+
+@router.post("/marketing")
 async def start_agent_flow(body: AgentEventRequest):
     # 이벤트 수신 메시지 출력
     discord_send_message(
@@ -36,6 +41,21 @@ async def start_agent_flow(body: AgentEventRequest):
         7855479
     )
     ai_response: str = await product_marketing(body.event_type, body.is_sample, body.product_new, body.product_old)
+    # 생성 완료 메시지 출력
+    discord_send_message(
+        "✨ Marketing Content Generated",
+        ai_response,
+        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        9109759
+    )
+    ai_response = await product_reviewing(body.event_type, body.is_sample, body.product_new, body.product_old, ai_response)
+    # 검수 완료 메시지 출력
+    discord_send_message(
+        "🔍 Content reviewed and re-generated",
+        ai_response,
+        "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
+        9109759
+    )
     # SNS 발행 메시지 출력
     discord_send_message(
         "📢 SNS Publishing Completed",
@@ -43,6 +63,19 @@ async def start_agent_flow(body: AgentEventRequest):
         "https://github.com/CSID-DGU/2026-1-CECD1-3-tripleA-07",
         9109759
     )
+    # 임시 return 값
+    return {
+        "eventType": body.event_type,
+        "productId": body.product_id,
+        "productNew": body.product_new,
+        "productOld": body.product_old,
+        "aiResponse": ai_response
+    }
+
+# 테스트를 위한 엔드포인트
+@router.post("/review")
+async def start_review_flow(body: ReviewRequest):
+    ai_response: str = await product_reviewing(body.event_type, body.is_sample, body.product_new, body.product_old, body.marketing_json)
     # 임시 return 값
     return {
         "eventType": body.event_type,

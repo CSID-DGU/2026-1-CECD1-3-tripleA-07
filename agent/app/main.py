@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.api.v1.router import router as v1_router
 from app.util.db_pool import close_pool
+from app.util.ai_client import close_ai_client
 
 
 # =========================
@@ -32,6 +33,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("Shutting down AI Agent Server...")
     close_pool()
+    await close_ai_client()
 
 
 # =========================

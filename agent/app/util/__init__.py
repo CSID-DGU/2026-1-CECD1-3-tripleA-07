@@ -12,10 +12,17 @@ from .embedding_model import (
     embed_document
 )
 
+from .ai_client import (
+    get_ai_client,
+    close_ai_client
+)
+
 __all__ = [
     "discord_send_message",
     "get_connection",
     "close_pool",
     "search_vectordb",
-    "embed_document"
+    "embed_document",
+    "get_ai_client",
+    "close_ai_client"
 ]
