@@ -18,6 +18,16 @@ interface ProductEditorProps {
   isNew?: boolean;
 }
 
+const DEFAULT_FORM_VALUES: ProductFormValues = {
+  name: "",
+  imageUrl: "",
+  listPrice: 0,
+  price: 0,
+  category: "",
+  quantity: 0,
+  description: "",
+};
+
 export default function ProductEditor({
   product,
   onSave,
@@ -35,15 +45,7 @@ export default function ProductEditor({
     formState: { errors },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      name: "",
-      imageUrl: "",
-      listPrice: 0,
-      price: 0,
-      category: "",
-      quantity: 0,
-      description: "",
-    },
+    defaultValues: DEFAULT_FORM_VALUES,
   });
 
   const description = watch("description");
@@ -60,15 +62,7 @@ export default function ProductEditor({
         description: product.description,
       });
     } else {
-      reset({
-        name: "",
-        imageUrl: "",
-        listPrice: 0,
-        price: 0,
-        category: "",
-        quantity: 0,
-        description: "",
-      });
+      reset(DEFAULT_FORM_VALUES);
     }
   }, [product, reset]);
 
