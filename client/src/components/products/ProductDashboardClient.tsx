@@ -30,15 +30,18 @@ export default function ProductDashboardClient({
   const [isAdding, setIsAdding] = useState(false);
 
   const handleSearch = (term: string) => {
-    router.push(`/?search=${encodeURIComponent(term)}&page=0&sort=${sortType}`);
+    const params = new URLSearchParams({ search: term, page: "0", sort: sortType });
+    router.push(`/?${params}`);
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/?search=${encodeURIComponent(searchTerm)}&page=${page}&sort=${sortType}`);
+    const params = new URLSearchParams({ search: searchTerm, page: String(page), sort: sortType });
+    router.push(`/?${params}`);
   };
 
   const handleSortChange = (sort: SortType) => {
-    router.push(`/?search=${encodeURIComponent(searchTerm)}&page=0&sort=${sort}`);
+    const params = new URLSearchParams({ search: searchTerm, page: "0", sort });
+    router.push(`/?${params}`);
   };
 
   const selectedProduct = isAdding
