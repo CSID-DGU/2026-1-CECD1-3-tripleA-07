@@ -17,7 +17,7 @@ const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "QUANTITY_DESC",   label: "수량 많은 순" },
 ];
 
-const COLUMNS = ["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"] as const;
+const COLUMNS = ["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"];
 
 interface ProductTableProps {
   products: Product[];
