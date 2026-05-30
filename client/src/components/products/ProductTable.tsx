@@ -5,6 +5,7 @@ import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
+import Pagination from "../common/Pagination";
 import { ProductTableRow } from "./ProductTableRow";
 export { type Product };
 
@@ -49,28 +50,6 @@ export default function ProductTable({
     if (e.key === "Enter") {
       onSearch(localSearchTerm);
     }
-  };
-
-  /**
-   * 페이지네이션 가로폭 흔들림 방지(Layout Shift)를 위해 항상 7개의 요소 유지
-   */
-  const getPaginationItems = (current: number, total: number) => {
-    if (total <= 7) {
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // 앞부분에 붙어있을 때: [0, 1, 2, 3, 4, ..., total-1]
-    if (current < 3) {
-      return [0, 1, 2, 3, 4, -1, total - 1];
-    }
-
-    // 뒷부분에 붙어있을 때: [0, ..., total-5, total-4, total-3, total-2, total-1]
-    if (current > total - 4) {
-      return [0, -1, total - 5, total - 4, total - 3, total - 2, total - 1];
-    }
-
-    // 중간 영역일 때: [0, ..., current-1, current, current+1, ..., total-1]
-    return [0, -1, current - 1, current, current + 1, -1, total - 1];
   };
 
   return (
@@ -155,40 +134,11 @@ export default function ProductTable({
         </table>
       </div>
 
-      <nav className="flex justify-center items-center gap-1 pt-2">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 0}
-          className="h-8 px-3 rounded-lg bg-gray-200 text-gray-700 text-sm disabled:opacity-50 hover:bg-gray-300 transition-colors flex items-center justify-center"
-        >
-          이전
-        </button>
-
-        {getPaginationItems(currentPage, totalPages).map((p, i) => {
-          if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
-          return (
-            <button
-              key={p}
-              onClick={() => onPageChange(p)}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg border text-sm transition-all ${
-                p === currentPage
-                  ? "bg-[#7e62ca] border-[#7e62ca] text-white shadow-sm"
-                  : "bg-white border-gray-200 text-gray-600 hover:border-[#7e62ca]"
-              }`}
-            >
-              {p + 1}
-            </button>
-          );
-        })}
-
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1 || totalPages === 0}
-          className="h-8 px-3 rounded-lg bg-gray-200 text-gray-700 text-sm disabled:opacity-50 hover:bg-gray-300 transition-colors flex items-center justify-center"
-        >
-          다음
-        </button>
-      </nav>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </section>
   );
 }
