@@ -17,6 +17,8 @@ const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "QUANTITY_DESC",   label: "수량 많은 순" },
 ];
 
+const COLUMNS = ["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"] as const;
+
 interface ProductTableProps {
   products: Product[];
   selectedId: number | null;
@@ -109,16 +111,14 @@ export default function ProductTable({
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200">
             <tr>
-              {["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"].map(
-                (header) => (
-                  <th
-                    key={header}
-                    className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
-                  >
-                    {header}
-                  </th>
-                )
-              )}
+              {COLUMNS.map((header) => (
+                <th
+                  key={header}
+                  className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
