@@ -16,7 +16,14 @@ const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "QUANTITY_DESC",   label: "수량 많은 순" },
 ];
 
-const COLUMNS = ["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"];
+const COLUMNS: { label: string; width?: number; right?: boolean }[] = [
+  { label: "상품 ID", width: 80 },
+  { label: "상품 명" },
+  { label: "카테고리", width: 100 },
+  { label: "정가",    width: 100, right: true },
+  { label: "판매가",  width: 100, right: true },
+  { label: "수량",    width: 100, right: true },
+];
 
 interface ProductTableProps {
   products: Product[];
@@ -156,30 +163,20 @@ export default function ProductTable({
       <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
         <table className="w-full text-left table-fixed border-separate [border-spacing:0]">
           <colgroup>
-            <col style={{ width: 80 }} />
-            <col />
-            <col style={{ width: 100 }} />
-            <col style={{ width: 100 }} />
-            <col style={{ width: 100 }} />
-            <col style={{ width: 100 }} />
+            {COLUMNS.map(({ label, width }) => (
+              <col key={label} style={width ? { width } : undefined} />
+            ))}
           </colgroup>
           <thead className="sticky top-0 z-10">
             <tr className="rounded-xl">
-              {([
-                { label: "상품 ID" },
-                { label: "상품 명" },
-                { label: "카테고리" },
-                { label: "정가",  right: true },
-                { label: "판매가", right: true },
-                { label: "수량",  right: true },
-              ] as { label: string; right?: boolean }[]).map(({ label, right }) => (
-                  <th
-                    key={label}
-                    className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${right ? "text-right" : ""}`}
-                  >
-                    {label}
-                  </th>
-                ))}
+              {COLUMNS.map(({ label, right }) => (
+                <th
+                  key={label}
+                  className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${right ? "text-right" : ""}`}
+                >
+                  {label}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
