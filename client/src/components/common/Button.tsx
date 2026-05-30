@@ -13,7 +13,7 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 export function Button({ variant = 'primary', className = '', ...props }: ButtonProps) {
-  const baseStyles = 'px-5 py-2.5 rounded-xl font-bold transition-colors';
+  const baseStyles = 'px-5 py-2.5 rounded-xl font-bold transition-colors cursor-pointer';
   return (
     <button
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
