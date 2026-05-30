@@ -6,6 +6,7 @@ import ProductTable from "@/components/products/ProductTable";
 import ProductEditor from "@/components/products/ProductEditor";
 import { Product } from "@/types/product";
 import { productService, SortType } from "@/services/productService";
+import { DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 
 interface ProductDashboardClientProps {
   initialProducts: Product[];
@@ -41,7 +42,7 @@ export default function ProductDashboardClient({
   };
 
   const selectedProduct = isAdding
-    ? { id: 0, name: "", listPrice: 0, price: 0, category: "", quantity: 0, description: "", imageUrl: "" }
+    ? { id: 0, ...DEFAULT_PRODUCT_FORM_VALUES }
     : initialProducts.find((p) => p.id === selectedProductId) || null;
 
   const handleSelectProduct = (id: number) => {

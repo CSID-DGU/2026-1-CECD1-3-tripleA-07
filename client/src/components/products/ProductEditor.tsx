@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Product } from "@/types/product";
-import { productSchema, ProductFormValues } from "@/types/productSchema";
+import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
@@ -17,16 +17,6 @@ interface ProductEditorProps {
   onCancel?: () => void;
   isNew?: boolean;
 }
-
-const DEFAULT_FORM_VALUES: ProductFormValues = {
-  name: "",
-  imageUrl: "",
-  listPrice: 0,
-  price: 0,
-  category: "",
-  quantity: 0,
-  description: "",
-};
 
 export default function ProductEditor({
   product,
@@ -45,7 +35,7 @@ export default function ProductEditor({
     formState: { errors },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
-    defaultValues: DEFAULT_FORM_VALUES,
+    defaultValues: DEFAULT_PRODUCT_FORM_VALUES,
   });
 
   const description = watch("description");
@@ -62,7 +52,7 @@ export default function ProductEditor({
         description: product.description,
       });
     } else {
-      reset(DEFAULT_FORM_VALUES);
+      reset(DEFAULT_PRODUCT_FORM_VALUES);
     }
   }, [product, reset]);
 
