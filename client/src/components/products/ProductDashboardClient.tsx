@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import ProductTable from "@/components/products/ProductTable";
 import { Product } from "@/types/product";
-import { productService, SortType } from "@/services/productService";
-import { DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
+import { SortType } from "@/services/productService";
 import { useInspector } from "@/contexts/InspectorContext";
 
 interface ProductDashboardClientProps {
