@@ -99,7 +99,7 @@ export default function ProductTable({
         <select
           value={sortType}
           onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 select-chevron"
+          className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 select-chevron cursor-pointer"
         >
           {SORT_OPTIONS.map(({ value, label }) => (
             <option key={value} value={value}>{label}</option>
