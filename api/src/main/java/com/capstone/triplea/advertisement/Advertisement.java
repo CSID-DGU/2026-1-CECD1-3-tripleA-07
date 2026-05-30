@@ -39,7 +39,7 @@ public class Advertisement {
     private AdEventType eventType;  // 이벤트 유형
 
     @Column(name = "ad_url")
-    private String adUrl;           // 광고글 링크 [todo] Facebook 연동 전이기 때문에 null 허용
+    private String adUrl;           // 광고글 링크
 
     @Column(name = "ad_content", columnDefinition = "CLOB")
     private String adContent;       // 광고글 내용
