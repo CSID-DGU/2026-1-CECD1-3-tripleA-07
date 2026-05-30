@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const productSchema = z.object({
-  id: z.number().optional(),
   name: z.string().min(1, "상품명을 입력해주세요."),
   imageUrl: z.string().url({message : "유효한 url을 입력해주세요"}).or(z.literal("")),
   listPrice: z.number({ 

@@ -73,10 +73,10 @@ export default function ProductEditor({
   }, [product, reset]);
 
   const onSubmit = (data: ProductFormValues) => {
-    const productData = {
+    const productData: Product = {
       ...data,
-      id: product?.id || 0,
-    } as Product;
+      id: product?.id ?? 0,
+    };
     onSave(productData);
   };
 
