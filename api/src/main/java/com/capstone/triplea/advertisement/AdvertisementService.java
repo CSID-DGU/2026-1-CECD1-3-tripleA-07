@@ -21,17 +21,17 @@ public class AdvertisementService {
 
     // AI Agent 응답을 받아 광고 이력 저장
     @Transactional
-    public AdvertisementResponseDto save(Long productId, AdEventType eventType, String adContent) {
+    public AdvertisementResponseDto save(Long productId, AdEventType eventType, String adContent, String adUrl) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
         Advertisement advertisement = Advertisement.builder()
                 .product(product)
                 .eventType(eventType)
-                .adUrl(null)        // [todo] Facebook 연동 전 null
+                .adUrl(adUrl)
                 .adContent(adContent)
                 .build();
         Advertisement saved = advertisementRepository.save(advertisement);
-        log.info("[광고 이력 저장] id={}, productId={}, eventType={}", saved.getId(), productId, eventType);
+        log.info("[광고 이력 저장] id={}, productId={}, eventType={}, adUrl={}", saved.getId(), productId, eventType, adUrl);
 
         return AdvertisementResponseDto.from(saved);
     }
