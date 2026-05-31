@@ -7,6 +7,13 @@ import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
 import { HistoryTableRow } from "./HistoryTableRow";
 
+const COLUMNS: { label: string; width?: number; center?: boolean }[] = [
+  { label: "광고 ID",  width: 80 },
+  { label: "생성일",   width: 100 },
+  { label: "광고 내용" },
+  { label: "광고 유형", width: 100, center: true },
+];
+
 interface HistoryTableProps {
   histories: AdHistory[];
   selectedId: number | null;
@@ -81,17 +88,16 @@ export default function HistoryTable({
       <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
         <table className="w-full text-left table-fixed border-separate [border-spacing:0]">
           <colgroup>
-            <col style={{ width: 80 }} />
-            <col style={{ width: 100 }} />
-            <col />
-            <col style={{ width: 100 }} />
+            {COLUMNS.map(({ label, width }) => (
+              <col key={label} style={width ? { width } : undefined} />
+            ))}
           </colgroup>
           <thead className="sticky top-0 z-10 relative before:absolute before:inset-0 before:bg-surface before:-z-10 before:rounded-b-xl">
             <tr className="rounded-xl">
-              {(["광고 ID", "생성일", "광고 내용", "광고 유형"] as const).map((label) => (
+              {COLUMNS.map(({ label, center }) => (
                 <th
                   key={label}
-                  className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${label === "광고 유형" ? "text-center" : ""}`}
+                  className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${center ? "text-center" : ""}`}
                 >
                   {label}
                 </th>
