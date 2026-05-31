@@ -10,11 +10,9 @@ export default function InspectorPanel() {
   return (
     <div className="w-[50%] max-w-120 h-full shrink-0 rounded-xl bg-surface">
       {!state ? (
-        <p className="text-sm text-center">
-          항목을 선택하면
-          <br />
-          상세 정보가 표시됩니다.
-        </p>
+        <div className="flex h-full items-center justify-center">
+          <p className="text-sm font-medium text-foreground/48">선택된 항목이 없습니다</p>
+        </div>
       ) : state.type === "history" ? (
         <HistoryDetail key={state.history.id} history={state.history} />
       ) : state.type === "product-edit" ? (
