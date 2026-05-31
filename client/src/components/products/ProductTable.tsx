@@ -8,7 +8,7 @@ import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
 import { Select } from "../common/Select";
 import { ProductTableRow } from "./ProductTableRow";
-import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, X } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -90,28 +90,6 @@ export default function ProductTable({
     scheduleSearch(e.currentTarget.value);
   };
 
-  /**
-   * 페이지네이션 가로폭 흔들림 방지(Layout Shift)를 위해 항상 7개의 요소 유지
-   */
-  const getPaginationItems = (current: number, total: number) => {
-    if (total <= 7) {
-      return Array.from({ length: total }, (_, i) => i);
-    }
-
-    // 앞부분에 붙어있을 때: [0, 1, 2, 3, 4, ..., total-1]
-    if (current < 3) {
-      return [0, 1, 2, 3, 4, -1, total - 1];
-    }
-
-    // 뒷부분에 붙어있을 때: [0, ..., total-5, total-4, total-3, total-2, total-1]
-    if (current > total - 4) {
-      return [0, -1, total - 5, total - 4, total - 3, total - 2, total - 1];
-    }
-
-    // 중간 영역일 때: [0, ..., current-1, current, current+1, ..., total-1]
-    return [0, -1, current - 1, current, current + 1, -1, total - 1];
-  };
-
   return (
     <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader
@@ -189,43 +167,11 @@ export default function ProductTable({
         </table>
       </div>
 
-      <nav className="flex justify-center items-center gap-1 pt-2">
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 0}
-          className="h-9 w-9 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-        <div className="flex justify-center p-1 border border-border gap-1 rounded-lg">
-          {getPaginationItems(currentPage, totalPages).map((p, i) => {
-            if (p === -1) return <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>;
-            return (
-              <button
-                key={p}
-                onClick={() => onPageChange(p)}
-                className={`w-7 h-7 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
-                  p === currentPage
-                    ? "bg-primary text-surface"
-                    : "text-foreground hover:bg-info"
-                }`}
-              >
-                {p + 1}
-              </button>
-          );
-        })}
-        </div>
-        
-
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1 || totalPages === 0}
-          className="h-9 w-9 rounded-lg text-foreground/64 disabled:opacity-20 hover:bg-info transition-colors flex items-center justify-center"
-        >
-          <ChevronRight size={20} />
-        </button>
-      </nav>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </section>
   );
 }
