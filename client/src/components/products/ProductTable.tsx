@@ -113,7 +113,7 @@ export default function ProductTable({
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />
             <input
               type="search"
-              placeholder="검색어를 입력해주세요"
+              placeholder="검색어를 입력해 주세요"
               value={localSearchTerm}
               onChange={handleChange}
               onKeyDown={handleKeyDown}

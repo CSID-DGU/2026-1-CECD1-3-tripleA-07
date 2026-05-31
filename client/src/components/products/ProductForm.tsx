@@ -57,8 +57,8 @@ export function ProductForm({ register, errors, description, onDescriptionChange
             기본 정보
           </h2>
         </div>
-        <Input label="상품명" placeholder="(필수) 상품 이름을 입력해주세요." register={register("name")} error={errors.name?.message} />
-        <Input label="카테고리" placeholder="카테고리를 입력해주세요." register={register("category")} error={errors.category?.message} />
+        <Input label="상품명" placeholder="(필수) 상품 이름을 입력해 주세요" register={register("name")} error={errors.name?.message} />
+        <Input label="카테고리" placeholder="카테고리를 입력해 주세요" register={register("category")} error={errors.category?.message} />
         <Input label="수량" type="number" register={register("quantity", { valueAsNumber: true })} error={errors.quantity?.message} />
         <div className="space-y-2">
           <label htmlFor="description" className="block text-base font-normal text-foreground">상품 설명</label>
@@ -72,7 +72,7 @@ export function ProductForm({ register, errors, description, onDescriptionChange
             rows={2}
             value={description}
             onChange={onDescriptionChange}
-            placeholder="상품의 특징, 소개 등의 내용을 입력해주세요."
+            placeholder="상품의 특징, 소개 등의 내용을 입력해 주세요"
             className={`w-full px-3 py-2.5 text-foreground border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all resize-none overflow-hidden ${
               errors.description ? "border-warn/48" : "border-border"
             }`}
