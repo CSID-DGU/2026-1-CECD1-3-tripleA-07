@@ -77,7 +77,10 @@ export function ProductForm({ register, errors, description, onDescriptionChange
               errors.description ? "border-warn/48" : "border-border"
             }`}
           />
-          {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
+          <div className="flex justify-between items-center">
+            {errors.description ? <p className="text-xs text-warn">{errors.description.message}</p> : <span />}
+            <p className={`text-xs ${description.length > 1500 ? "text-warn" : "text-foreground/48"}`}>{description.length} / 1500</p>
+          </div>
         </div>
       </Card>
 
