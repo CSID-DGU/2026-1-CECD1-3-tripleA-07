@@ -24,6 +24,9 @@ export const productService = {
   updateProduct: (id: number, product: Omit<Product, 'id'>) =>
     request(`/api/v1/products/${id}`, { method: 'PUT', body: JSON.stringify(product) }),
   
-  deleteProduct: (id: number) => 
+  deleteProduct: (id: number) =>
     request(`/api/v1/products/${id}`, { method: 'DELETE' }),
+
+  getProductById: (id: number) =>
+    request<Product>(`/api/v1/products/${id}`),
 };
