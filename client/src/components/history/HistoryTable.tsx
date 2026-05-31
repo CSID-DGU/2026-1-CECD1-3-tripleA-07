@@ -105,14 +105,22 @@ export default function HistoryTable({
             </tr>
           </thead>
           <tbody>
-            {histories.map((history) => (
-              <HistoryTableRow
-                key={history.id}
-                history={history}
-                isSelected={selectedId === history.id}
-                onSelect={onSelect}
-              />
-            ))}
+            {histories.length === 0 && !isLoading ? (
+              <tr>
+                <td colSpan={COLUMNS.length} className="py-20 text-center text-sm font-medium text-foreground/48">
+                  광고 이력이 없습니다
+                </td>
+              </tr>
+            ) : (
+              histories.map((history) => (
+                <HistoryTableRow
+                  key={history.id}
+                  history={history}
+                  isSelected={selectedId === history.id}
+                  onSelect={onSelect}
+                />
+              ))
+            )}
           </tbody>
         </table>
       </div>

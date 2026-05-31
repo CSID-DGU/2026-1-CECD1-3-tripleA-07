@@ -155,14 +155,22 @@ export default function ProductTable({
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <ProductTableRow
-                key={product.id}
-                product={product}
-                isSelected={selectedId === product.id}
-                onSelect={onSelect}
-              />
-            ))}
+            {products.length === 0 && !isLoading ? (
+              <tr>
+                <td colSpan={COLUMNS.length} className="py-20 text-center text-sm font-medium text-foreground/48">
+                  상품이 없습니다
+                </td>
+              </tr>
+            ) : (
+              products.map((product) => (
+                <ProductTableRow
+                  key={product.id}
+                  product={product}
+                  isSelected={selectedId === product.id}
+                  onSelect={onSelect}
+                />
+              ))
+            )}
           </tbody>
         </table>
       </div>
