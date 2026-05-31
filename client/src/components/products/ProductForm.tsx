@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ProductFormValues } from "@/types/productSchema";
 import { Input } from "../common/Input";
+import { Card } from "../common/Card";
 import { Info, CircleDollarSign } from "lucide-react";
 
 interface ProductFormProps {
@@ -49,7 +50,7 @@ export function ProductForm({ register, errors, description, onDescriptionChange
 
   return (
     <>
-      <div className="p-4 rounded-xl space-y-5 border border-border">
+      <Card>
         <div className="flex items-center space-x-2">
           <Info size={20} className="text-foreground"></Info>
           <h2 className="text-xl font-medium text-foreground">
@@ -78,9 +79,9 @@ export function ProductForm({ register, errors, description, onDescriptionChange
           />
           {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
         </div>
-      </div>
+      </Card>
 
-      <div className="p-4 rounded-xl space-y-5 border border-border">
+      <Card>
         <div className="flex items-center space-x-2">
           <CircleDollarSign size={20} className="text-foreground"></CircleDollarSign>
           <h2 className="text-xl font-medium text-foreground">
@@ -92,7 +93,7 @@ export function ProductForm({ register, errors, description, onDescriptionChange
           <Input label="할인율" type="number" suffix="%" value={discountRate} onChange={handleDiscountRateChange} min={0} max={100} />
           <Input label="판매가" type="number" register={register("price", { valueAsNumber: true })} error={errors.price?.message} />
         </div>
-      </div>
+      </Card>
     </>
   );
 }

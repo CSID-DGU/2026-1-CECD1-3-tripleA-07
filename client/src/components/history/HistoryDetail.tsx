@@ -8,6 +8,7 @@ import { productService } from "@/services/productService";
 import { useInspector } from "@/contexts/InspectorContext";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Button } from "../common/Button";
+import { Card } from "../common/Card";
 
 const EVENT_TYPE_LABEL: Record<string, string> = {
   NEW: "신규 출시",
@@ -34,13 +35,13 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
 
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
 
-        <div className="p-4 rounded-xl space-y-5 border border-border">
+        <Card>
           <p className="text-xl font-medium text-foreground">
             광고 유형: {EVENT_TYPE_LABEL[history.eventType] ?? history.eventType}
           </p>
-        </div>
+        </Card>
 
-        <div className="p-4 rounded-xl space-y-5 border border-border">
+        <Card>
           {product ? (
             <>
               <div className="space-y-2">
@@ -74,9 +75,9 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
               <p className="text-sm text-foreground/48">상품 정보를 불러올 수 없습니다.</p>
             </div>
           )}
-        </div>
+        </Card>
 
-        <div className="p-4 rounded-xl space-y-5 border border-border">
+        <Card>
           <p className="text-xl font-medium text-foreground">게시물 링크</p>
           {history.adUrl ? (
             <div className="space-y-2">
@@ -94,14 +95,14 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
           ) : (
             <p className="text-sm text-foreground/48 font-normal">게시물 링크가 없습니다.</p>
           )}
-        </div>
+        </Card>
 
-        <div className="p-4 rounded-xl space-y-5 border border-border">
+        <Card>
           <p className="text-xl font-medium text-foreground">게시물 미리보기</p>
           <div className="px-3 py-3 w-full rounded-xl bg-info text-base text-foreground font-normal">
             {history.adContent}
           </div>
-        </div>
+        </Card>
 
       </div>
     </section>

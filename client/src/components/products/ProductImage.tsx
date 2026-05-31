@@ -1,5 +1,6 @@
 import { UseFormRegisterReturn } from "react-hook-form";
 import { Input } from "../common/Input";
+import { Card } from "../common/Card";
 import { Image } from "lucide-react";
 
 interface ProductImageProps {
@@ -11,7 +12,7 @@ interface ProductImageProps {
 
 export function ProductImage({ imageUrl, name, register, error }: ProductImageProps) {
   return (
-    <div className="p-4 rounded-xl space-y-5 border border-border">
+    <Card>
       <div className="flex items-center space-x-2">
           <Image size={20} className="text-foreground"></Image>
           <h2 className="text-xl font-medium text-foreground">
@@ -30,6 +31,6 @@ export function ProductImage({ imageUrl, name, register, error }: ProductImagePr
         error={error}
         placeholder="이미지 URL을 입력해주세요."
       />
-    </div>
+    </Card>
   );
 }
