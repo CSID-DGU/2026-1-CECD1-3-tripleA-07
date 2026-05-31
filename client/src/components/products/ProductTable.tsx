@@ -39,6 +39,7 @@ interface ProductTableProps {
   sortType: SortType;
   onSortChange: (sort: SortType) => void;
   isLoading?: boolean;
+  error?: string | null;
 }
 
 export default function ProductTable({
@@ -54,6 +55,7 @@ export default function ProductTable({
   sortType,
   onSortChange,
   isLoading = false,
+  error = null,
 }: ProductTableProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isComposing, setIsComposing] = useState(false);
@@ -157,8 +159,8 @@ export default function ProductTable({
           <tbody>
             {products.length === 0 && !isLoading ? (
               <tr>
-                <td colSpan={COLUMNS.length} className="py-20 text-center text-sm font-medium text-foreground/48">
-                  상품이 없습니다
+                <td colSpan={COLUMNS.length} className={`py-20 text-center text-sm font-medium ${error ? "text-warn" : "text-foreground/48"}`}>
+                  {error ?? "상품이 없습니다"}
                 </td>
               </tr>
             ) : (

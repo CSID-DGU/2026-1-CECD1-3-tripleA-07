@@ -14,15 +14,20 @@ export default function HistoryDashboardClient() {
   const [allHistories, setAllHistories] = useState<AdHistory[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const selectedHistoryId = state?.type === "history" ? state.history.id : null;
 
   const fetchHistories = useCallback(async (productId?: number) => {
     setIsLoading(true);
+    setError(null);
     try {
       const data = await historyService.getHistories(productId);
       setAllHistories(data);
-    } catch {
+    } catch (error) {
+      console.error("SNS 광고 이력 조회 실패:", error);
+      setError("광고 이력을 불러오지 못했습니다.");
+      setAllHistories([]);
     } finally {
       setIsLoading(false);
     }
@@ -66,6 +71,7 @@ export default function HistoryDashboardClient() {
         onPageChange={handlePageChange}
         onProductIdSearch={handleProductIdSearch}
         isLoading={isLoading}
+        error={error}
       />
     </div>
   );

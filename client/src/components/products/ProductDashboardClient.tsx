@@ -15,6 +15,7 @@ export default function ProductDashboardClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState<SortType>("CREATED_AT_DESC");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const searchTermRef = useRef("");
   const currentPageRef = useRef(0);
@@ -24,12 +25,16 @@ export default function ProductDashboardClient() {
 
   const fetchProducts = useCallback(async (search: string, page: number, sort: SortType) => {
     setIsLoading(true);
+    setError(null);
     try {
       const data = await productService.getProducts(search || undefined, page, 20, sort);
       setProducts(data.content);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("상품 목록 조회 실패:", error);
+      setError("상품 목록을 불러오지 못했습니다.");
+      setProducts([]);
+      setTotalPages(0);
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +94,7 @@ export default function ProductDashboardClient() {
         sortType={sortType}
         onSortChange={handleSortChange}
         isLoading={isLoading}
+        error={error}
       />
     </div>
   );

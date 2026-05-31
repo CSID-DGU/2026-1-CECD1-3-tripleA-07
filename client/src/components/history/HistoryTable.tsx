@@ -23,6 +23,7 @@ interface HistoryTableProps {
   onPageChange: (page: number) => void;
   onProductIdSearch: (productId: string) => void;
   isLoading?: boolean;
+  error?: string | null;
 }
 
 export default function HistoryTable({
@@ -34,6 +35,7 @@ export default function HistoryTable({
   onPageChange,
   onProductIdSearch,
   isLoading = false,
+  error = null,
 }: HistoryTableProps) {
   const [localProductId, setLocalProductId] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -107,8 +109,8 @@ export default function HistoryTable({
           <tbody>
             {histories.length === 0 && !isLoading ? (
               <tr>
-                <td colSpan={COLUMNS.length} className="py-20 text-center text-sm font-medium text-foreground/48">
-                  광고 이력이 없습니다
+                <td colSpan={COLUMNS.length} className={`py-20 text-center text-sm font-medium ${error ? "text-warn" : "text-foreground/48"}`}>
+                  {error ?? "광고 이력이 없습니다"}
                 </td>
               </tr>
             ) : (
