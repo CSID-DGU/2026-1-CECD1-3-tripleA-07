@@ -36,7 +36,7 @@ export function Select<T extends string>({ value, options, onChange, className =
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="h-10 px-4 pr-3 flex items-center gap-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 transition-all"
+        className="h-10 px-4 pr-3 flex items-center gap-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 transition-all cursor-pointer"
       >
         <span>{selected?.label}</span>
         <ChevronDown
@@ -57,7 +57,7 @@ export function Select<T extends string>({ value, options, onChange, className =
               onChange(option.value);
               setOpen(false);
             }}
-            className={`w-full px-4 py-2 text-sm text-left transition-colors ${
+            className={`w-full px-4 py-2 text-sm text-left transition-colors cursor-pointer ${
               option.value === value
                 ? "text-primary font-semibold bg-primary/8"
                 : "text-foreground hover:bg-info"
