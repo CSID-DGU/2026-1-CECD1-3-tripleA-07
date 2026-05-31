@@ -7,7 +7,7 @@ interface TableCellProps {
 
 export function TableCell({ children, className = "" }: TableCellProps) {
   return (
-    <td className={`px-4 py-3 text-sm font-regular text-foreground truncate first:rounded-l-xl last:rounded-r-xl ${className}`}>
+    <td className={`px-4 py-3 text-sm font-normal text-foreground truncate first:rounded-l-xl last:rounded-r-xl ${className}`}>
       {children}
     </td>
   );

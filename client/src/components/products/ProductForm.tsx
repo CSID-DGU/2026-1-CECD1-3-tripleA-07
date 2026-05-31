@@ -60,7 +60,7 @@ export function ProductForm({ register, errors, description, onDescriptionChange
         <Input label="카테고리" placeholder="카테고리를 입력해주세요." register={register("category")} error={errors.category?.message} />
         <Input label="수량" type="number" register={register("quantity", { valueAsNumber: true })} error={errors.quantity?.message} />
         <div className="space-y-2">
-          <label htmlFor="description" className="block text-base font-regular text-foreground">상품 설명</label>
+          <label htmlFor="description" className="block text-base font-normal text-foreground">상품 설명</label>
           <textarea
             id="description"
             {...descriptionField}

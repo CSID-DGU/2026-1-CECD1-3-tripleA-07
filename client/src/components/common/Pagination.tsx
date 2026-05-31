@@ -39,10 +39,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`w-7 h-7 flex items-center justify-center rounded-md text-sm font-regular transition-all ${
+              className={`w-7 h-7 flex items-center justify-center rounded-md text-sm transition-all ${
                 p === currentPage
-                  ? "bg-primary text-surface"
-                  : "text-foreground hover:bg-info"
+                  ? "bg-primary/16 text-primary font-bold"
+                  : "text-foreground hover:bg-info font-normal "
               }`}
             >
               {p + 1}

@@ -22,7 +22,7 @@ export function ProductImage({ imageUrl, name, register, error }: ProductImagePr
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
         ) : (
-          <span className="text-sm text-foreground/48 font-regular">이미지 없음</span>
+          <span className="text-sm text-foreground/48 font-normal">이미지 없음</span>
         )}
       </div>
       <Input
