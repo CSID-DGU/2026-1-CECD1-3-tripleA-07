@@ -20,6 +20,8 @@ const getPaginationItems = (current: number, total: number) => {
 };
 
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+  if (totalPages === 0) return null;
+
   return (
     <nav className="flex justify-center items-center gap-1 pt-2">
       <button
