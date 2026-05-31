@@ -2,7 +2,6 @@ import React from "react";
 
 interface PageHeaderProps {
   title: string;
-  subtitle?: string;
   actions?: React.ReactNode[];
 }
 

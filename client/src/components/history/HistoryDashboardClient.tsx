@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import HistoryTable from "@/components/history/HistoryTable";
 import { AdHistory } from "@/types/history";
 import { historyService } from "@/services/historyService";
-import { MOCK_HISTORIES } from "@/mocks/historyMocks";
 import { useInspector } from "@/contexts/InspectorContext";
 
 const PAGE_SIZE = 20;
@@ -24,7 +23,6 @@ export default function HistoryDashboardClient() {
       const data = await historyService.getHistories(productId);
       setAllHistories(data);
     } catch {
-      setAllHistories(MOCK_HISTORIES);
     } finally {
       setIsLoading(false);
     }
