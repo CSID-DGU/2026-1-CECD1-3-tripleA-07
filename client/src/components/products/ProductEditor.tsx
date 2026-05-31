@@ -12,15 +12,16 @@ import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 
-type ProductEditorProps =
-  | { isNew: true; product?: never; onCancel?: () => void }
-  | { isNew?: false; product: Product; onCancel?: () => void };
+interface ProductEditorProps {
+  product?: Product;
+  onCancel?: () => void;
+}
 
 export default function ProductEditor({
   product,
   onCancel,
-  isNew = false,
 }: ProductEditorProps) {
+  const isNew = !product;
   "use no memo";
   const { close, onSaved } = useInspector();
   const {

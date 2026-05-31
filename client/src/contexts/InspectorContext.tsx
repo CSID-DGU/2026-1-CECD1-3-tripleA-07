@@ -5,7 +5,8 @@ import { Product } from "@/types/product";
 import { AdHistory } from "@/types/history";
 
 type InspectorState =
-  | { type: "product"; product: Product | null }
+  | { type: "product-new" }
+  | { type: "product-edit"; product: Product }
   | { type: "history"; history: AdHistory }
   | null;
 

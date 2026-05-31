@@ -35,7 +35,7 @@ export default function ProductDashboardClient({
   const sortTypeRef = useRef(initialSort);
 
   const selectedProductId =
-    state?.type === "product" && state.product !== null ? state.product.id : null;
+    state?.type === "product-edit" ? state.product.id : null;
 
   const fetchProducts = useCallback(async (search: string, page: number, sort: SortType) => {
     setIsLoading(true);
@@ -78,11 +78,11 @@ export default function ProductDashboardClient({
 
   const handleSelectProduct = useCallback((id: number) => {
     const product = products.find((p) => p.id === id);
-    if (product) open({ type: "product", product });
+    if (product) open({ type: "product-edit", product });
   }, [products, open]);
 
   const handleAddNewProduct = useCallback(() => {
-    open({ type: "product", product: null });
+    open({ type: "product-new" });
   }, [open]);
 
   return (
