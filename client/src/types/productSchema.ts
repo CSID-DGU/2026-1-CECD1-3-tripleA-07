@@ -9,11 +9,11 @@ export const productSchema = z.object({
   price: z.number({
     error: "숫자를 입력해 주세요."
   }).nonnegative("판매가는 0 이상이어야 합니다."),
-  category: z.string().or(z.literal("")),
+  category: z.string(),
   quantity: z.number({
     error: "숫자를 입력해 주세요."
   }).int().nonnegative("수량은 0 이상의 정수여야 합니다."),
-  description: z.string().or(z.literal("")),
+  description: z.string(),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

@@ -21,8 +21,8 @@ export default function ProductEditor({
   product,
   onCancel,
 }: ProductEditorProps) {
-  const isNew = !product;
   "use no memo";
+  const isNew = !product;
   const { close, onSaved } = useInspector();
   const {
     register,
@@ -44,7 +44,7 @@ export default function ProductEditor({
     if (product) {
       reset({
         name: product.name,
-        imageUrl: product.imageUrl,
+        imageUrl: product.imageUrl ?? "",
         listPrice: product.listPrice,
         price: product.price,
         category: product.category,
@@ -59,11 +59,11 @@ export default function ProductEditor({
   const onSubmit = async (data: ProductFormValues) => {
     try {
       if (isNew) {
-        await productService.createProduct(data as Product);
+        await productService.createProduct(data);
         alert("상품이 등록되었습니다.");
       } else {
         if (!product) return;
-        await productService.updateProduct(product.id, data as Product);
+        await productService.updateProduct(product.id, data);
         alert("변경사항이 저장되었습니다.");
       }
       onSaved();
@@ -85,15 +85,6 @@ export default function ProductEditor({
       alert("삭제에 실패했습니다.");
     }
   };
-
-  // InspectorPanel이 product와 isNew 검증 로직을 담당하도록 변경되어 해당 코드는 현재 도달할 수 없는 코드라 주석처리함.
-  // if (!product && !isNew) {
-  //   return (
-  //     <section className="flex flex-col items-center justify-center h-full p-8 bg-gray-50/50 border-l border-gray-200 text-gray-400">
-  //       <p className="text-lg font-medium text-center">상품을 선택하거나 <br /> 새 상품을 추가해주세요.</p>
-  //     </section>
-  //   );
-  // }
 
   return (
     <section className="flex flex-col h-full">
