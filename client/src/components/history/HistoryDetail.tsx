@@ -46,22 +46,26 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
           <p className="text-xl font-medium text-foreground">
             게시물 링크
           </p>
-          <div className="space-y-2">
-            <p className="text-base font-regular text-foreground">
-              facebook
-            </p>
-            <a
-              href={history.adUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 w-full h-10 bg-primary/16 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
-            >
-              <p className="truncate min-w-0">
-                {history.adUrl}
+          {history.adUrl ? (
+            <div className="space-y-2">
+              <p className="text-base font-regular text-foreground">
+                facebook
               </p>
-              <ChevronRight size={20} className="shrink-0" />
-            </a>
-          </div>
+              <a
+                href={history.adUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 w-full h-10 bg-primary/16 text-primary rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
+              >
+                <p className="truncate min-w-0">
+                  {history.adUrl}
+                </p>
+                <ChevronRight size={20} className="shrink-0" />
+              </a>
+            </div>
+          ) : (
+            <p className="text-sm text-foreground/48">SNS 연동 전입니다.</p>
+          )}
         </div>
 
         <div className="p-4 rounded-xl space-y-5 border border-border">
