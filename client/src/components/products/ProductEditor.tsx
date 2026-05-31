@@ -12,9 +12,10 @@ import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 
-type ProductEditorProps =
-  | { product: Product;  onCancel?: () => void }
-  | { product?: never;   onCancel?: () => void };
+type ProductEditorProps = {
+  product?: Product;
+  onCancel?: () => void;
+};
 
 export default function ProductEditor({
   product,
