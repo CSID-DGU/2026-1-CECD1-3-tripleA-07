@@ -12,10 +12,9 @@ import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 
-interface ProductEditorProps {
-  product?: Product;
-  onCancel?: () => void;
-}
+type ProductEditorProps =
+  | { product: Product;  onCancel?: () => void }
+  | { product?: never;   onCancel?: () => void };
 
 export default function ProductEditor({
   product,
@@ -58,11 +57,10 @@ export default function ProductEditor({
 
   const onSubmit = async (data: ProductFormValues) => {
     try {
-      if (isNew) {
+      if (!product) {
         await productService.createProduct(data);
         alert("상품이 등록되었습니다.");
       } else {
-        if (!product) return;
         await productService.updateProduct(product.id, data);
         alert("변경사항이 저장되었습니다.");
       }
