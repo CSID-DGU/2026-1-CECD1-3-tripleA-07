@@ -8,6 +8,8 @@
   --primary: #8765e5;
   --warn: #CB6363;
   --facebook: #1877F2;
+  --new: #79C77E;
+  --update: #E1843C;
 }
 
 @theme inline {
@@ -19,6 +21,8 @@
   --color-info: var(--info);
   --color-warn: var(--warn);
   --color-facebook: var(--facebook);
+  --color-new: var(--new);
+  --color-update: var(--update);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

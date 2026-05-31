@@ -1,11 +1,7 @@
 ﻿import React from "react";
 import { AdHistory } from "@/types/history";
 import { TableCell } from "@/components/common/TableCell";
-
-const EVENT_TYPE_LABEL: Record<string, string> = {
-  NEW: "신규 출시",
-  DISCOUNT: "할인",
-};
+import { Badge } from "@/components/common/Badge";
 
 interface HistoryTableRowProps {
   history: AdHistory;
@@ -27,7 +23,7 @@ export function HistoryTableRow({ history, isSelected, onSelect }: HistoryTableR
       <TableCell>{history.id}</TableCell>
       <TableCell>{date}</TableCell>
       <TableCell>{history.adContent}</TableCell>
-      <TableCell className="text-center">{EVENT_TYPE_LABEL[history.eventType] ?? history.eventType}</TableCell>
+      <TableCell className="text-center"><Badge variant={history.eventType} size="sm" /></TableCell>
     </tr>
   );
 }

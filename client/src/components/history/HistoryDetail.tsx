@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Leaf, Flame } from "lucide-react";
 import { AdHistory } from "@/types/history";
 import { Product } from "@/types/product";
 import { productService } from "@/services/productService";
@@ -9,10 +9,11 @@ import { useInspector } from "@/contexts/InspectorContext";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Button } from "../common/Button";
 import { Card } from "../common/Card";
+import { Badge } from "../common/Badge";
 
-const EVENT_TYPE_LABEL: Record<string, string> = {
-  NEW: "신규 출시",
-  DISCOUNT: "할인",
+const EVENT_TYPE_ICON: Record<string, React.ReactNode> = {
+  NEW:      <Leaf size={18} />,
+  DISCOUNT: <Flame size={18} />,
 };
 
 export default function HistoryDetail({ history }: { history: AdHistory }) {
@@ -36,9 +37,8 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
 
         <Card>
-          <p className="text-xl font-medium text-foreground">
-            광고 유형: {EVENT_TYPE_LABEL[history.eventType] ?? history.eventType}
-          </p>
+          <p className="text-xl font-medium text-foreground">광고 유형</p>
+          <Badge variant={history.eventType} size="md" icon={EVENT_TYPE_ICON[history.eventType]} />
         </Card>
 
         <Card>
