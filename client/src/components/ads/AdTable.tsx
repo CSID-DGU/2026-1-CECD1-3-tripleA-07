@@ -2,10 +2,10 @@
 
 import React, { useState, useRef } from "react";
 import { Search, X } from "lucide-react";
-import { AdHistory } from "@/types/history";
+import { Ad } from "@/types/ad";
 import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
-import { HistoryTableRow } from "./HistoryTableRow";
+import { AdTableRow } from "./AdTableRow";
 
 const COLUMNS: { label: string; width?: number; center?: boolean }[] = [
   { label: "광고 ID",  width: 80 },
@@ -14,8 +14,8 @@ const COLUMNS: { label: string; width?: number; center?: boolean }[] = [
   { label: "광고 유형", width: 100, center: true },
 ];
 
-interface HistoryTableProps {
-  histories: AdHistory[];
+interface AdTableProps {
+  ads: Ad[];
   selectedId: number | null;
   onSelect: (id: number) => void;
   currentPage: number;
@@ -26,8 +26,8 @@ interface HistoryTableProps {
   error?: string | null;
 }
 
-export default function HistoryTable({
-  histories,
+export default function AdTable({
+  ads,
   selectedId,
   onSelect,
   currentPage,
@@ -36,7 +36,7 @@ export default function HistoryTable({
   onProductIdSearch,
   isLoading = false,
   error = null,
-}: HistoryTableProps) {
+}: AdTableProps) {
   const [localProductId, setLocalProductId] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -107,18 +107,18 @@ export default function HistoryTable({
             </tr>
           </thead>
           <tbody>
-            {histories.length === 0 && !isLoading ? (
+            {ads.length === 0 && !isLoading ? (
               <tr>
                 <td colSpan={COLUMNS.length} className={`py-20 text-center text-sm font-medium ${error ? "text-warn" : "text-foreground/48"}`}>
                   {error ?? "광고 이력이 없습니다"}
                 </td>
               </tr>
             ) : (
-              histories.map((history) => (
-                <HistoryTableRow
-                  key={history.id}
-                  history={history}
-                  isSelected={selectedId === history.id}
+              ads.map((ad) => (
+                <AdTableRow
+                  key={ad.id}
+                  ad={ad}
+                  isSelected={selectedId === ad.id}
                   onSelect={onSelect}
                 />
               ))

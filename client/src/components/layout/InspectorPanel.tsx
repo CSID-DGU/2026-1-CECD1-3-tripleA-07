@@ -2,7 +2,7 @@
 
 import { useInspector } from "@/contexts/InspectorContext";
 import ProductEditor from "@/components/products/ProductEditor";
-import HistoryDetail from "@/components/history/HistoryDetail";
+import AdDetail from "@/components/ads/AdDetail";
 
 export default function InspectorPanel() {
   const { state, close } = useInspector();
@@ -13,8 +13,8 @@ export default function InspectorPanel() {
         <div className="flex h-full items-center justify-center">
           <p className="text-sm font-medium text-foreground/48">선택된 항목이 없습니다</p>
         </div>
-      ) : state.type === "history" ? (
-        <HistoryDetail key={state.history.id} history={state.history} />
+      ) : state.type === "ad" ? (
+        <AdDetail key={state.ad.id} ad={state.ad} />
       ) : state.type === "product-edit" ? (
         <ProductEditor key={state.product.id} product={state.product} onCancel={close} />
       ) : (

@@ -12,7 +12,7 @@ const NAV_SECTIONS: { label: string; items: { href: string; label: string; icon:
   },
   {
     label: "Promotion",
-    items: [{ href: "/history", label: "SNS 광고 발행 이력", icon: History }],
+    items: [{ href: "/ads", label: "SNS 광고 발행 이력", icon: History }],
   },
 ];
 

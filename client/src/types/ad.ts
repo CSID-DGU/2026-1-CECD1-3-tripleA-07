@@ -1,4 +1,4 @@
-﻿export type AdHistory = {
+﻿export type Ad = {
   id: number;
   productId: number;
   eventType: string; // "NEW" | "DISCOUNT"

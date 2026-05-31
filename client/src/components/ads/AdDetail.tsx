@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronRight, Leaf, Flame } from "lucide-react";
-import { AdHistory } from "@/types/history";
+import { Ad } from "@/types/ad";
 import { Product } from "@/types/product";
 import { productService } from "@/services/productService";
 import { useInspector } from "@/contexts/InspectorContext";
@@ -16,21 +16,21 @@ const EVENT_TYPE_ICON: Record<string, React.ReactNode> = {
   DISCOUNT: <Flame size={18} />,
 };
 
-export default function HistoryDetail({ history }: { history: AdHistory }) {
+export default function AdDetail({ ad }: { ad: Ad }) {
   const { open } = useInspector();
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    productService.getProductById(history.productId).then(setProduct).catch(() => setProduct(null));
-  }, [history.productId]);
+    productService.getProductById(ad.productId).then(setProduct).catch(() => setProduct(null));
+  }, [ad.productId]);
 
   return (
     <section className="flex flex-col h-full">
       <div className="px-6 pt-6 pb-4 shrink-0 space-y-4">
         <PageHeader title="광고 상세 정보" actions={[]} />
         <p className="text-sm font-medium text-foreground/48">
-          광고 ID: {history.id} <br />
-          발행일: {history.createdAt}
+          광고 ID: {ad.id} <br />
+          발행일: {ad.createdAt}
         </p>
       </div>
 
@@ -38,7 +38,7 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
 
         <Card>
           <p className="text-xl font-medium text-foreground">광고 유형</p>
-          <Badge variant={history.eventType} size="md" icon={EVENT_TYPE_ICON[history.eventType]} />
+          <Badge variant={ad.eventType} size="md" icon={EVENT_TYPE_ICON[ad.eventType]} />
         </Card>
 
         <Card>
@@ -71,7 +71,7 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
             </>
           ) : (
             <div className="space-y-3">
-              <p className="text-xl font-medium text-foreground">상품 ID: {history.productId}</p>
+              <p className="text-xl font-medium text-foreground">상품 ID: {ad.productId}</p>
               <p className="text-sm text-foreground/48">상품 정보를 불러올 수 없습니다.</p>
             </div>
           )}
@@ -79,16 +79,16 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
 
         <Card>
           <p className="text-xl font-medium text-foreground">게시물 링크</p>
-          {history.adUrl ? (
+          {ad.adUrl ? (
             <div className="space-y-2">
               <p className="text-base font-normal text-foreground">facebook</p>
               <a
-                href={history.adUrl}
+                href={ad.adUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 w-full h-10 bg-facebook/16 text-facebook rounded-xl font-medium transition-colors hover:opacity-80 inline-flex items-center justify-between gap-2 text-base"
               >
-                <p className="truncate min-w-0">{history.adUrl}</p>
+                <p className="truncate min-w-0">{ad.adUrl}</p>
                 <ChevronRight size={20} className="shrink-0" />
               </a>
             </div>
@@ -100,7 +100,7 @@ export default function HistoryDetail({ history }: { history: AdHistory }) {
         <Card>
           <p className="text-xl font-medium text-foreground">게시물 미리보기</p>
           <div className="px-3 py-3 w-full rounded-xl bg-info text-base text-foreground font-normal">
-            {history.adContent}
+            {ad.adContent}
           </div>
         </Card>
 
