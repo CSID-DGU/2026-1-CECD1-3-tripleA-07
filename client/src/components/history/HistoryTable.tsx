@@ -9,7 +9,7 @@ import { HistoryTableRow } from "./HistoryTableRow";
 
 const COLUMNS: { label: string; width?: number; center?: boolean }[] = [
   { label: "광고 ID",  width: 80 },
-  { label: "생성일",   width: 100 },
+  { label: "발행일",   width: 100 },
   { label: "광고 내용" },
   { label: "광고 유형", width: 100, center: true },
 ];

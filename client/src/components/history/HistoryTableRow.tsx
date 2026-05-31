@@ -14,7 +14,8 @@ interface HistoryTableRowProps {
 }
 
 export function HistoryTableRow({ history, isSelected, onSelect }: HistoryTableRowProps) {
-  const date = history.createdAt.slice(0, 10);
+  const [year, month, day] = history.createdAt.slice(0, 10).split("-");
+  const date = `${year.slice(2)}.${month}.${day}`;
 
   return (
     <tr
