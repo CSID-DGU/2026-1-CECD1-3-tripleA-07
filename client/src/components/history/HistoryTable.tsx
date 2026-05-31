@@ -1,6 +1,7 @@
 ﻿﻿"use client";
 
-import React from "react";
+import React, { useState, useRef } from "react";
+import { Search, X } from "lucide-react";
 import { AdHistory } from "@/types/history";
 import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
@@ -13,6 +14,7 @@ interface HistoryTableProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  onProductIdSearch: (productId: string) => void;
   isLoading?: boolean;
 }
 
@@ -23,11 +25,58 @@ export default function HistoryTable({
   currentPage,
   totalPages,
   onPageChange,
+  onProductIdSearch,
   isLoading = false,
 }: HistoryTableProps) {
+  const [localProductId, setLocalProductId] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalProductId(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onProductIdSearch(value);
+    }, 300);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      onProductIdSearch(localProductId);
+    }
+  };
+
+  const handleClear = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setLocalProductId("");
+    onProductIdSearch("");
+  };
+
   return (
     <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader title="SNS 광고 발행 이력" actions={[]} />
+
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />
+        <input
+          type="text"
+          placeholder="상품 ID로 검색"
+          value={localProductId}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          className="w-full h-10 pl-11 pr-9 border border-border rounded-xl outline-none focus:ring-2 focus:ring-primary/48 transition-all text-foreground placeholder:text-foreground/48 font-normal"
+        />
+        {localProductId && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/48 hover:text-foreground transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
 
       <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
         <table className="w-full text-left table-fixed border-separate [border-spacing:0]">

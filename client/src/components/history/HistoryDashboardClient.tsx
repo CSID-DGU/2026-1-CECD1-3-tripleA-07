@@ -18,10 +18,10 @@ export default function HistoryDashboardClient() {
 
   const selectedHistoryId = state?.type === "history" ? state.history.id : null;
 
-  const fetchHistories = useCallback(async () => {
+  const fetchHistories = useCallback(async (productId?: number) => {
     setIsLoading(true);
     try {
-      const data = await historyService.getHistories();
+      const data = await historyService.getHistories(productId);
       setAllHistories(data);
     } catch {
       setAllHistories(MOCK_HISTORIES);
@@ -50,6 +50,13 @@ export default function HistoryDashboardClient() {
     if (history) open({ type: "history", history });
   }, [allHistories, open]);
 
+  const handleProductIdSearch = useCallback((value: string) => {
+    const productId = value.trim() === "" ? undefined : Number(value);
+    if (productId !== undefined && isNaN(productId)) return;
+    setCurrentPage(0);
+    fetchHistories(productId);
+  }, [fetchHistories]);
+
   return (
     <div className="h-full">
       <HistoryTable
@@ -59,6 +66,7 @@ export default function HistoryDashboardClient() {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+        onProductIdSearch={handleProductIdSearch}
         isLoading={isLoading}
       />
     </div>
