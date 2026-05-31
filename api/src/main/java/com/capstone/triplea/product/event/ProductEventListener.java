@@ -85,7 +85,7 @@ public class ProductEventListener {
             }
             return postUrl.asText();
         } catch (Exception e) {
-            log.error("[post_url 파실 실패] {}", e.getMessage());
+            log.error("[post_url 파싱 실패] {}", e.getMessage());
             return null;
         }
     }
