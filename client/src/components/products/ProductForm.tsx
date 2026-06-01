@@ -26,8 +26,7 @@ export function ProductForm({ register, control, errors, description, onDescript
   "use no memo";
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ref: registerRef, ...descriptionField } = register("description");
-  const [discountRate, setDiscountRate] = useState(() => computeDiscountRate(listPrice, price));
-  const userChangedDiscount = useRef(false);
+  const [discountInput, setDiscountInput] = useState(() => String(computeDiscountRate(listPrice, price)));
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -37,16 +36,19 @@ export function ProductForm({ register, control, errors, description, onDescript
   }, [description]);
 
   useEffect(() => {
-    if (!userChangedDiscount.current) {
-      setDiscountRate(computeDiscountRate(listPrice, price));
-    }
-    userChangedDiscount.current = false;
+    setDiscountInput(String(computeDiscountRate(listPrice, price)));
   }, [listPrice, price]);
 
-  const handleDiscountRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rate = Number(e.target.value);
-    setDiscountRate(rate);
-    userChangedDiscount.current = true;
+  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDiscountInput(e.target.value);
+  };
+
+  const handleDiscountBlur = () => {
+    const rate = Number(discountInput);
+    if (isNaN(rate)) {
+      setDiscountInput(String(computeDiscountRate(listPrice, price)));
+      return;
+    }
     onPriceChange(Math.round(listPrice * (1 - rate / 100)));
   };
 
@@ -107,7 +109,7 @@ export function ProductForm({ register, control, errors, description, onDescript
           )}
         />
         <div className="grid grid-cols-2 gap-3">
-          <Input label="할인율" type="number" suffix="%" value={discountRate} onChange={handleDiscountRateChange} min={0} max={100} />
+          <Input label="할인율" type="number" suffix="%" value={discountInput} onChange={handleDiscountChange} onBlur={handleDiscountBlur} min={0} max={100} />
           <Controller
             name="price"
             control={control}
