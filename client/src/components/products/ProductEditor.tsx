@@ -134,7 +134,7 @@ export default function ProductEditor({
               변경사항 취소
             </Button>
           ) : (
-            <Button type="button" variant="danger" onClick={() => onCancel?.()}>
+            <Button type="button" variant="secondary" onClick={() => onCancel?.()}>
               상품 등록 취소
             </Button>
           )}
