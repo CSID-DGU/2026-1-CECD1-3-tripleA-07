@@ -10,7 +10,6 @@ import { useInspector } from "@/contexts/InspectorContext";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
-import { PageHeader } from "../common/PageHeader";
 
 type ProductEditorProps = {
   product?: Product;
@@ -87,11 +86,7 @@ export default function ProductEditor({
   };
 
   return (
-    <section className="flex flex-col h-full">
-      <div className="px-6 pt-6 pb-4 shrink-0">
-        <PageHeader title={isNew ? "상품 추가하기" : "상품 상세정보"} />
-      </div>
-
+    <section className="flex flex-col flex-1 min-h-0">
       <form id="product-editor-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 pb-6 space-y-4">
         {product && (
           <p className="text-sm font-medium text-foreground/48">

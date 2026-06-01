@@ -6,7 +6,6 @@ import { Ad } from "@/types/ad";
 import { Product } from "@/types/product";
 import { productService } from "@/services/productService";
 import { useInspector } from "@/contexts/InspectorContext";
-import { PageHeader } from "@/components/common/PageHeader";
 import { Button } from "../common/Button";
 import { Card } from "../common/Card";
 import { Badge } from "../common/Badge";
@@ -25,12 +24,7 @@ export default function AdDetail({ ad }: { ad: Ad }) {
   }, [ad.productId]);
 
   return (
-    <section className="flex flex-col h-full">
-      <div className="px-6 pt-6 pb-4 shrink-0">
-        <PageHeader title="광고 상세 정보" actions={[]} />
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
+    <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-5">
         <p className="text-sm font-medium text-foreground/48">
           광고 ID: {ad.id} <br />
           발행일: {ad.createdAt}
@@ -104,7 +98,6 @@ export default function AdDetail({ ad }: { ad: Ad }) {
           </div>
         </Card>
 
-      </div>
-    </section>
+    </div>
   );
 }
