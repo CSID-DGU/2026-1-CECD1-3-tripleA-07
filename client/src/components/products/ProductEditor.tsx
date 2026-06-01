@@ -31,7 +31,7 @@ export default function ProductEditor({
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: DEFAULT_PRODUCT_FORM_VALUES,
@@ -130,7 +130,7 @@ export default function ProductEditor({
         </div>
         <div className="flex items-center gap-3">
           {!isNew ? (
-            <Button type="button" variant="secondary" onClick={() => reset()}>
+            <Button type="button" variant="secondary" onClick={() => reset()} disabled={!isDirty}>
               변경사항 취소
             </Button>
           ) : (
@@ -138,7 +138,7 @@ export default function ProductEditor({
               상품 등록 취소
             </Button>
           )}
-          <Button type="submit" form="product-editor-form">
+          <Button type="submit" form="product-editor-form" disabled={!isNew && !isDirty}>
             {isNew ? "등록" : "저장"}
           </Button>
         </div>
