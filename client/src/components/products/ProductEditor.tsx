@@ -89,29 +89,7 @@ export default function ProductEditor({
   return (
     <section className="flex flex-col h-full">
       <div className="px-6 pt-6 pb-4 shrink-0 space-y-4">
-        <PageHeader
-          title={isNew? "상품 추가하기" : "상품 상세정보"}
-          actions={[
-            ...(!isNew ? [
-              <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-10 px-5">
-                변경사항 취소
-              </Button>
-            ] : [
-              <Button
-                type="button"
-                variant="danger"
-                onClick={() => onCancel?.()}
-                className="h-10"
-              >
-                상품 등록 취소
-              </Button>
-            ]),
-            <Button key="submit" type="submit" form="product-editor-form" className="h-10 px-5">
-              {isNew ? "등록" : "저장"}
-            </Button>,
-          ]}
-        />
-
+        <PageHeader title={isNew ? "상품 추가하기" : "상품 상세정보"} />
         <p className="text-sm font-medium text-foreground/48">
           {product ? `상품 ID: ${product.id}` : undefined}
         </p>
@@ -149,6 +127,23 @@ export default function ProductEditor({
           </div>
         )}
       </form>
+
+      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-end">
+        <div className="flex items-center gap-3">
+          {!isNew ? (
+            <Button type="button" variant="secondary" onClick={() => reset()} className="h-10 px-5">
+              변경사항 취소
+            </Button>
+          ) : (
+            <Button type="button" variant="danger" onClick={() => onCancel?.()} className="h-10">
+              상품 등록 취소
+            </Button>
+          )}
+          <Button type="submit" form="product-editor-form" className="h-10 px-5">
+            {isNew ? "등록" : "저장"}
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }
