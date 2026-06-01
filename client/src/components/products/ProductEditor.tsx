@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash2 } from "lucide-react";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 import { productService } from "@/services/productService";
@@ -111,32 +112,33 @@ export default function ProductEditor({
           error={errors.imageUrl?.message}
         />
 
-        {!isNew && (
-          <div className="flex justify-end">
+      </form>
+
+      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-between">
+        <div>
+          {!isNew && (
             <Button
               type="button"
               variant="danger"
               onClick={handleDelete}
-              className="h-10"
+              className="w-10 !px-0"
+              aria-label="상품 삭제"
             >
-              상품 삭제하기
+              <Trash2 size={16} />
             </Button>
-          </div>
-        )}
-      </form>
-
-      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-end">
+          )}
+        </div>
         <div className="flex items-center gap-3">
           {!isNew ? (
-            <Button type="button" variant="secondary" onClick={() => reset()} className="h-10 px-5">
+            <Button type="button" variant="secondary" onClick={() => reset()}>
               변경사항 취소
             </Button>
           ) : (
-            <Button type="button" variant="danger" onClick={() => onCancel?.()} className="h-10">
+            <Button type="button" variant="danger" onClick={() => onCancel?.()}>
               상품 등록 취소
             </Button>
           )}
-          <Button type="submit" form="product-editor-form" className="h-10 px-5">
+          <Button type="submit" form="product-editor-form">
             {isNew ? "등록" : "저장"}
           </Button>
         </div>

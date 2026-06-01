@@ -57,7 +57,6 @@ export default function AdDetail({ ad }: { ad: Ad }) {
                 type="button"
                 variant="tertiary"
                 onClick={() => open({ type: "product-edit", product })}
-                className="h-10 px-5"
               >
                 <p>상품 정보 더보기</p>
                 <ChevronRight size={20} className="shrink-0" />

@@ -14,7 +14,7 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 export function Button({ variant = 'primary', className = '', ...props }: ButtonProps) {
-  const baseStyles = 'px-5 rounded-xl font-bold transition-colors inline-flex items-center justify-center gap-2 text-sm cursor-pointer';
+  const baseStyles = 'h-10 px-5 rounded-xl font-medium transition-colors inline-flex shrink-0 items-center justify-center gap-2 text-sm cursor-pointer';
   return (
     <button
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}

@@ -96,7 +96,7 @@ export default function ProductTable({
     <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader
         title="상품 목록"
-        actions={[<Button onClick={onAddNew} className="h-10">새 상품 추가 +</Button>]}
+        actions={[<Button onClick={onAddNew}>새 상품 추가 +</Button>]}
       />
 
       

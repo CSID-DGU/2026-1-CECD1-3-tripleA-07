@@ -32,13 +32,13 @@ export function Select<T extends string>({ value, options, onChange, className =
   const selected = options.find((o) => o.value === value);
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={ref} className={`relative shrink-0 ${className}`}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="h-10 px-4 pr-3 flex items-center gap-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 transition-all cursor-pointer"
+        className="h-10 px-4 pr-3 flex min-w-0 items-center gap-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/48 transition-all cursor-pointer"
       >
-        <span>{selected?.label}</span>
+        <span className="truncate">{selected?.label}</span>
         <ChevronDown
           className={`w-4 h-4 text-foreground/48 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />

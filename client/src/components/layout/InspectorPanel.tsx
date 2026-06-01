@@ -27,7 +27,7 @@ export default function InspectorPanel() {
             <PageHeader
               title={INSPECTOR_TITLES[state.type]}
               actions={[
-                <Button key="close" type="button" variant="tertiary" onClick={close} className="h-10 px-5">
+                <Button key="close" type="button" variant="tertiary" onClick={close}>
                   닫기
                 </Button>,
               ]}
