@@ -88,7 +88,7 @@ export default function AdTable({
       </div>
 
       <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
-        <table className="w-full text-left table-fixed border-separate [border-spacing:0]">
+        <table className="w-full text-left table-fixed border-separate [border-spacing:0] min-w-[380px]">
           <colgroup>
             {COLUMNS.map(({ label, width }) => (
               <col key={label} style={width ? { width } : undefined} />
