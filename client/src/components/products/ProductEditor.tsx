@@ -26,6 +26,7 @@ export default function ProductEditor({
   const { close, onSaved } = useInspector();
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -119,6 +120,7 @@ export default function ProductEditor({
       <form id="product-editor-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 pb-6 space-y-4">
         <ProductForm
             register={register}
+            control={control}
             errors={errors}
             description={description}
             onDescriptionChange={(e) => setValue("description", e.target.value)}

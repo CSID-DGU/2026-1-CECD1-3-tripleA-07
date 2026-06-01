@@ -1,12 +1,14 @@
 import { useRef, useEffect, useState } from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, Controller, Control } from "react-hook-form";
 import { ProductFormValues } from "@/types/productSchema";
 import { Input } from "../common/Input";
+import { NumericInput } from "../common/NumericInput";
 import { Card } from "../common/Card";
 import { Info, CircleDollarSign } from "lucide-react";
 
 interface ProductFormProps {
   register: UseFormRegister<ProductFormValues>;
+  control: Control<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
   description: string;
   onDescriptionChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -20,7 +22,7 @@ function computeDiscountRate(listPrice: number, price: number) {
   return Math.round((1 - price / listPrice) * 100);
 }
 
-export function ProductForm({ register, errors, description, onDescriptionChange, listPrice, price, onPriceChange }: ProductFormProps) {
+export function ProductForm({ register, control, errors, description, onDescriptionChange, listPrice, price, onPriceChange }: ProductFormProps) {
   "use no memo";
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ref: registerRef, ...descriptionField } = register("description");
@@ -59,7 +61,13 @@ export function ProductForm({ register, errors, description, onDescriptionChange
         </div>
         <Input label="상품명" placeholder="(필수) 상품 이름을 입력해 주세요" register={register("name")} error={errors.name?.message} />
         <Input label="카테고리" placeholder="카테고리를 입력해 주세요" register={register("category")} error={errors.category?.message} />
-        <Input label="수량" type="number" register={register("quantity", { valueAsNumber: true })} error={errors.quantity?.message} />
+        <Controller
+          name="quantity"
+          control={control}
+          render={({ field }) => (
+            <NumericInput label="수량" value={field.value} onChange={field.onChange} error={errors.quantity?.message} />
+          )}
+        />
         <div className="space-y-2">
           <label htmlFor="description" className="block text-base font-normal text-foreground">상품 설명</label>
           <textarea
@@ -91,10 +99,27 @@ export function ProductForm({ register, errors, description, onDescriptionChange
             가격
           </h2>
         </div>
-        <Input label="정가" type="number" register={register("listPrice", { valueAsNumber: true })} error={errors.listPrice?.message} />
+        <Controller
+          name="listPrice"
+          control={control}
+          render={({ field }) => (
+            <NumericInput label="정가" value={field.value} onChange={field.onChange} error={errors.listPrice?.message} />
+          )}
+        />
         <div className="grid grid-cols-2 gap-3">
           <Input label="할인율" type="number" suffix="%" value={discountRate} onChange={handleDiscountRateChange} min={0} max={100} />
-          <Input label="판매가" type="number" register={register("price", { valueAsNumber: true })} error={errors.price?.message} />
+          <Controller
+            name="price"
+            control={control}
+            render={({ field }) => (
+              <NumericInput
+                label="판매가"
+                value={field.value}
+                onChange={(newPrice) => { field.onChange(newPrice); onPriceChange(newPrice); }}
+                error={errors.price?.message}
+              />
+            )}
+          />
         </div>
       </Card>
     </>
