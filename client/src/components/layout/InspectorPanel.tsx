@@ -4,6 +4,7 @@ import { useInspector } from "@/contexts/InspectorContext";
 import ProductEditor from "@/components/products/ProductEditor";
 import AdDetail from "@/components/ads/AdDetail";
 import { PageHeader } from "@/components/common/PageHeader";
+import { Button } from "@/components/common/Button";
 
 const INSPECTOR_TITLES = {
   "product-new":  "상품 추가하기",
@@ -23,7 +24,14 @@ export default function InspectorPanel() {
       ) : (
         <>
           <div className="px-6 pt-6 pb-4 shrink-0">
-            <PageHeader title={INSPECTOR_TITLES[state.type]} />
+            <PageHeader
+              title={INSPECTOR_TITLES[state.type]}
+              actions={[
+                <Button key="close" type="button" variant="tertiary" onClick={close} className="h-10 px-5">
+                  닫기
+                </Button>,
+              ]}
+            />
           </div>
           {state.type === "ad" ? (
             <AdDetail key={state.ad.id} ad={state.ad} />
