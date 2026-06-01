@@ -9,6 +9,7 @@ import Pagination from "../common/Pagination";
 import { Select } from "../common/Select";
 import { ProductTableRow } from "./ProductTableRow";
 import { Search, X } from "lucide-react";
+import { LABELS } from "@/constants/labels";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -95,8 +96,8 @@ export default function ProductTable({
   return (
     <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader
-        title="상품 목록"
-        actions={[<Button onClick={onAddNew}>새 상품 추가 +</Button>]}
+        title={LABELS.products.nav}
+        actions={[<Button onClick={onAddNew}>상품 추가 +</Button>]}
       />
 
       
