@@ -16,7 +16,7 @@ export default function InspectorPanel() {
   const { state, close } = useInspector();
 
   return (
-    <div className="w-[50%] max-w-120 h-full shrink-0 rounded-xl bg-surface flex flex-col">
+    <div className={`h-full rounded-xl bg-surface flex flex-col lg:w-[50%] lg:max-w-120 lg:shrink-0 ${state ? "flex-1 lg:flex-none" : "hidden lg:flex"}`}>
       {!state ? (
         <div className="flex h-full items-center justify-center">
           <p className="text-sm font-medium text-foreground/48">선택된 항목이 없습니다</p>

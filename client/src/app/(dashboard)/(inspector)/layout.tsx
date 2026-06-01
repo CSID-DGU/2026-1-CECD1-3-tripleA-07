@@ -1,4 +1,6 @@
-﻿import { InspectorProvider } from "@/contexts/InspectorContext";
+"use client";
+
+import { useInspector } from "@/contexts/InspectorContext";
 import InspectorPanel from "@/components/layout/InspectorPanel";
 
 export default function InspectorLayout({
@@ -6,12 +8,14 @@ export default function InspectorLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { state } = useInspector();
+
   return (
-    <InspectorProvider>
-      <div className="flex h-full space-x-1.5">
-        <div className="flex-1 min-w-0 h-full bg-surface rounded-xl">{children}</div>
-        <InspectorPanel />
+    <div className="flex h-full gap-1.5">
+      <div className={`min-w-0 h-full bg-surface rounded-xl ${state ? "hidden lg:block lg:flex-1" : "flex-1"}`}>
+        {children}
       </div>
-    </InspectorProvider>
+      <InspectorPanel />
+    </div>
   );
 }
