@@ -19,7 +19,7 @@ interface ProductFormProps {
 
 function computeDiscountRate(listPrice: number, price: number) {
   if (!listPrice) return 0;
-  return Math.round((1 - price / listPrice) * 100);
+  return Math.round((1 - price / listPrice) * 100000) / 1000;
 }
 
 export function ProductForm({ register, control, errors, description, onDescriptionChange, listPrice, price, onPriceChange }: ProductFormProps) {
@@ -109,7 +109,7 @@ export function ProductForm({ register, control, errors, description, onDescript
           )}
         />
         <div className="grid grid-cols-2 gap-3">
-          <Input label="할인율" type="number" suffix="%" value={discountInput} onChange={handleDiscountChange} onBlur={handleDiscountBlur} min={0} max={100} />
+          <Input label="할인율" type="number" suffix="%" value={discountInput} onChange={handleDiscountChange} onBlur={handleDiscountBlur} min={0} max={100} step="any" />
           <Controller
             name="price"
             control={control}
