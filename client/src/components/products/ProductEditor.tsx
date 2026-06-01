@@ -88,14 +88,16 @@ export default function ProductEditor({
 
   return (
     <section className="flex flex-col h-full">
-      <div className="px-6 pt-6 pb-4 shrink-0 space-y-4">
+      <div className="px-6 pt-6 pb-4 shrink-0">
         <PageHeader title={isNew ? "상품 추가하기" : "상품 상세정보"} />
-        <p className="text-sm font-medium text-foreground/48">
-          {product ? `상품 ID: ${product.id}` : undefined}
-        </p>
       </div>
 
       <form id="product-editor-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 pb-6 space-y-4">
+        {product && (
+          <p className="text-sm font-medium text-foreground/48">
+            상품 ID: {product.id}
+          </p>
+        )}
         <ProductForm
             register={register}
             control={control}
