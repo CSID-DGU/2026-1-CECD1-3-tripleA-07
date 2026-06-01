@@ -88,7 +88,17 @@ export default function ProductEditor({
 
   return (
     <section className="flex flex-col flex-1 min-h-0">
-      <form id="product-editor-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 pb-6 space-y-4">
+      <form 
+        id="product-editor-form" 
+        onSubmit={handleSubmit(onSubmit)} 
+        onKeyDown={(e) => { 
+          if (e.key === "Enter") { 
+            e.preventDefault(); 
+            (e.target as HTMLElement).blur(); 
+          } 
+        }} 
+        className="flex-1 overflow-y-auto px-6 pb-6 space-y-4"
+      >
         {product && (
           <p className="text-sm font-medium text-foreground/48">
             상품 ID: {product.id}
