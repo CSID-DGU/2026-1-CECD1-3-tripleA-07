@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Product } from "@/types/product";
 import { SortType } from "@/services/productService";
 import { Button } from "../common/Button";
 import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
+import { Select } from "../common/Select";
 import { ProductTableRow } from "./ProductTableRow";
-export { type Product };
-
+import { Search, X } from "lucide-react";
 const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "CREATED_AT_DESC", label: "최근 등록 순" },
   { value: "PRICE_ASC",       label: "가격 낮은 순" },
@@ -17,7 +17,14 @@ const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: "QUANTITY_DESC",   label: "수량 많은 순" },
 ];
 
-const COLUMNS = ["상품 ID", "상품 명", "정가", "판매가", "카테고리", "수량", "상품 설명"];
+const COLUMNS: { label: string; width?: number; right?: boolean }[] = [
+  { label: "상품 ID", width: 80 },
+  { label: "상품 명" },
+  { label: "카테고리", width: 100 },
+  { label: "정가",    width: 100, right: true },
+  { label: "판매가",  width: 100, right: true },
+  { label: "수량",    width: 100, right: true },
+];
 
 interface ProductTableProps {
   products: Product[];
@@ -31,6 +38,8 @@ interface ProductTableProps {
   onSearch: (term: string) => void;
   sortType: SortType;
   onSortChange: (sort: SortType) => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export default function ProductTable({
@@ -45,91 +54,125 @@ export default function ProductTable({
   onSearch,
   sortType,
   onSortChange,
+  isLoading = false,
+  error = null,
 }: ProductTableProps) {
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const [isComposing, setIsComposing] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
+  const scheduleSearch = (value: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => onSearch(value), 300);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchTerm(value);
+    if (!isComposing) scheduleSearch(value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       onSearch(localSearchTerm);
     }
   };
 
+  const handleCompositionStart = () => setIsComposing(true);
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    setIsComposing(false);
+    scheduleSearch(e.currentTarget.value);
+  };
+
   return (
-    <section className="flex flex-col gap-6 p-8 h-full overflow-hidden">
+    <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
       <PageHeader
         title="상품 목록"
         actions={[<Button onClick={onAddNew}>새 상품 추가 +</Button>]}
       />
 
-      {/* ... search bar code ... */}
-      <div className="relative flex gap-2">
-        <div className="relative flex-1">
-          <input
-            type="search"
-            placeholder="검색어를 입력해주세요"
-            value={localSearchTerm}
-            onChange={(e) => setLocalSearchTerm(e.target.value)}
-            onKeyDown={handleKeyPress}
-            className="w-full h-12 pl-11 pr-4 bg-gray-100 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#7e62ca]/50 transition-all text-gray-900"
-          />
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-        <Button onClick={() => onSearch(localSearchTerm)} className="h-12 px-6 bg-gray-900 hover:bg-gray-800">
-          검색
-        </Button>
-      </div>
+      
 
       {/* ... 정렬 방식 선택 드롭다운 메뉴 ... */}
-      <div className="flex items-center gap-3">
-        <label className="text-sm font-medium text-gray-700">정렬 기준</label>
-        <select
+      <div className="flex items-center gap-2">
+        <Select
           value={sortType}
-          onChange={(e) => onSortChange(e.target.value as SortType)}
-          className="h-10 px-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#7e62ca]/50 select-chevron cursor-pointer"
-        >
-          {SORT_OPTIONS.map(({ value, label }) => (
-            <option key={value} value={value}>{label}</option>
-          ))}
-        </select>
+          options={SORT_OPTIONS}
+          onChange={onSortChange}
+        />
+
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />
+            <input
+              type="search"
+              placeholder="검색어를 입력해 주세요"
+              value={localSearchTerm}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onCompositionStart={handleCompositionStart}
+              onCompositionEnd={handleCompositionEnd}
+              className="w-full h-10 pl-11 pr-9 border border-border rounded-xl outline-none focus:ring-2 focus:ring-primary/48 transition-all text-foreground placeholder:text-foreground/48 font-normal"
+            />
+            {localSearchTerm && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (debounceRef.current) clearTimeout(debounceRef.current);
+                  setLocalSearchTerm("");
+                  onSearch("");
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/48 hover:text-foreground transition-colors"
+              >
+                <X className="w-5 h-5 text-foreground/48" />
+              </button>
+            )}
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto border border-gray-200 rounded-xl">
-        <table className="w-full text-left border-collapse">
-          <thead className="sticky top-0 bg-gray-50 z-10 border-b border-gray-200">
-            <tr>
-              {COLUMNS.map((header) => (
+      <div className={`flex-1 overflow-auto transition-opacity ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
+        <table className="w-full text-left table-fixed border-separate [border-spacing:0] min-w-[580px]">
+          <colgroup>
+            {COLUMNS.map(({ label, width }) => (
+              <col key={label} style={width ? { width } : undefined} />
+            ))}
+          </colgroup>
+          <thead className="sticky top-0 z-10 relative before:absolute before:inset-0 before:bg-surface before:-z-10 before:rounded-b-xl">
+            <tr className="rounded-xl">
+              {COLUMNS.map(({ label, right }) => (
                 <th
-                  key={header}
-                  className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0"
+                  key={label}
+                  className={`px-4 h-10 text-sm font-light text-foreground uppercase tracking-wider bg-info first:rounded-l-xl last:rounded-r-xl ${right ? "text-right" : ""}`}
                 >
-                  {header}
+                  {label}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {products.map((product) => (
-              <ProductTableRow
-                key={product.id}
-                product={product}
-                isSelected={selectedId === product.id}
-                onSelect={onSelect}
-              />
-            ))}
+          <tbody>
+            {products.length === 0 && !isLoading ? (
+              <tr>
+                <td colSpan={COLUMNS.length} className={`py-20 text-center text-sm font-medium ${error ? "text-warn" : "text-foreground/48"}`}>
+                  {error ?? "상품이 없습니다"}
+                </td>
+              </tr>
+            ) : (
+              products.map((product) => (
+                <ProductTableRow
+                  key={product.id}
+                  product={product}
+                  isSelected={selectedId === product.id}
+                  onSelect={onSelect}
+                />
+              ))
+            )}
           </tbody>
         </table>
       </div>

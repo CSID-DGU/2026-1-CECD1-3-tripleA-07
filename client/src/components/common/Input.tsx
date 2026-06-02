@@ -5,23 +5,31 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   register?: UseFormRegisterReturn;
   error?: string;
+  suffix?: string;
 }
 
-export function Input({ label, register, error, ...props }: InputProps) {
+export function Input({ label, register, error, suffix, ...props }: InputProps) {
   const inputId = props.id ?? props.name ?? register?.name;
 
   return (
-    <div className="space-y-3">
-      {label && <label htmlFor={inputId} className="block text-sm font-bold text-gray-500">{label}</label>}
-      <input
-        id={inputId}
-        {...register}
-        {...props}
-        className={`w-full h-12 px-4 text-gray-900 bg-gray-100 border rounded-xl focus:ring-2 focus:ring-[#7e62ca]/50 outline-none transition-all ${
-          error ? "border-red-500" : "border-gray-200"
-        }`}
-      />
-      {error && <p className="text-xs text-red-500">{error}</p>}
+    <div className="space-y-2">
+      {label && <label htmlFor={inputId} className="block text-base font-normal text-foreground">{label}</label>}
+      <div className="relative">
+        <input
+          id={inputId}
+          {...register}
+          {...props}
+          className={`w-full px-3 py-2 text-foreground font-normal border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${
+            suffix ? "pr-8" : ""
+          } ${error ? "border-warn/48" : "border-border"}`}
+        />
+        {suffix && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-foreground/48 pointer-events-none">
+            {suffix}
+          </span>
+        )}
+      </div>
+      {error && <p className="text-xs text-warn">{error}</p>}
     </div>
   );
 }

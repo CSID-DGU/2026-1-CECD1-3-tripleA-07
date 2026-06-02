@@ -3,48 +3,55 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Trash2 } from "lucide-react";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
+import { productService } from "@/services/productService";
+import { useInspector } from "@/contexts/InspectorContext";
 import { ProductImage } from "./ProductImage";
 import { ProductForm } from "./ProductForm";
 import { Button } from "../common/Button";
-import { PageHeader } from "../common/PageHeader";
 
-interface ProductEditorProps {
-  product: Product | null;
-  onSave: (product: Product) => void;
-  onDelete: (id: number) => void;
+type ProductEditorProps = {
+  product?: Product;
   onCancel?: () => void;
-  isNew?: boolean;
-}
+};
 
 export default function ProductEditor({
   product,
-  onSave,
-  onDelete,
   onCancel,
-  isNew = false,
 }: ProductEditorProps) {
   "use no memo";
+  const isNew = !product;
+  const { close, onSaved } = useInspector();
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: DEFAULT_PRODUCT_FORM_VALUES,
   });
 
   const description = watch("description");
+  const listPrice = watch("listPrice");
+  const price = watch("price");
+
+  useEffect(() => {
+    if (listPrice && price > listPrice) {
+      setValue("price", listPrice);
+    }
+  }, [listPrice]);
 
   useEffect(() => {
     if (product) {
       reset({
         name: product.name,
-        imageUrl: product.imageUrl,
+        imageUrl: product.imageUrl ?? "",
         listPrice: product.listPrice,
         price: product.price,
         category: product.category,
@@ -56,65 +63,102 @@ export default function ProductEditor({
     }
   }, [product, reset]);
 
-  const onSubmit = (data: ProductFormValues) => {
-    const productData: Product = {
-      ...data,
-      id: product?.id ?? 0,
-    };
-    onSave(productData);
+  const onSubmit = async (data: ProductFormValues) => {
+    try {
+      if (!product) {
+        await productService.createProduct(data);
+        alert("상품이 등록되었습니다.");
+      } else {
+        await productService.updateProduct(product.id, data);
+        alert("변경사항이 저장되었습니다.");
+      }
+      onSaved();
+      close();
+    } catch (error) {
+      console.error("Failed to save product:", error);
+      alert("저장에 실패했습니다.");
+    }
   };
 
-  if (!product && !isNew) {
-    return (
-      <section className="flex flex-col items-center justify-center h-full p-8 bg-gray-50/50 border-l border-gray-200 text-gray-400">
-        {/* Placeholder content unchanged */}
-        <p className="text-lg font-medium text-center">상품을 선택하거나 <br /> 새 상품을 추가해주세요.</p>
-      </section>
-    );
-  }
+  const handleDelete = async () => {
+    if (!product || !confirm("정말 이 상품을 삭제하시겠습니까?")) return;
+    try {
+      await productService.deleteProduct(product.id);
+      onSaved();
+      close();
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+      alert("삭제에 실패했습니다.");
+    }
+  };
 
   return (
-    <section className="flex flex-col h-full bg-gray-50/50 border-l border-gray-200 overflow-y-auto">
-      <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
-        <PageHeader
-          title="상품 상세정보"
-          subtitle={product ? `상품 ID: ${product.id}` : undefined}
-          actions={[
-            ...(!isNew ? [
-              <Button key="revert" type="button" variant="secondary" onClick={() => reset()} className="h-12 px-6">
-                변경사항 되돌리기
-              </Button>
-            ] : []),
-            <Button key="submit" type="submit" className="h-12 px-6">
-              {isNew ? "새 상품 등록하기" : "변경사항 저장하기"}
-            </Button>,
-          ]}
+    <section className="flex flex-col flex-1 min-h-0">
+      <form 
+        id="product-editor-form" 
+        onSubmit={handleSubmit(onSubmit)} 
+        onKeyDown={(e) => { 
+          if (e.key === "Enter") { 
+            e.preventDefault(); 
+            (e.target as HTMLElement).blur(); 
+          } 
+        }} 
+        className="flex-1 overflow-y-auto px-6 pb-6 space-y-4"
+      >
+        {product && (
+          <p className="text-sm font-medium text-foreground/48">
+            상품 ID: {product.id}
+          </p>
+        )}
+        <ProductForm
+            register={register}
+            control={control}
+            errors={errors}
+            description={description}
+            onDescriptionChange={(e) => setValue("description", e.target.value)}
+            listPrice={listPrice}
+            price={price}
+            onPriceChange={(newPrice) => setValue("price", newPrice)}
         />
 
-        <ProductImage 
-            imageUrl={watch("imageUrl")} 
-            name={watch("name")} 
-            register={register("imageUrl")} 
-            error={errors.imageUrl?.message} 
-        />
-        <ProductForm 
-            register={register} 
-            errors={errors} 
-            description={description} 
-            onDescriptionChange={(e) => setValue("description", e.target.value)} 
+        <ProductImage
+          imageUrl={watch("imageUrl")}
+          name={watch("name")}
+          register={register("imageUrl")}
+          error={errors.imageUrl?.message}
         />
 
-        <div className="pt-12">
-          <Button
-            type="button"
-            variant="danger"
-            onClick={() => isNew ? onCancel?.() : onDelete(product!.id)}
-            className="w-full h-14"
-          >
-            {isNew ? "상품 등록 취소하기" : "상품 삭제하기"}
+      </form>
+
+      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-between">
+        <div>
+          {!isNew && (
+            <Button
+              type="button"
+              variant="danger"
+              onClick={handleDelete}
+              className="w-10 !px-0"
+              aria-label="상품 삭제"
+            >
+              <Trash2 size={16} />
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          {!isNew ? (
+            <Button type="button" variant="secondary" onClick={() => reset()} disabled={!isDirty}>
+              변경사항 취소
+            </Button>
+          ) : (
+            <Button type="button" variant="secondary" onClick={() => onCancel?.()}>
+              상품 등록 취소
+            </Button>
+          )}
+          <Button type="submit" form="product-editor-form" disabled={!isNew && !isDirty}>
+            {isNew ? "등록" : "저장"}
           </Button>
         </div>
-      </form>
+      </div>
     </section>
   );
 }

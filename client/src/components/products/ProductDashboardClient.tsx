@@ -1,132 +1,101 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect, useRef } from "react";
 import ProductTable from "@/components/products/ProductTable";
-import ProductEditor from "@/components/products/ProductEditor";
 import { Product } from "@/types/product";
-import { productService, SortType } from "@/services/productService";
-import { DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
+import { SortType, productService } from "@/services/productService";
+import { useInspector } from "@/contexts/InspectorContext";
 
-interface ProductDashboardClientProps {
-  initialProducts: Product[];
-  initialTotalPages: number;
-  currentPage: number;
-  searchTerm: string;
-  sortType: SortType;
-}
+export default function ProductDashboardClient() {
+  const { open, state, registerOnSaved } = useInspector();
 
-export default function ProductDashboardClient({
-  initialProducts,
-  initialTotalPages,
-  currentPage,
-  searchTerm,
-  sortType,
-}: ProductDashboardClientProps) {
-  const router = useRouter();
-  
-  // 상태 관리: 선택된 상품 및 추가 모드
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortType, setSortType] = useState<SortType>("CREATED_AT_DESC");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = (term: string) => {
-    const params = new URLSearchParams({ search: term, page: "0", sort: sortType });
-    router.push(`/?${params}`);
-  };
+  const searchTermRef = useRef("");
+  const currentPageRef = useRef(0);
+  const sortTypeRef = useRef<SortType>("CREATED_AT_DESC");
 
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams({ search: searchTerm, page: String(page), sort: sortType });
-    router.push(`/?${params}`);
-  };
+  const selectedProductId = state?.type === "product-edit" ? state.product.id : null;
 
-  const handleSortChange = (sort: SortType) => {
-    const params = new URLSearchParams({ search: searchTerm, page: "0", sort });
-    router.push(`/?${params}`);
-  };
-
-  const selectedProduct = isAdding
-    ? { id: 0, ...DEFAULT_PRODUCT_FORM_VALUES }
-    : initialProducts.find((p) => p.id === selectedProductId) || null;
-
-  const handleSelectProduct = (id: number) => {
-    setIsAdding(false);
-    setSelectedProductId(id);
-  };
-
-  const handleAddNewProduct = () => {
-    setIsAdding(true);
-    setSelectedProductId(null);
-  };
-
-  const handleSaveProduct = async (updatedProduct: Product) => {
+  const fetchProducts = useCallback(async (search: string, page: number, sort: SortType) => {
+    setIsLoading(true);
+    setError(null);
     try {
-      if (isAdding) {
-        await productService.createProduct(updatedProduct);
-        alert("상품이 등록되었습니다.");
-        setIsAdding(false);
-      } else {
-        const dataToUpdate = {
-          name: updatedProduct.name,
-          imageUrl: updatedProduct.imageUrl,
-          listPrice: updatedProduct.listPrice,
-          price: updatedProduct.price,
-          category: updatedProduct.category,
-          quantity: updatedProduct.quantity,
-          description: updatedProduct.description,
-        };
-        await productService.updateProduct(updatedProduct.id, dataToUpdate);
-        alert("변경사항이 저장되었습니다.");
-      }
-      router.refresh();
+      const data = await productService.getProducts(search || undefined, page, 20, sort);
+      setProducts(data.content);
+      setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Failed to save product:", error);
-      alert("저장에 실패했습니다.");
+      console.error("상품 목록 조회 실패:", error);
+      setError("상품 목록을 불러오지 못했습니다.");
+      setProducts([]);
+      setTotalPages(0);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleDeleteProduct = async (id: number) => {
-    if (confirm("정말 이 상품을 삭제하시겠습니까?")) {
-      try {
-        await productService.deleteProduct(id);
-        setSelectedProductId(null);
-        router.refresh();
-      } catch (error) {
-        console.error("Failed to delete product:", error);
-        alert("삭제에 실패했습니다.");
-      }
-    }
-  };
+  useEffect(() => {
+    fetchProducts("", 0, "CREATED_AT_DESC");
+  }, [fetchProducts]);
+
+  useEffect(() => {
+    registerOnSaved(() => fetchProducts(searchTermRef.current, currentPageRef.current, sortTypeRef.current));
+  }, [registerOnSaved, fetchProducts]);
+
+  const handleSearch = useCallback((term: string) => {
+    searchTermRef.current = term;
+    setSearchTerm(term);
+    setCurrentPage(0);
+    currentPageRef.current = 0;
+    fetchProducts(term, 0, sortType);
+  }, [fetchProducts, sortType]);
+
+  const handlePageChange = useCallback((page: number) => {
+    currentPageRef.current = page;
+    setCurrentPage(page);
+    fetchProducts(searchTerm, page, sortType);
+  }, [fetchProducts, searchTerm, sortType]);
+
+  const handleSortChange = useCallback((sort: SortType) => {
+    sortTypeRef.current = sort;
+    setSortType(sort);
+    setCurrentPage(0);
+    currentPageRef.current = 0;
+    fetchProducts(searchTerm, 0, sort);
+  }, [fetchProducts, searchTerm]);
+
+  const handleSelectProduct = useCallback((id: number) => {
+    const product = products.find((p) => p.id === id);
+    if (product) open({ type: "product-edit", product });
+  }, [products, open]);
+
+  const handleAddNewProduct = useCallback(() => {
+    open({ type: "product-new" });
+  }, [open]);
 
   return (
-    <>
-      {/* 왼쪽: 상품 목록 (60%) */}
-      <div className="w-[60%] h-full border-r">
-        <ProductTable
-          products={initialProducts}
-          selectedId={selectedProductId}
-          onSelect={handleSelectProduct}
-          onAddNew={handleAddNewProduct}
-          currentPage={currentPage}
-          totalPages={initialTotalPages}
-          onPageChange={handlePageChange}
-          searchTerm={searchTerm}
-          onSearch={handleSearch}
-          sortType={sortType}
-          onSortChange={handleSortChange}
-        />
-      </div>
-
-      {/* 오른쪽: 상세 편집 (40%) */}
-      <div className="w-[40%] h-full">
-        <ProductEditor
-          key={isAdding ? "new" : (selectedProductId ?? "none")}
-          product={selectedProduct}
-          onSave={handleSaveProduct}
-          onDelete={handleDeleteProduct}
-          onCancel={() => setIsAdding(false)}
-          isNew={isAdding}
-        />
-      </div>
-    </>
+    <div className="h-full">
+      <ProductTable
+        products={products}
+        selectedId={selectedProductId}
+        onSelect={handleSelectProduct}
+        onAddNew={handleAddNewProduct}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        searchTerm={searchTerm}
+        onSearch={handleSearch}
+        sortType={sortType}
+        onSortChange={handleSortChange}
+        isLoading={isLoading}
+        error={error}
+      />
+    </div>
   );
 }
