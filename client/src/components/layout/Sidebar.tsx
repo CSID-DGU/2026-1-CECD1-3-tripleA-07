@@ -4,18 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Layers, History, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ElementType, useState } from "react";
-import { LABELS } from "@/constants/labels";
-
-const AGENCY_NAME = "트립 A";
 
 const NAV_SECTIONS: { label: string; items: { href: string; label: string; icon: ElementType }[] }[] = [
   {
     label: "Management",
-    items: [{ href: "/products", label: LABELS.products.nav, icon: Layers }],
+    items: [{ href: "/products", label: "상품 목록", icon: Layers }],
   },
   {
     label: "Promotion",
-    items: [{ href: "/ads", label: LABELS.ads.nav, icon: History }],
+    items: [{ href: "/ads", label: "SNS 광고 발행 이력", icon: History }],
   },
 ];
 
@@ -33,7 +30,7 @@ export default function Sidebar() {
             collapsed ? "w-0 opacity-0" : "opacity-100"
           }`}
         >
-          <h1 className="text-2xl font-bold text-primary">{AGENCY_NAME}</h1>
+          <h1 className="text-2xl font-bold text-primary">tripleA</h1>
           <p className="text-sm font-normal text-foreground">여행사</p>
         </div>
         <button
