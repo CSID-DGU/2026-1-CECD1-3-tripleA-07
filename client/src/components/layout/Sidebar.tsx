@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Layers, History, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ElementType, useState } from "react";
-import { LABELS, AGENCY_NAME } from "@/constants/labels";
+import { LABELS } from "@/constants/labels";
+
+const AGENCY_NAME = "트립 A";
 
 const NAV_SECTIONS: { label: string; items: { href: string; label: string; icon: ElementType }[] }[] = [
   {

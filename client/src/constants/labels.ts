@@ -6,5 +6,3 @@ export const LABELS = {
     nav: "SNS 광고 발행 이력",
   },
 } as const;
-
-export const AGENCY_NAME = "트립 A";
