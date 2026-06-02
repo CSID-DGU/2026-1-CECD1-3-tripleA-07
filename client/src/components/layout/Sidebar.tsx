@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Layers, History, PanelLeftClose, PanelLeftOpen, Plane } from "lucide-react";
+import { Layers, History, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { ElementType, useState } from "react";
 import { LABELS, AGENCY_NAME } from "@/constants/labels";
 
@@ -32,10 +32,7 @@ export default function Sidebar() {
           }`}
         >
           <h1 className="text-2xl font-bold text-primary">{AGENCY_NAME}</h1>
-          <span className="inline-flex items-center gap-1 mt-1 px-2 py-1 rounded-lg text-sm font-medium bg-travelAgency/12 text-travelAgency">
-            여행사
-            <Plane size={16} />
-          </span>
+          <p className="text-sm font-normal text-foreground">여행사</p>
         </div>
         <button
           onClick={() => setCollapsed(!collapsed)}
