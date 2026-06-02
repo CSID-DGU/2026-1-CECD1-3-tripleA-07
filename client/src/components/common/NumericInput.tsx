@@ -6,9 +6,10 @@ interface NumericInputProps {
   onChange: (value: number) => void;
   error?: string;
   suffix?: string;
+  max?: number;
 }
 
-export function NumericInput({ label, value, onChange, error, suffix }: NumericInputProps) {
+export function NumericInput({ label, value, onChange, error, suffix, max }: NumericInputProps) {
   return (
     <div className="space-y-2">
       {label && <label className="block text-base font-normal text-foreground">{label}</label>}
@@ -18,6 +19,7 @@ export function NumericInput({ label, value, onChange, error, suffix }: NumericI
           allowNegative={false}
           decimalScale={0}
           value={value}
+          isAllowed={max !== undefined ? ({ floatValue }) => (floatValue ?? 0) <= max : undefined}
           onValueChange={({ floatValue }) => onChange(floatValue ?? 0)}
           className={`w-full px-3 py-2 text-foreground font-normal border rounded-xl focus:ring-2 focus:ring-primary/48 outline-none transition-all ${suffix ? "pr-8" : ""} ${error ? "border-warn/48" : "border-border"}`}
         />

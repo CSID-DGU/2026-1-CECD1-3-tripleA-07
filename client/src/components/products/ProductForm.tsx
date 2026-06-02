@@ -58,7 +58,7 @@ export function ProductForm({ register, control, errors, description, onDescript
       setDiscountInput(String(computeDiscountRate(listPrice, price)));
       return;
     }
-    const newPrice = Math.round(listPrice * (1 - rate / 100));
+    const newPrice = Math.min(Math.round(listPrice * (1 - rate / 100)), listPrice);
     onPriceChange(newPrice);
     setDiscountInput(String(computeDiscountRate(listPrice, newPrice)));
   };
@@ -130,6 +130,7 @@ export function ProductForm({ register, control, errors, description, onDescript
                 value={field.value}
                 onChange={(newPrice) => { field.onChange(newPrice); onPriceChange(newPrice); }}
                 error={errors.price?.message}
+                max={listPrice}
               />
             )}
           />
