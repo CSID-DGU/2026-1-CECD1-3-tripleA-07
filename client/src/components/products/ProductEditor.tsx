@@ -42,6 +42,12 @@ export default function ProductEditor({
   const price = watch("price");
 
   useEffect(() => {
+    if (listPrice && price > listPrice) {
+      setValue("price", listPrice);
+    }
+  }, [listPrice]);
+
+  useEffect(() => {
     if (product) {
       reset({
         name: product.name,
