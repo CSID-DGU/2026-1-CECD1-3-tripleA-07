@@ -21,7 +21,7 @@ interface ProductFormProps {
 // 예시) listPrice: 1001-10000 -> discountRate: 소수점 아래 2자리까지
 function getDiscountDecimals(listPrice: number) {
   if (!listPrice) return 0;
-  return Math.max(0, Math.ceil(Math.log10(listPrice)) - 2);
+  return Math.max(0, Math.floor(Math.log10(listPrice)) - 2);
 }
 
 // 할인율 계산
