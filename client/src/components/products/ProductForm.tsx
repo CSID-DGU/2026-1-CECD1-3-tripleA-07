@@ -17,9 +17,18 @@ interface ProductFormProps {
   onPriceChange: (price: number) => void;
 }
 
+// listPrice에 따라 discountRate 소수점 아래 자리수 계산 
+// 예시) listPrice: 1001-10000 -> discountRate: 소수점 아래 2자리까지
+function getDiscountDecimals(listPrice: number) {
+  if (!listPrice) return 0;
+  return Math.max(0, Math.ceil(Math.log10(listPrice)) - 2);
+}
+
+// 할인율 계산
 function computeDiscountRate(listPrice: number, price: number) {
   if (!listPrice) return 0;
-  return Math.round((1 - price / listPrice) * 100000) / 1000;
+  const factor = Math.pow(10, getDiscountDecimals(listPrice));  // 소수점 아래 자리수
+  return Math.round((1 - price / listPrice) * 100 * factor) / factor;
 }
 
 export function ProductForm({ register, control, errors, description, onDescriptionChange, listPrice, price, onPriceChange }: ProductFormProps) {
