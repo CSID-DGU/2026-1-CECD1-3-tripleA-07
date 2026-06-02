@@ -49,7 +49,9 @@ export function ProductForm({ register, control, errors, description, onDescript
       setDiscountInput(String(computeDiscountRate(listPrice, price)));
       return;
     }
-    onPriceChange(Math.round(listPrice * (1 - rate / 100)));
+    const newPrice = Math.round(listPrice * (1 - rate / 100));
+    onPriceChange(newPrice);
+    setDiscountInput(String(computeDiscountRate(listPrice, newPrice)));
   };
 
   return (
