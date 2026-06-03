@@ -141,8 +141,6 @@ def build_user_prompt(
         result_list = search_vectordb(cursor, event_type, vec)
         # few_shot 예시 정보를 가져와 생성
         few_shot = ""
-        # for elem in result_list:
-        #     few_shot += json.dumps(elem[1], ensure_ascii=False)
 
         for elem in result_list[:3]:
             input_json = elem[1]
