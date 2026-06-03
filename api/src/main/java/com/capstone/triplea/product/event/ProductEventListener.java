@@ -46,8 +46,12 @@ public class ProductEventListener {
                     log.info("[Agent 응답] : {}", res); // Agent가 생성한 광고글 DB에 저장
                     String aiResponse = extractAiResponse(res);
                     String postUrl = extractPostUrl(res);
+                    if (postUrl == null) {
+                        log.warn("[심의 거절] product id: {}", event.getId());
+                        return;
+                    }
                     advertisementService.save(event.getId(), event.getEventType(), aiResponse, postUrl);
-                })//res -> log.info("[Agent 응답] {}", res))
+                })
                 .doOnError(e -> log.error("[Agent 호출 실패] {}", e.getMessage()))
                 .subscribe();
     }
@@ -77,9 +81,9 @@ public class ProductEventListener {
     private String extractPostUrl(String res) {
         try {
             JsonNode root = objectMapper.readTree(res);
-            JsonNode postUrl = root.get("post_url");
+            JsonNode postUrl = root.get("postUrl");
 
-            if (postUrl == null) {
+            if (postUrl == null || postUrl.isNull()) {
                 log.warn("[post_url 추출 실패] post_url 필드 없음");
                 return null;
             }
