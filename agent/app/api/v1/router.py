@@ -92,7 +92,8 @@ async def start_agent_flow(body: AgentEventRequest):
         "productNew": body.product_new,
         "productOld": body.product_old,
         "aiResponse": ai_response,
-        "post_url": post_url
+        "post_url": post_url, # 네이밍 오류, 백엔드 대응 시 제거
+        "postUrl": post_url
     }
 
 # 테스트를 위한 엔드포인트
