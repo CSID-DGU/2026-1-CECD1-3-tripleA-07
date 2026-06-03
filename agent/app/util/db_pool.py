@@ -28,6 +28,34 @@ def get_connection():
 def close_pool():
     pool.close()
 
-def search_vectordb(cursor: oracledb.Cursor, event_type: EventType, input_vec):
-    cursor.setinputsizes(query_vector=oracledb.DB_TYPE_VECTOR)
-    cursor.execute("SELECT ID, CONTENT_JSON, VECTOR_DISTANCE(EMBEDDING, :query_vector, COSINE) AS score FROM MARKETING_EXAMPLE WHERE MARKETING_TYPE = :marketing_type ORDER BY score FETCH FIRST 5 ROWS ONLY;", query_vector=input_vec, marketing_type=event_type)
+def search_vectordb(
+        cursor: oracledb.Cursor,
+        event_type: EventType,
+        input_vec
+):
+    cursor.setinputsizes(
+        query_vector=oracledb.DB_TYPE_VECTOR
+    )
+
+    cursor.execute(
+        """
+        SELECT
+            ID,
+            INPUT,
+            OUTPUT_CORRECT,
+            OUTPUT_WRONG,
+            VECTOR_DISTANCE(
+            EMBEDDING,
+            :query_vector,
+            COSINE
+            ) AS SCORE
+        FROM MARKETING_FEW_SHOT
+        WHERE MARKETING_TYPE = :marketing_type
+        ORDER BY SCORE
+            FETCH FIRST 5 ROWS ONLY
+        """,
+        query_vector=input_vec,
+        marketing_type=event_type.value
+    )
+
+    return cursor.fetchall()

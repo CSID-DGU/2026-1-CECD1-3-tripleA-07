@@ -6,8 +6,7 @@ from app.common.dto.product import Product
 model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)
 
 def build_text(item: Product):
-    return f"name: {item.name}, description: {item.description}, category: {item.category}"
-
+    return f"""상품명: {item.name}, 카테고리: {item.category}, 정가: {item.list_price}, 판매가: {item.price}, 재고: {item.quantity}, 설명: {item.description}"""
 
 def embed_document(item: Product):
     text = build_text(item)
