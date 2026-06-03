@@ -137,13 +137,32 @@ def build_user_prompt(
 
         text, vec = embed_document(product_new)
         # 벡터 검색을 통해 데이터 조회
-        search_vectordb(cursor, event_type, vec)
 
-        result_list = cursor.fetchall()
+        result_list = search_vectordb(cursor, event_type, vec)
         # few_shot 예시 정보를 가져와 생성
         few_shot = ""
-        for elem in result_list:
-            few_shot += json.dumps(elem[1], ensure_ascii=False)
+        # for elem in result_list:
+        #     few_shot += json.dumps(elem[1], ensure_ascii=False)
+
+        for elem in result_list[:3]:
+            input_json = elem[1]
+            correct_json = elem[2]
+            wrong_json = elem[3]
+
+            few_shot += f"""
+        ### 참고 예시
+
+        입력 상품:
+        {json.dumps(input_json, ensure_ascii=False, default=str)}
+
+        좋은 광고:
+        {json.dumps(correct_json, ensure_ascii=False, default=str)}
+
+        나쁜 광고:
+        {json.dumps(wrong_json, ensure_ascii=False, default=str)}
+        위 광고가 잘못된 이유를 참고하세요.
+
+        """
     finally:
         conn.close()
 
