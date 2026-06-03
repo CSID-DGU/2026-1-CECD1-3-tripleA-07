@@ -1,9 +1,18 @@
 import os
+import math
 import requests
 from datetime import date, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def _sig(x: float, figures: int = 4) -> float:
+    if x == 0:
+        return 0.0
+    d = math.ceil(math.log10(abs(x)))
+    factor = 10 ** (figures - d)
+    return round(x * factor) / factor
 
 CURRENCY_BEACON_API_KEY = os.getenv("CURRENCY_BEACON_API_KEY")
 CURRENCY_BEACON_BASE_URL = "https://api.currencybeacon.com/v1"
@@ -42,8 +51,8 @@ def get_exchange_rate(destination_currency: str) -> dict:
     return {
         "trend":                trend,
         "destination_currency": destination_currency,
-        "current_rate":         round(current_rate, 4),
-        "past_rate":            round(past_rate, 4),
+        "current_rate":         _sig(current_rate),
+        "past_rate":            _sig(past_rate),
         "change_pct":           round(change_pct, 2),
     }
 
