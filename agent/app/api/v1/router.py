@@ -60,20 +60,31 @@ async def start_agent_flow(body: AgentEventRequest):
         16753920
     )
     ai_response_json = json.loads(ai_response)
-    content = "\n".join([
+    is_accepted = ai_response_json.get("is_accepted", "")
+    if is_accepted:
+        content = "\n".join([
+                ai_response_json.get("title", ""),
+                ai_response_json.get("body", ""),
+                ai_response_json.get("cta", ""),
+                " ".join(ai_response_json.get("hashtags", []))
+            ])
+        post_url = call_facebook_api(content)
+        # SNS 발행 메시지 출력
+        discord_send_message(
+            "📢 SNS Publishing Completed",
             ai_response_json.get("title", ""),
-            ai_response_json.get("body", ""),
-            ai_response_json.get("cta", ""),
-            " ".join(ai_response_json.get("hashtags", []))
-        ])
-    post_url = call_facebook_api(content)
-    # SNS 발행 메시지 출력
-    discord_send_message(
-        "📢 SNS Publishing Completed",
-        ai_response_json.get("title", ""),
-        post_url,
-        7855479
-    )
+            post_url,
+            7855479
+        )
+    else:
+        post_url = None
+        # 심의 거절 메시지 출력
+        discord_send_message(
+            "🚨 Content Rejected",
+            ai_response_json.get("reason", ""),
+            post_url,
+            15548997
+        )
     # 임시 return 값
     return {
         "eventType": body.event_type,
@@ -81,7 +92,8 @@ async def start_agent_flow(body: AgentEventRequest):
         "productNew": body.product_new,
         "productOld": body.product_old,
         "aiResponse": ai_response,
-        "post_url": post_url
+        "post_url": post_url, # 네이밍 오류, 백엔드 대응 시 제거
+        "postUrl": post_url
     }
 
 # 테스트를 위한 엔드포인트

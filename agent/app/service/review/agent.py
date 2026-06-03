@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 from app.common.enum.event_type import EventType
@@ -43,6 +44,19 @@ async def product_reviewing(
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
+        temperature=0.7,
+        n=5
     )
 
-    return response.choices[0].message.content
+    selected_idx = None
+    for idx, choice in enumerate(response.choices):
+        result_json = json.loads(choice.message.content)
+        # is_accepted 여부 체크
+        if not(result_json["is_accepted"]):
+            selected_idx = idx
+            break  # 가장 먼저 나온 거절 기준
+        else:
+            if selected_idx is None:
+                selected_idx = idx
+
+    return response.choices[selected_idx].message.content

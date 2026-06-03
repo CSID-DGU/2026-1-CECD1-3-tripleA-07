@@ -8,7 +8,7 @@ load_dotenv()
 DISCORD_API_URL = os.getenv("DISCORD_API_URL")
 
 #디스코드 채널로 메시지 전송
-def discord_send_message(title: str, description: str, url: str, color: int):
+def discord_send_message(title: str, description: str, url: str | None, color: int):
     message = {
         "embeds": [{
             "title": title,
