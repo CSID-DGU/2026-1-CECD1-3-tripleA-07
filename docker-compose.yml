@@ -1,6 +1,8 @@
 services:
   api:
     build: ./api
+    volumes:
+      - ./wallet:/wallet
     env_file:
       - ./api/.env
     container_name: spring-api
@@ -13,6 +15,8 @@ services:
 
   agent:
     build: ./agent
+    volumes:
+      - ./wallet:/wallet
     env_file:
       - ./agent/.env
     container_name: fastapi-agent
