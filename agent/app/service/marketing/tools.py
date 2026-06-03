@@ -51,9 +51,8 @@ def get_exchange_rate(destination_currency: str) -> dict:
     return {
         "trend":                trend,
         "destination_currency": destination_currency,
-        "current_rate":         _sig(current_rate),
-        "past_rate":            _sig(past_rate),
-        "change_pct":           round(change_pct, 2),
+        "per_krw":              _sig(current_rate),          # 1원으로 살 수 있는 외화량
+        "per_foreign":          _sig(1 / current_rate),      # 외화 1단위로 살 수 있는 원화량
     }
 
 
