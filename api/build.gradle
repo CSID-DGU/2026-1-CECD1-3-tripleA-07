@@ -38,9 +38,9 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
-    runtimeOnly 'com.oracle.database.security:oraclepki'
-    runtimeOnly 'com.oracle.database.security:osdt_core'
-    runtimeOnly 'com.oracle.database.security:osdt_cert'
+    runtimeOnly 'com.oracle.database.security:oraclepki:23.26.2.0.0'
+    runtimeOnly 'com.oracle.database.security:osdt_core:21.21.0.0'
+    runtimeOnly 'com.oracle.database.security:osdt_cert:21.21.0.0'
 }
 
 tasks.named('test') {
