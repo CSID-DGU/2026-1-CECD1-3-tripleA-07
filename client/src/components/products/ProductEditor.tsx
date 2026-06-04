@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, RotateCcw, Save } from "lucide-react";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 import { productService } from "@/services/productService";
@@ -127,18 +128,24 @@ export default function ProductEditor({
 
       </form>
 
-      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-between">
-        <div />
-        <div className="flex items-center gap-3">
-          {!isNew && (
+      <div className="px-6 py-4 shrink-0 border-t border-border">
+        {isNew ? (
+          <Button type="submit" form="product-editor-form" className="w-full">
+            <Plus size={16} />
+            등록
+          </Button>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
             <Button type="button" variant="secondary" onClick={() => reset()} disabled={!isDirty}>
+              <RotateCcw size={16} />
               변경사항 취소
             </Button>
-          )}
-          <Button type="submit" form="product-editor-form" disabled={!isNew && !isDirty}>
-            {isNew ? "등록" : "저장"}
-          </Button>
-        </div>
+            <Button type="submit" form="product-editor-form" disabled={!isDirty}>
+              <Save size={16} />
+              저장
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
