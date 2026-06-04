@@ -1,0 +1,24 @@
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./wallet:/wallet
+    env_file:
+      - ./api/.env
+    container_name: spring-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - agent
+    environment:
+      AGENT_URL: http://agent:8000/api/v1/agent/marketing
+
+  agent:
+    build: ./agent
+    volumes:
+      - ./wallet:/wallet
+    env_file:
+      - ./agent/.env
+    container_name: fastapi-agent
+    expose:
+      - "8000"
