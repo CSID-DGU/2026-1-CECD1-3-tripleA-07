@@ -113,7 +113,7 @@ export default function ProductEditor({
             control={control}
             errors={errors}
             description={description}
-            onDescriptionChange={(e) => setValue("description", e.target.value)}
+            onDescriptionChange={(e) => setValue("description", e.target.value, { shouldDirty: true })}
             listPrice={listPrice}
             price={price}
             onPriceChange={(newPrice) => setValue("price", newPrice)}
