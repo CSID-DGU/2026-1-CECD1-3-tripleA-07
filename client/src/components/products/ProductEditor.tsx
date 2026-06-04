@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, RotateCcw, Save } from "lucide-react";
+import { CircleCheck, RotateCcw, Save } from "lucide-react";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 import { productService } from "@/services/productService";
@@ -131,7 +131,7 @@ export default function ProductEditor({
       <div className="px-6 py-4 shrink-0 border-t border-border">
         {isNew ? (
           <Button type="submit" form="product-editor-form" className="w-full">
-            <Plus size={16} />
+            <CircleCheck size={16} />
             등록
           </Button>
         ) : (
