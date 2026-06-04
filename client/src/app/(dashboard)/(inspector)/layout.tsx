@@ -12,7 +12,7 @@ export default function InspectorLayout({
 
   return (
     <div className="flex h-full gap-1.5">
-      <div className={`min-w-88 h-full bg-surface rounded-xl ${state ? "hidden lg:block lg:flex-1" : "flex-1"}`}>
+      <div className={`min-w-80 h-full bg-surface rounded-xl ${state ? "hidden lg:block lg:flex-1" : "flex-1"}`}>
         {children}
       </div>
       <InspectorPanel />
