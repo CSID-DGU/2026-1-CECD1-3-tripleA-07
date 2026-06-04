@@ -7,4 +7,4 @@ export const LABELS = {
   },
 } as const;
 
-export const AGENCY_NAME = "트립 A";
+export const AGENCY_NAME = "트립에이";
