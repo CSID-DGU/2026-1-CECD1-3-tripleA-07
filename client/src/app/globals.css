@@ -10,6 +10,7 @@
   --facebook: #1877F2;
   --new: #79C77E;
   --update: #E1843C;
+  --travelAgency: #4897FF;
 }
 
 @theme inline {
@@ -23,6 +24,7 @@
   --color-facebook: var(--facebook);
   --color-new: var(--new);
   --color-update: var(--update);
+  --color-travelAgency: var(--travelAgency);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

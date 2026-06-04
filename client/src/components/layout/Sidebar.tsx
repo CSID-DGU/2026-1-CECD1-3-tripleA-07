@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Layers, History, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Layers, History, PanelLeftClose, PanelLeftOpen, PlaneTakeoff } from "lucide-react";
 import { ElementType, useState } from "react";
+import { LABELS, AGENCY_NAME } from "@/constants/labels";
 
 const NAV_SECTIONS: { label: string; items: { href: string; label: string; icon: ElementType }[] }[] = [
   {
     label: "Management",
-    items: [{ href: "/products", label: "상품 목록", icon: Layers }],
+    items: [{ href: "/products", label: LABELS.products.nav, icon: Layers }],
   },
   {
     label: "Promotion",
-    items: [{ href: "/ads", label: "SNS 광고 발행 이력", icon: History }],
+    items: [{ href: "/ads", label: LABELS.ads.nav, icon: History }],
   },
 ];
 
@@ -22,16 +23,19 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`${collapsed ? "w-[76px]" : "w-66"} h-full px-4 py-9 flex flex-col bg-canvas shrink-0 space-y-4 overflow-hidden transition-[width] duration-200`}
+      className={`${collapsed ? "w-[76px]" : "w-66"} h-full px-4 py-8 flex flex-col bg-canvas shrink-0 space-y-4 overflow-hidden transition-[width] duration-200`}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div
           className={`overflow-hidden whitespace-nowrap transition-all duration-150 ${
-            collapsed ? "w-0 opacity-0" : "opacity-100"
+            collapsed ? "w-0 h-0 opacity-0" : "h-16 opacity-100"
           }`}
         >
-          <h1 className="text-2xl font-bold text-primary">tripleA</h1>
-          <p className="text-sm font-normal text-foreground">여행사</p>
+          <h1 className="text-2xl font-bold text-primary">{AGENCY_NAME}</h1>
+          <span className="inline-flex items-center gap-1 mt-1 px-2 py-1 rounded-lg text-sm font-medium bg-travelAgency/12 text-travelAgency">
+            여행사
+            <PlaneTakeoff size={16} />
+          </span>
         </div>
         <button
           onClick={() => setCollapsed(!collapsed)}

@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2 } from "lucide-react";
+import { CircleCheck, RotateCcw, Save } from "lucide-react";
 import { Product } from "@/types/product";
 import { productSchema, ProductFormValues, DEFAULT_PRODUCT_FORM_VALUES } from "@/types/productSchema";
 import { productService } from "@/services/productService";
@@ -14,12 +14,10 @@ import { Button } from "../common/Button";
 
 type ProductEditorProps = {
   product?: Product;
-  onCancel?: () => void;
 };
 
 export default function ProductEditor({
   product,
-  onCancel,
 }: ProductEditorProps) {
   "use no memo";
   const isNew = !product;
@@ -115,7 +113,7 @@ export default function ProductEditor({
             control={control}
             errors={errors}
             description={description}
-            onDescriptionChange={(e) => setValue("description", e.target.value)}
+            onDescriptionChange={(e) => setValue("description", e.target.value, { shouldDirty: true })}
             listPrice={listPrice}
             price={price}
             onPriceChange={(newPrice) => setValue("price", newPrice)}
@@ -130,34 +128,24 @@ export default function ProductEditor({
 
       </form>
 
-      <div className="px-6 py-4 shrink-0 border-t border-border flex items-center justify-between">
-        <div>
-          {!isNew && (
-            <Button
-              type="button"
-              variant="danger"
-              onClick={handleDelete}
-              className="w-10 !px-0"
-              aria-label="상품 삭제"
-            >
-              <Trash2 size={16} />
-            </Button>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          {!isNew ? (
+      <div className="px-6 py-4 shrink-0 border-t border-border">
+        {isNew ? (
+          <Button type="submit" form="product-editor-form" className="w-full">
+            <CircleCheck size={16} />
+            등록
+          </Button>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
             <Button type="button" variant="secondary" onClick={() => reset()} disabled={!isDirty}>
+              <RotateCcw size={16} />
               변경사항 취소
             </Button>
-          ) : (
-            <Button type="button" variant="secondary" onClick={() => onCancel?.()}>
-              상품 등록 취소
+            <Button type="submit" form="product-editor-form" disabled={!isDirty}>
+              <Save size={16} />
+              저장
             </Button>
-          )}
-          <Button type="submit" form="product-editor-form" disabled={!isNew && !isDirty}>
-            {isNew ? "등록" : "저장"}
-          </Button>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
