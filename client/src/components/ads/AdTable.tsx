@@ -6,6 +6,7 @@ import { Ad } from "@/types/ad";
 import { PageHeader } from "../common/PageHeader";
 import Pagination from "../common/Pagination";
 import { AdTableRow } from "./AdTableRow";
+import { LABELS } from "@/constants/labels";
 
 const COLUMNS: { label: string; width?: number; center?: boolean }[] = [
   { label: "광고 ID",  width: 80 },
@@ -64,7 +65,7 @@ export default function AdTable({
 
   return (
     <section className="flex flex-col gap-4 p-6 h-full overflow-hidden">
-      <PageHeader title="SNS 광고 발행 이력" actions={[]} />
+      <PageHeader title={LABELS.ads.nav} actions={[]} />
 
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/48" />
