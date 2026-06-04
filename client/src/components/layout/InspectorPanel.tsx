@@ -36,9 +36,9 @@ export default function InspectorPanel() {
           {state.type === "ad" ? (
             <AdDetail key={state.ad.id} ad={state.ad} />
           ) : state.type === "product-edit" ? (
-            <ProductEditor key={state.product.id} product={state.product} onCancel={close} />
+            <ProductEditor key={state.product.id} product={state.product} />
           ) : (
-            <ProductEditor key="new" onCancel={close} />
+            <ProductEditor key="new" />
           )}
         </>
       )}

@@ -14,12 +14,10 @@ import { Button } from "../common/Button";
 
 type ProductEditorProps = {
   product?: Product;
-  onCancel?: () => void;
 };
 
 export default function ProductEditor({
   product,
-  onCancel,
 }: ProductEditorProps) {
   "use no memo";
   const isNew = !product;
@@ -145,13 +143,9 @@ export default function ProductEditor({
           )}
         </div>
         <div className="flex items-center gap-3">
-          {!isNew ? (
+          {!isNew && (
             <Button type="button" variant="secondary" onClick={() => reset()} disabled={!isDirty}>
               변경사항 취소
-            </Button>
-          ) : (
-            <Button type="button" variant="secondary" onClick={() => onCancel?.()}>
-              상품 등록 취소
             </Button>
           )}
           <Button type="submit" form="product-editor-form" disabled={!isNew && !isDirty}>
