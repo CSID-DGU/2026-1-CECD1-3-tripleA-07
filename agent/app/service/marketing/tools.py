@@ -9,12 +9,14 @@ CURRENCY_BEACON_API_KEY = os.getenv("CURRENCY_BEACON_API_KEY")
 CURRENCY_BEACON_BASE_URL = os.getenv("CURRENCY_BEACON_BASE_URL", "https://api.currencybeacon.com/v1")
 
 
+# x를 유효숫자 만큼 남기고 반올림
+# ex) 0.023976... -> 0.02398 (유효숫자 4자리)
 def _sig(x: float, figures: int = 4) -> float:
     if x == 0:
         return 0.0
-    d = math.ceil(math.log10(abs(x)))
-    factor = 10 ** (figures - d)
-    return round(x * factor) / factor
+    d = math.ceil(math.log10(abs(x)))       # 값이 시작되는 자릿수
+    factor = 10 ** (figures - d)            # 반올림 위치 설정
+    return round(x * factor) / factor       # x의 정수부 끝을 반올림 위치로 만든 뒤 반올림하고 다시 자리수 원복
 
 
 
