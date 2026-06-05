@@ -5,6 +5,8 @@ from datetime import date, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+CURRENCY_BEACON_API_KEY = os.getenv("CURRENCY_BEACON_API_KEY")
+CURRENCY_BEACON_BASE_URL = os.getenv("CURRENCY_BEACON_BASE_URL", "https://api.currencybeacon.com/v1")
 
 
 def _sig(x: float, figures: int = 4) -> float:
@@ -14,8 +16,6 @@ def _sig(x: float, figures: int = 4) -> float:
     factor = 10 ** (figures - d)
     return round(x * factor) / factor
 
-CURRENCY_BEACON_API_KEY = os.getenv("CURRENCY_BEACON_API_KEY")
-CURRENCY_BEACON_BASE_URL = "https://api.currencybeacon.com/v1"
 
 
 # -------------------------
