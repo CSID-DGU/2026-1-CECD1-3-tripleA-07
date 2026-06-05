@@ -4,6 +4,7 @@ from app.common.enum.event_type import EventType
 from app.common.dto.product import Product
 from app.util.db_pool import get_connection, search_vectordb
 from app.util.embedding_model import embed_document
+from app.service.marketing.tools import get_exchange_rate
 
 # -------------------------
 # CATEGORY TONE GUIDE
@@ -101,14 +102,6 @@ SYSTEM_PROMPT = """
 - cta: 행동 동사 + 혜택, 이모지 1개, 40자 이내 
 - hashtags: 6~10개, 반드시 # 포함, 목적지 + 테마 + 여행문화 태그 혼합
 
-## 작업 순서
-1. 상품 설명에서 쇼핑, 자유시간, 자유여행 등의 맥락이 읽히면 JSON 출력 전에 반드시 get_exchange_rate 툴을 먼저 호출할 것
-   - destination_currency는 카테고리와 상품명·설명을 보고 추론할 것
-     (예: 일본→JPY, 중국→CNY, 유럽→EUR, 태국→THB, 베트남→VND, 호주→AUD, 미국→USD)
-2. 툴 결과를 받은 뒤 아래 방향으로 카피에 반영하고 JSON 출력:
-   - 원화 매우 강세 / 원화 강세 → "원화 강세"를 직접 언급하지 말 것. 지금 환율이 유리해 현지 쇼핑 부담이 없다는 뉘앙스로 body에 자연스럽게 녹일 것
-   - 보통 / 원화 약세          → 환율 언급 생략
-
 ## 출력 형식
 반드시 유효한 JSON 객체만 응답하세요.
 마크다운 사용 금지, 설명 금지, JSON 외의 추가 텍스트 출력 금지.
@@ -130,6 +123,58 @@ def urgency_instruction(quantity: int) -> str:
     elif quantity < 30:
         return f"- 잔여 {quantity}석임을 body에 반드시 언급할 것 (예: '📢 {quantity}석 마감 임박!')"
     return ""
+
+# -------------------------
+# TOOL RESULT CONTEXT BUILDER
+# -------------------------
+def build_exchange_context(product: Product) -> str:
+    text = f"{product.name} {product.description}"
+
+    keywords = [
+        "쇼핑", "아울렛", "면세", "자유시간",
+        "자유여행", "자유일정", "자유", "시내관광",
+        "개인시간", "선택관광", "자유행동", "단독행동",
+        "식사 불포함", "식사불포함", "자유식", "현지식"
+    ]
+
+    if not any(k in text for k in keywords):
+        return ""
+
+    category_currency = {
+        "일본": "JPY",
+        "동남아": "THB",
+        "유럽": "EUR",
+        "대만·홍콩·마카오": "HKD",
+        "중국": "CNY",
+        "몽골·중앙아시아": "USD",
+        "미국": "USD",
+        "호주·뉴질랜드": "AUD",
+        "캐나다·중남미": "CAD",
+        "중동·아프리카·인도": "USD",
+    }
+
+    currency = category_currency.get(product.category)
+    if not currency:
+        return ""
+
+    result = get_exchange_rate(currency)
+
+    return f"""
+## 환율 정보
+- 상태: {result["trend"]}
+- 목적지 통화: {result["destination_currency"]}
+
+### 환율 반영 규칙 (반드시 준수)
+- 상태가 "원화 강세" 또는 "원화 매우 강세"인 경우:
+  - body에 반드시 아래 의미를 포함할 것
+    - 현지 쇼핑 부담이 적다
+    - 먹거리 구매가 부담 없다
+    - 환율이 좋을 때가 기회다
+  - "원화 강세", "원화 매우 강세" 이라는 단어는 직접 사용하지 말 것
+
+- 상태가 "보통" 또는 "원화 약세"인 경우:
+  - 환율 관련 내용은 언급하지 말 것
+"""
 
 # -------------------------
 # USER PROMPT BUILDER
@@ -174,6 +219,7 @@ def build_user_prompt(
 
     # 1) 카테고리별 톤 가이드 주입
     tone = CATEGORY_TONE_GUIDE.get(product_new.category, DEFAULT_TONE)
+    exchange_context = build_exchange_context(product_new)
 
     # 2) 가격 정보 — 원본 숫자 그대로 전달 (구어체 변환 제거, 검수는 Agent에서)
     list_price    = product_new.list_price
@@ -236,6 +282,8 @@ def build_user_prompt(
 - 여행지 소개 (재해석 소재로만 활용): {product_new.description}
 - 가격 정보: {price_context}
 - 카테고리: {product_new.category}
+
+{exchange_context}
 
 {event_rule}
 
