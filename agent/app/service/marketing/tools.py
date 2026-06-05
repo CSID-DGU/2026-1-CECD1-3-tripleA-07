@@ -27,7 +27,7 @@ def get_exchange_rate(destination_currency: str) -> dict:
     today = date.today()
     past  = today - timedelta(days=30)
 
-    def _fetch(endpoint: str, target_date: str | None = None) -> float:
+    def fetch(endpoint: str, target_date: str | None = None) -> float:
         params = {
             "api_key": CURRENCY_BEACON_API_KEY,
             "base":    "KRW",
@@ -40,8 +40,8 @@ def get_exchange_rate(destination_currency: str) -> dict:
         resp.raise_for_status()
         return resp.json()["response"]["rates"][destination_currency]
 
-    current_rate = _fetch("latest")
-    past_rate    = _fetch("historical", str(past))
+    current_rate = fetch("latest")
+    past_rate    = fetch("historical", str(past))
 
     change_pct = (current_rate / past_rate - 1) * 100
 
