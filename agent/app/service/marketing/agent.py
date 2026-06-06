@@ -18,36 +18,43 @@ POKE_API_URL = os.getenv("POKE_API_URL")
 
 client = get_ai_client()
 
-async def run_with_tools(response: ChatCompletion, messages: list):
+async def run_with_tools(response: ChatCompletion, messages: list) -> str:
     message = response.choices[0].message
-
-    # assistant 메시지를 저장
     messages.append(message.model_dump())
 
-    # tool call 없으면 종료
     if not message.tool_calls:
-        return response
+        return message.content
 
+    called_names = set()
     for tool_call in message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments or "{}")
 
-        result = TOOL_MAP[name](**args)
+        if name == "submit_ad":
+            return json.dumps(args, ensure_ascii=False)
 
+        called_names.add(name)
+        result = TOOL_MAP[name](**args)
         messages.append({
             "role": "tool",
             "tool_call_id": tool_call.id,
             "content": json.dumps(result, ensure_ascii=False)
         })
 
-    # 2차 호출
+    remaining_tools = [t for t in TOOLS if t["function"]["name"] not in called_names]
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS
+        tools=remaining_tools,
+        tool_choice="required",
     )
 
-    return response
+    message = response.choices[0].message
+    if message.tool_calls:
+        args = json.loads(message.tool_calls[0].function.arguments or "{}")
+        return json.dumps(args, ensure_ascii=False)
+
+    return message.content
 
 async def product_marketing(event_type: EventType, is_sample: bool, product_new: Product, product_old: Product | None):
     # 파라미터에 따라 샘플 데이터로 테스트 가능
@@ -71,9 +78,8 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS
+        tools=TOOLS,
+        tool_choice="required",
     )
 
-    response = await run_with_tools(response, messages)
-
-    return response.choices[0].message.content
+    return await run_with_tools(response, messages)
