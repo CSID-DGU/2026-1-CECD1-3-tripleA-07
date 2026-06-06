@@ -34,7 +34,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "https://2026-1-cecd-1-3-triple-a-07.vercel.app"
+                "https://2026-1-cecd-1-3-triple-a-07.vercel.app", "http://localhost:3000"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
