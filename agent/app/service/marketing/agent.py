@@ -18,34 +18,64 @@ POKE_API_URL = os.getenv("POKE_API_URL")
 
 client = get_ai_client()
 
+# async def run_with_tools(response: ChatCompletion, messages: list):
+#     message = response.choices[0].message
+#
+#     # assistant 메시지를 저장
+#     messages.append(message.model_dump())
+#
+#     # tool call 없으면 종료
+#     if not message.tool_calls:
+#         return response
+#
+#     for tool_call in message.tool_calls:
+#         name = tool_call.function.name
+#         args = json.loads(tool_call.function.arguments or "{}")
+#
+#         result = TOOL_MAP[name](**args)
+#
+#         messages.append({
+#             "role": "tool",
+#             "tool_call_id": tool_call.id,
+#             "content": json.dumps(result, ensure_ascii=False)
+#         })
+#
+#     # 2차 호출
+#     response = await client.chat.completions.create(
+#         model=AI_MODEL,
+#         messages=messages,
+#         tools=TOOLS
+#     )
+#
+#     return response
 async def run_with_tools(response: ChatCompletion, messages: list):
-    message = response.choices[0].message
+    for _ in range(5):  # 최대 5회 (무한 루프 방지)
+        message = response.choices[0].message
+        messages.append(message.model_dump())
 
-    # assistant 메시지를 저장
-    messages.append(message.model_dump())
+        if not message.tool_calls:
+            return response
 
-    # tool call 없으면 종료
-    if not message.tool_calls:
-        return response
+        for tool_call in message.tool_calls:
+            name = tool_call.function.name
+            args = json.loads(tool_call.function.arguments or "{}")
 
-    for tool_call in message.tool_calls:
-        name = tool_call.function.name
-        args = json.loads(tool_call.function.arguments or "{}")
+            try:
+                result = TOOL_MAP[name](**args)
+            except Exception as e:
+                result = {"error": str(e)}
 
-        result = TOOL_MAP[name](**args)
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": json.dumps(result, ensure_ascii=False)
+            })
 
-        messages.append({
-            "role": "tool",
-            "tool_call_id": tool_call.id,
-            "content": json.dumps(result, ensure_ascii=False)
-        })
-
-    # 2차 호출
-    response = await client.chat.completions.create(
-        model=AI_MODEL,
-        messages=messages,
-        tools=TOOLS
-    )
+        response = await client.chat.completions.create(
+            model=AI_MODEL,
+            messages=messages,
+            tools=TOOLS
+        )
 
     return response
 
