@@ -18,36 +18,6 @@ POKE_API_URL = os.getenv("POKE_API_URL")
 
 client = get_ai_client()
 
-# async def run_with_tools(response: ChatCompletion, messages: list):
-#     message = response.choices[0].message
-#
-#     # assistant 메시지를 저장
-#     messages.append(message.model_dump())
-#
-#     # tool call 없으면 종료
-#     if not message.tool_calls:
-#         return response
-#
-#     for tool_call in message.tool_calls:
-#         name = tool_call.function.name
-#         args = json.loads(tool_call.function.arguments or "{}")
-#
-#         result = TOOL_MAP[name](**args)
-#
-#         messages.append({
-#             "role": "tool",
-#             "tool_call_id": tool_call.id,
-#             "content": json.dumps(result, ensure_ascii=False)
-#         })
-#
-#     # 2차 호출
-#     response = await client.chat.completions.create(
-#         model=AI_MODEL,
-#         messages=messages,
-#         tools=TOOLS
-#     )
-#
-#     return response
 async def run_with_tools(response: ChatCompletion, messages: list):
     for _ in range(5):  # 최대 5회 (무한 루프 방지)
         message = response.choices[0].message
@@ -95,13 +65,18 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
             },
             {
                 "role": "user",
-                "content": build_user_prompt(event_type, new, old)
+                "content": f"""
+                    상품명: {new.name}
+                    카테고리: {new.category}
+                    설명: {new.description}
+                    필요하면 get_exchange_rate 툴을 호출하세요.
+                    """
             }
         ]
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS
+        tools=TOOLS,
     )
 
     response = await run_with_tools(response, messages)
