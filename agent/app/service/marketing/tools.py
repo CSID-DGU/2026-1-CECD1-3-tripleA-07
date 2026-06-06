@@ -51,7 +51,7 @@ def get_exchange_rate(destination_currency: str) -> dict:
     else:                  trend = "원화 약세"
 
     return {
-        "trend":                "원화 강세",
+        "trend":                trend,
         "destination_currency": destination_currency,
         "per_krw":              _sig(current_rate),          # 1원으로 살 수 있는 외화량
         "per_foreign":          _sig(1 / current_rate),      # 외화 1단위로 살 수 있는 원화량

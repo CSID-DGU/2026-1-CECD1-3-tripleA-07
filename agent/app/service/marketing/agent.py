@@ -25,14 +25,15 @@ async def run_with_tools(response: ChatCompletion, messages: list) -> str:
     if not message.tool_calls:
         return message.content
 
+    called_names = set()
     for tool_call in message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments or "{}")
 
-        # submit_ad → 인자 자체가 최종 결과, 2차 호출 없이 즉시 반환
         if name == "submit_ad":
             return json.dumps(args, ensure_ascii=False)
 
+        called_names.add(name)
         result = TOOL_MAP[name](**args)
         messages.append({
             "role": "tool",
@@ -40,22 +41,18 @@ async def run_with_tools(response: ChatCompletion, messages: list) -> str:
             "content": json.dumps(result, ensure_ascii=False)
         })
 
-    # get_exchange_rate 실행 후 submit_ad 강제 호출
+    remaining_tools = [t for t in TOOLS if t["function"]["name"] not in called_names]
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS,
-        tool_choice={"type": "function", "function": {"name": "submit_ad"}},
+        tools=remaining_tools,
+        tool_choice="required",
     )
 
     message = response.choices[0].message
     if message.tool_calls:
-        for tool_call in message.tool_calls:
-            if tool_call.function.name == "submit_ad":
-                return json.dumps(
-                    json.loads(tool_call.function.arguments or "{}"),
-                    ensure_ascii=False
-                )
+        args = json.loads(message.tool_calls[0].function.arguments or "{}")
+        return json.dumps(args, ensure_ascii=False)
 
     return message.content
 
