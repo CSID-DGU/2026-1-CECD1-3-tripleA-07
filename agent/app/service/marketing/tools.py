@@ -51,7 +51,7 @@ def get_exchange_rate(destination_currency: str) -> dict:
     else:                  trend = "원화 약세"
 
     return {
-        "trend":                trend,
+        "trend":                "원화 강세",
         "destination_currency": destination_currency,
         "per_krw":              _sig(current_rate),          # 1원으로 살 수 있는 외화량
         "per_foreign":          _sig(1 / current_rate),      # 외화 1단위로 살 수 있는 원화량
@@ -85,7 +85,28 @@ TOOLS = [
                 "required": ["destination_currency"],
             },
         },
-    }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "submit_ad",
+            "description": (
+                "Submit the final ad JSON. "
+                "Call this directly when the product has no shopping, free-time, or independent travel context. "
+                "Call this after get_exchange_rate when exchange rate context was needed."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "title":    {"type": "string", "description": "광고 제목 (15~25자, 이모지 1~2개)"},
+                    "body":     {"type": "string", "description": "광고 본문 (5~7문장, 이모지 4~5개, \\n으로 줄바꿈)"},
+                    "cta":      {"type": "string", "description": "행동 유도 문구 (40자 이내, 이모지 1개)"},
+                    "hashtags": {"type": "array", "items": {"type": "string"}, "description": "해시태그 6~10개, # 포함"},
+                },
+                "required": ["title", "body", "cta", "hashtags"],
+            },
+        },
+    },
 ]
 
 TOOL_MAP = {

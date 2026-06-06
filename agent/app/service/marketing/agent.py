@@ -18,36 +18,46 @@ POKE_API_URL = os.getenv("POKE_API_URL")
 
 client = get_ai_client()
 
-async def run_with_tools(response: ChatCompletion, messages: list):
+async def run_with_tools(response: ChatCompletion, messages: list) -> str:
     message = response.choices[0].message
-
-    # assistant 메시지를 저장
     messages.append(message.model_dump())
 
-    # tool call 없으면 종료
     if not message.tool_calls:
-        return response
+        return message.content
 
     for tool_call in message.tool_calls:
         name = tool_call.function.name
         args = json.loads(tool_call.function.arguments or "{}")
 
-        result = TOOL_MAP[name](**args)
+        # submit_ad → 인자 자체가 최종 결과, 2차 호출 없이 즉시 반환
+        if name == "submit_ad":
+            return json.dumps(args, ensure_ascii=False)
 
+        result = TOOL_MAP[name](**args)
         messages.append({
             "role": "tool",
             "tool_call_id": tool_call.id,
             "content": json.dumps(result, ensure_ascii=False)
         })
 
-    # 2차 호출
+    # get_exchange_rate 실행 후 submit_ad 강제 호출
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS
+        tools=TOOLS,
+        tool_choice={"type": "function", "function": {"name": "submit_ad"}},
     )
 
-    return response
+    message = response.choices[0].message
+    if message.tool_calls:
+        for tool_call in message.tool_calls:
+            if tool_call.function.name == "submit_ad":
+                return json.dumps(
+                    json.loads(tool_call.function.arguments or "{}"),
+                    ensure_ascii=False
+                )
+
+    return message.content
 
 async def product_marketing(event_type: EventType, is_sample: bool, product_new: Product, product_old: Product | None):
     # 파라미터에 따라 샘플 데이터로 테스트 가능
@@ -71,9 +81,8 @@ async def product_marketing(event_type: EventType, is_sample: bool, product_new:
     response = await client.chat.completions.create(
         model=AI_MODEL,
         messages=messages,
-        tools=TOOLS
+        tools=TOOLS,
+        tool_choice="required",
     )
 
-    response = await run_with_tools(response, messages)
-
-    return response.choices[0].message.content
+    return await run_with_tools(response, messages)
