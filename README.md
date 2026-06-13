@@ -14,6 +14,7 @@
 
 ## Tech Stack
 
+
 ### Agent
 
 <div align=center>
@@ -63,6 +64,8 @@
 - Oracle AI Database 26ai Enterprise Edition Release 23.26.2.2.0 - Production
 
 ## Project Structure
+<img alt="project structure" src="https://github.com/user-attachments/assets/a8b3ea56-afcf-4939-8ee8-0090cf09bba8" />
+
 
 ## Main Feature
 
@@ -86,5 +89,10 @@
 ## Screenshots
 
 ### Admin System
+<img width="373" height="411" alt="20260613_204840_1" src="https://github.com/user-attachments/assets/89b45f6c-c984-473d-83a0-518742ac241f" />
+<img width="373" height="411" alt="20260613_204840_2" src="https://github.com/user-attachments/assets/f5baf70d-b40f-4cf6-973f-2b65f5e522c2" />
+<img width="373" height="411" alt="20260613_204840_3" src="https://github.com/user-attachments/assets/b2de540e-474f-4595-88d9-b1f7af56d4d6" />
+<img width="373" height="411" alt="20260613_204840_4" src="https://github.com/user-attachments/assets/bf1ab2f8-1375-4f2f-aab5-acad5dfc4de1" />
 
 ### Workflow Report (Discord)
+<img width="400" height="640" alt="20260613_204840_5" src="https://github.com/user-attachments/assets/ef801ffc-701b-4fda-8e33-1ad936d2dc0e" />
